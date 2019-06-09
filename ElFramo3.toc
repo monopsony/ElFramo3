@@ -1,0 +1,23 @@
+## Interface: 70100
+## Title: ElFramo3
+## DefaultState: disabled
+## SavedVariables: elFramoDB
+
+
+libs.xml
+Core.lua
+Utils.lua
+Frames.lua
+FamilyFuncs.lua
+Families.lua
+Layout.lua
+Events.lua
+
+Interface\main.lua
+
+Interface\Layouts\layouts_main.lua
+Interface\Layouts\layouts_layout_options.lua
+Interface\Layouts\layouts_load_options.lua
+Interface\Layouts\layouts_frame_options.lua
+Interface\Layouts\layouts_flags_options.lua
+Interface\Layouts\layouts_range_options.lua
