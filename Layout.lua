@@ -5,11 +5,13 @@ local eF=elFramo
 
 local default_class_order ="WARRIOR,DEATHKNIGHT,ROGUE,MONK,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER,DEMONHUNTER";
 local default_group_order ="1,2,3,4,5,6,7,8"
+local default_role_order="TANK,HEALER,DAMAGER"
 local pairs=pairs
 local wipe=table.wipe
 local growAnchor={up="BOTTOM",down="TOP",right="LEFT",left="RIGHT"}
 local growAnchorTo={up="TOP",down="BOTTOM",right="RIGHT",left="LEFT"}
-local growToAnchor={left="RIGHT",right="LEFT",updown="TOP"}
+local growToAnchor={left="RIGHT",right="LEFT",up="BOTTOM",down="TOP"}
+local layout_methods={}
 eF.registered_layouts={}
 eF.layout_indices={}
 
@@ -63,6 +65,7 @@ local header_default_parameters={
     by_group=false,
     grow1="down",
     grow2="right",
+    grow=7,
     spacing=10,
     hpR=0.2,
     hpG=0.4,
@@ -263,7 +266,7 @@ end
 
 --on their own they just really dont do what I want them to so..
 local setVisible_keys={"showRaid","showParty","showSolo"}
-local function setVisible(self,bool)
+function layout_methods:setVisible(bool)
     local bool,keys=bool,setVisible_keys
     if not bool then bool=false end
     if bool==self.visible then return end
@@ -273,7 +276,7 @@ local function setVisible(self,bool)
     end
 end
 
-local function checkVisibility(self)
+function layout_methods:checkVisibility()
     local bool=false
     local showRaid,showParty,showSolo,classes,roles=self.para.showRaid,self.para.showParty,self.para.showSolo,self.para.show_classes,self.para.show_roles
     local inRaid,inGroup=eF.raid,eF.grouped
@@ -297,6 +300,30 @@ local function checkVisibility(self)
     
     
     self:setVisible(bool)
+end
+
+function layout_methods:reload_layout()
+    self:setVisible(not self.visible)
+    self:setVisible(not self.visible)
+end
+
+function layout_methods:set_position()
+    local xPos,yPos=self.para.xPos,self.para.yPos
+    self:ClearAllPoints()
+    self:SetPoint(self.header_anchor or "BOTTOMLEFT",UIParent,"BOTTOMLEFT",xPos,yPos)
+end
+
+local function generate_header_anchor(g1,g2)
+  print(g1,g2)
+  local header_anchor=""
+  if (g1=="up" or g2=="up") then header_anchor="BOTTOM"
+  elseif (g1=="down" or g2=="down") then header_anchor="TOP"
+  end
+  
+  if (g1=="right" or g2=="right") then header_anchor=header_anchor.."LEFT"
+  elseif (g1=="left" or g2=="left") then header_anchor=header_anchor.."RIGHT"
+  end
+  return header_anchor
 end
 
 function eF:check_registered_layouts_visibility()
@@ -328,8 +355,8 @@ function eF:register_new_layout(key)
         header:SetSize(36,36) 
         header.visible=false
         header.para=eF.para.layouts[index].parameters
-        header.setVisible=setVisible
-        header.checkVisibility=checkVisibility
+        header.att=eF.para.layouts[index].attributes
+        for k,v in pairs(layout_methods) do header[k]=v end
         
         --save the header for easy access
         eF.registered_layouts[index]=header        
@@ -348,33 +375,42 @@ function eF:register_new_layout(key)
     
 end
 
-function eF:set_layout_position_index(index)
-    local header=eF.registered_layouts[index]
-    local para,att=eF.para.layouts[index]["parameters"],eF.para.layouts[index]["attributes"]
-    local header_anchor=generate_header_anchor(para.grow1,para.grow2)
-    
-    header:ClearAllPoints()
-    header:SetPoint(header_anchor,UIParent,"BOTTOMLEFT",para.xPos,para.yPos)
-    
-end 
-
 function eF:apply_layout_para_index(index)
-
-    local header=eF.registered_layouts[index]
-
-    local para,att=eF.para.layouts[index]["parameters"],eF.para.layouts[index]["attributes"]    
-    local anchor,anchor2=growToAnchor[para.grow1],growToAnchor[para.grow2]
     
-    if para.grow1=="up" then att.xOffset=0;att.yOffset=para.spacing or 0
+    
+    --helping variables
+    local header=eF.registered_layouts[index]
+    local para,att=eF.para.layouts[index]["parameters"],eF.para.layouts[index]["attributes"]    
+    local anchor,anchor2=growToAnchor[para.grow1],growToAnchor[para.grow2]   
+    header.att.point=anchor
+    header.att.columnAnchorPoint=anchor2
+    print("2",header.header_anchor)
+
+    --set oder defaults
+    if header.att.groupBy=="CLASS" then att.groupingOrder=default_class_order
+    elseif header.att.groupBy=="GROUP" then att.groupingOrder=default_group_order
+    elseif header.att.groupBy=="ROLE" then att.gorupingOrder=default_role_order end
+    
+    
+    --how does shit grow and shit
+    if para.grow1=="up" then att.xOffset=0; att.yOffset=para.spacing or 0
     elseif para.grow1=="down" then att.xOffset=0;att.yOffset=-para.spacing or 0
     elseif para.grow1=="right" then att.xOffset=para.spacing or 0; att.yOffset=0 
     elseif para.grow1=="left" then att.xOffset=-para.spacing or 0; att.yOffset=0 
     end
     
+    --apply attributes
     for k,v in pairs(att) do 
       header:SetAttribute(k,v)
     end
     
+    --set header position
+    header.header_anchor=generate_header_anchor(para.grow1,para.grow2)
+    print("3",header.header_anchor)
+    header:set_position()
+    
+    --reload and shit
+    header:reload_layout()
     header:checkVisibility()
 end
 

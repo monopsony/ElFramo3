@@ -214,6 +214,7 @@ local defaults={
                     by_group=false,
                     grow1="down",
                     grow2="right",
+                    grow=7,
                     spacing=10,
                     hpR=0.2,
                     hpG=0.4,
