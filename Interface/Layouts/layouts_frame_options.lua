@@ -2,6 +2,8 @@ local eF=elFramo
 local layouts=elFramo.optionsTable.args.layouts
 local args=layouts.args.frame_options.args
 
+local LSM=LibStub:GetLibrary("LibSharedMedia-3.0")
+
 local ipairs=ipairs
 local function set_current_layout_parameter(key,value)
     local name=eF.optionsTable.currently_selected_layout or nil
@@ -45,7 +47,22 @@ do
         end,
     }
     
-    --FONT
+
+    args["text_font"]={
+        name="Font",
+        type="select",
+        style="dropdown",
+        dialogControl="LSM30_Font",
+        order=23,
+        values=LSM:HashTable("font"),
+        set=function(self,value)
+            set_current_layout_parameter("textFont",value)
+        end,
+        get=function(self)
+            return get_current_parameter("textFont")
+        end,
+    }
+    
     
     args["text_limit"]={
         order=24,

@@ -67,12 +67,14 @@ function frameFunctions:updateSize()
   self:SetHeight(para.height)
 end
 
+local LSM=LibStub:GetLibrary("LibSharedMedia-3.0")
 function frameFunctions:updateText()
   local unit=self.id
   local para=self.header.para
   if not self.text then self.text=self.hp:CreateFontString(nil,"OVERLAY") end
   local text=self.text
-  text:SetFont(para.textFont,para.textSize,para.textExtra)
+  local font=(LSM:IsValid("font",para.textFont) and LSM:Fetch("font",para.textFont)) or ""
+  text:SetFont(font,para.textSize,para.textExtra)
   text:ClearAllPoints()
   text:SetPoint(para.textPos,self.hp,para.textPos,para.textXOS,para.textYOS)
   text:SetTextColor(para.textR,para.textG,para.textB,para.textA or 1)
