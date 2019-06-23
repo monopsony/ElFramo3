@@ -122,6 +122,8 @@ function frameFunctions:updateHPBar()
   local tt=hp:GetStatusBarTexture()
   if para.hpGrad then
     tt:SetGradientAlpha(para.hpGradOrientation,para.hpGrad1R,para.hpGrad1G,para.hpGrad1B,para.hpGrad1A,para.hpGrad2R,para.hpGrad2G,para.hpGrad2B,para.hpGrad2A)
+  else
+    tt:SetGradientAlpha("VERTICAL",1,1,1,1,1,1,1,1)
   end
 end
 

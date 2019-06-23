@@ -39,6 +39,7 @@ elFramo.optionsTable = {
 
 AceConfig:RegisterOptionsTable("elFramo",elFramo.optionsTable)
 local AceConfigDialog=LibStub("AceConfigDialog-3.0")
+AceConfigDialog:SetDefaultSize("elFramo", 1000, 650)
 function eF:open_options_frame()
     AceConfigDialog:Open("elFramo")
 end
