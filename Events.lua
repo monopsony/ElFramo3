@@ -153,6 +153,8 @@ function eF.layoutEventHandler:handleEvent(event,...)
   
   if check_visibility_flag then eF:check_registered_layouts_visibility() end
   
+  for _,v in pairs(eF.registered_layouts) do v:updateFilters() end
+  
 end
 eF.layoutEventHandler:SetScript("OnEvent",eF.layoutEventHandler.handleEvent)
 

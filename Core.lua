@@ -225,6 +225,9 @@ local defaults={
                     showParty=true,
                     show_classes={Any=true},
                     show_roles={Any=true},
+                    filter_classes={Any=true},
+                    filter_roles={Any=true},
+                    filter_player=true,
                     hpOrientation="VERTICAL",
                     hpGrad=true,
                     hpGradOrientation="VERTICAL",
@@ -252,7 +255,7 @@ local defaults={
                     bg=true,
                     by_group=false,
                     textLim=4,
-                    borderA=0.7,  
+                    borderA=0.7,   
                 },                   
             },  --end of layouts[1]
         },  --end of layouts
@@ -347,6 +350,7 @@ function elFramo:OnInitialize()
 
     --load player class
     eF.info.playerClass=UnitClass("player")
+    eF.info.playerName=UnitName("player")
 
     --load player role  --doesnt work at the very start for some reason?
     --local spec=GetSpecialization()

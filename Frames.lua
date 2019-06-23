@@ -25,7 +25,6 @@ local frameFunctions={}
 function frameFunctions:updateUnit()
   local unit=SecureButton_GetModifiedUnit(self)
   local flag1,flag2=self.current_layout_version~=eF.current_layout_version,eF.current_family_version~=self.current_family_version
-
   if self.id~=unit or flag1 or flag2 then   
     if not unit then self.id=nil; return end 
     self.id=unit
@@ -57,6 +56,7 @@ function frameFunctions:updateUnit()
     
     self:loadAllElements()
     self.current_layout_version=eF.current_layout_version
+    self.current_family_version=eF.current_family_version
   end
 end
 

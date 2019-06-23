@@ -76,6 +76,9 @@ local header_default_parameters={
     showParty=true,
     show_classes={Any=true},
     show_roles={Any=true},
+    filter_classes={Any=true},
+    filter_roles={Any=true},
+    filter_player=true,
     hpOrientation="VERTICAL",
     hpGrad=true,
     hpGradOrientation="VERTICAL",
@@ -274,6 +277,7 @@ function layout_methods:setVisible(bool)
     for i=1,#keys do
         self:SetAttribute(keys[i],bool)
     end
+    self:updateFilters()
 end
 
 function layout_methods:checkVisibility()
@@ -313,8 +317,59 @@ function layout_methods:set_position()
     self:SetPoint(self.header_anchor or "BOTTOMLEFT",UIParent,"BOTTOMLEFT",xPos,yPos)
 end
 
+local strf=string.format
+local function generate_nameList(list)
+    local s=""
+    if not list or #list==0 then return s end 
+    
+    for i=1,#list-1 do 
+        s=strf("%s%s,",s,list[i])
+    end
+    s=strf("%s%s",s,list[#list])
+    print(s)
+    return s
+end
+
+
+function layout_methods:updateFilters()
+    if not self.visible then return end 
+    local player,classes,roles=self.para.filter_player,self.para.filter_classes,self.para.filter_roles
+    local namelist={}
+    for k,v in pairs(roles) do print(k,v) end 
+    if not eF.grouped then 
+        --GetRaidRosterInfo doesnt work if youre alone
+        local name,class,role=eF.info.playerName,eF.info.playerClass,eF.info.playerRole
+        local bool=true
+        
+        if bool then if not (roles.Any or roles[role]) then bool=false end end 
+        if bool then if not (classes.Any or classes[class]) then bool=false end end 
+        if bool then if not player then bool=false end end
+        
+        if bool then namelist[#namelist+1]=name end
+        
+    else
+        for i=1,40 do 
+            local name,_,_,_,class,_,_,_,_,_,_,role=GetRaidRosterInfo(i)
+            if not name then break end 
+            print(GetRaidRosterInfo(i))
+            print(role)
+            local playerName=eF.info.playerName
+            local bool=true
+            
+            if bool then if not (roles.Any or roles[role]) then bool=false end end 
+            if bool then if not (classes.Any or classes[class]) then bool=false end end 
+            if bool and name==playerName then if not player then bool=false end end
+            
+            if bool then namelist[#namelist+1]=name end
+            
+        end
+    end
+    
+    self:SetAttribute("nameList",generate_nameList(namelist))
+    
+end
+
 local function generate_header_anchor(g1,g2)
-  print(g1,g2)
   local header_anchor=""
   if (g1=="up" or g2=="up") then header_anchor="BOTTOM"
   elseif (g1=="down" or g2=="down") then header_anchor="TOP"
@@ -384,7 +439,6 @@ function eF:apply_layout_para_index(index)
     local anchor,anchor2=growToAnchor[para.grow1],growToAnchor[para.grow2]   
     header.att.point=anchor
     header.att.columnAnchorPoint=anchor2
-    print("2",header.header_anchor)
 
     --set oder defaults
     if header.att.groupBy=="CLASS" then att.groupingOrder=default_class_order
@@ -406,7 +460,6 @@ function eF:apply_layout_para_index(index)
     
     --set header position
     header.header_anchor=generate_header_anchor(para.grow1,para.grow2)
-    print("3",header.header_anchor)
     header:set_position()
     
     --reload and shit

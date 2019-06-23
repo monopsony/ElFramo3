@@ -37,6 +37,7 @@ eF.defaultColors={
   Poison={0,0.6,0},
 }
 setmetatable(eF.defaultColors,{__index=function(t,k) t[k]={1,1,1} return t[k] end})
+local pairs=pairs
 
 function MakeMovable(frame)
   frame:SetMovable(true)
@@ -150,4 +151,14 @@ function eF.posInFamilyButtonsList(j,k)
     if j==lst[i].familyIndex and k==lst[i].childIndex then bool=true;pos=i; break end
   end
   return (bool and pos) or false
+end
+
+function eF.list_all_active_unit_frames()
+    local a={}
+    for _,v in pairs(eF.registered_layouts) do 
+        for i=1,#v do 
+            if v[i] and v[i].id then a[#a+1]=v[i] end
+        end
+    end
+    return a
 end

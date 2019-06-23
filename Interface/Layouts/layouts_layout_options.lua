@@ -8,7 +8,6 @@ local highlight_colour="|cFFFFF569"
 local function set_current_layout_parameter(key,value)
     local name=eF.optionsTable.currently_selected_layout or nil
     if not name then return end
-    print("1")
     eF.para.layouts[name].parameters[key]=value
     eF:apply_layout_para_index(name)
 end
