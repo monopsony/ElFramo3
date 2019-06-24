@@ -328,7 +328,6 @@ local function generate_nameList(list)
         s=strf("%s%s,",s,list[i])
     end
     s=strf("%s%s",s,list[#list])
-    print(s)
     return s
 end
 
@@ -337,7 +336,6 @@ function layout_methods:updateFilters()
     if not self.visible then return end 
     local player,classes,roles=self.para.filter_player,self.para.filter_classes,self.para.filter_roles
     local namelist={}
-    for k,v in pairs(roles) do print(k,v) end 
     if not eF.grouped then 
         --GetRaidRosterInfo doesnt work if youre alone
         local name,class,role=eF.info.playerName,eF.info.playerClass,eF.info.playerRole
@@ -353,8 +351,6 @@ function layout_methods:updateFilters()
         for i=1,40 do 
             local name,_,_,_,class,_,_,_,_,_,_,role=GetRaidRosterInfo(i)
             if not name then break end 
-            print(GetRaidRosterInfo(i))
-            print(role)
             local playerName=eF.info.playerName
             local bool=true
             

@@ -1,10 +1,10 @@
 local eF=elFramo
 
 local next=next
+local ipairs=ipairs
 
 local frameEvents={}
 function frameEvents:OnShow()
-    --print(self.id,"show")
 end
 
 function frameEvents:OnHide()
@@ -15,27 +15,64 @@ function frameEvents:OnAttributeChanged(name,value)
   --if not eF.doneLoading then return end
   --print(name,value)
   if name=="unit" then
-    if eF.activeFrames[self.id]==self then eF.activeFrames[self.id]=nil end
+    print(name,value)
     self:updateUnit()
-    if self.id then eF.activeFrames[self.id]=self end 
   end
 end
 
+
 local frameFunctions={}
-function frameFunctions:updateUnit()
+
+
+function frameFunctions:OnUpdate(elapsed)
+    if self.elapsed<self.throttle then self.elapsed=self.elapsed+elapsed; return end
+    self.elapsed=0
+    self:checkOOR()
+end
+
+function frameFunctions:updateUnit(name_changed)
   local unit=SecureButton_GetModifiedUnit(self)
-  local flag1,flag2=self.current_layout_version~=eF.current_layout_version,eF.current_family_version~=self.current_family_version
-  if self.id~=unit or flag1 or flag2 then   
-    if not unit then self.id=nil; return end 
-    self.id=unit
+  local unit_changed,flag1,flag2=self.id~=unit,self.current_layout_version~=eF.current_layout_version,eF.current_family_version~=self.current_family_version
+
+  --event registration + onUpdate
+  if unit_changed then
+    local playerFrame= (unit and UnitIsUnit(unit,"player")) or false
+    if not unit then 
+        self:unregister_events()
+        self.id=unit or nil
+    else
+        if self.id then 
+            self:unregister_events()
+            self.id=unit or nil
+            self:register_events()
+        else
+            self.id=unit or nil
+            self:register_events()
+        end
+    end
     
-    if UnitIsUnit(unit,"player") then self.playerFrame=true else self.playerFrame=false end
+    if playerFrame and (not self.playerFrame) then
+        self:setInRange()
+        self:SetScript("OnUpdate",nil)
+    elseif (not playerFrame) then
+        self.elapsed=1
+        self:SetScript("OnUpdate",self.OnUpdate)
+    end
+    self.playerFrame=playerFrame
+  end
+  
+  
+  --paras
+  if unit_changed or flag1 or flag2 or name_changed then   
+    if not unit then self.id=nil; return end 
+
+    
     local class,CLASS=UnitClass(unit)
     local role=UnitGroupRolesAssigned(unit)
     self.class=class
     self.CLASS=CLASS
     self.role=role
-
+    self.name=UnitName(self.id)
  
     if flag1 then 
       self:updateSize()
@@ -46,6 +83,7 @@ function frameFunctions:updateUnit()
       self:updateBorders()      
       self:updateName()
       self:updateHPBarColor()  
+      self:updateOORParas()
     else
       self:updateName()
       self:updateHPBarColor()
@@ -58,6 +96,21 @@ function frameFunctions:updateUnit()
     self.current_layout_version=eF.current_layout_version
     self.current_family_version=eF.current_family_version
   end
+end
+
+local unit_events=eF.unitEvents
+function frameFunctions:unregister_events()
+    for _,v in ipairs(unit_events) do 
+        self:UnregisterEvent(v)
+    end
+end
+
+function frameFunctions:register_events()
+    local unit=self.id or nil 
+    if not unit then return end
+    for _,v in ipairs(unit_events) do 
+        self:RegisterUnitEvent(v,unit)
+    end
 end
 
 function frameFunctions:updateSize()
@@ -85,7 +138,7 @@ function frameFunctions:updateName()
   local unit=self.id
   local para=self.header.para
   local text=self.text
-  local name=UnitName(unit)
+  local name=self.name or nil
   if not name then name="UNKNOWN" end
   if para.textLim then name=strsub(name,1,para.textLim) end
   self.text:SetText(name)
@@ -125,6 +178,11 @@ function frameFunctions:updateHPBar()
   else
     tt:SetGradientAlpha("VERTICAL",1,1,1,1,1,1,1,1)
   end
+end
+
+function frameFunctions:updateOORParas()
+    self.throttle=self.header.para.throttle or 0.1
+    self.elapsed=1
 end
 
 function frameFunctions:updateFlagFrames()
@@ -201,6 +259,87 @@ function frameFunctions:updateBackground()
   else bg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Background") end
 end
 
+function frameFunctions:unit_event(event)
+  --if true then return end  --TBA REMOVE, BENCHMARKING
+  local unit=self.id or nil
+  if not unit then return end
+  
+  
+  --TBA REMOVE THIS WHEN DONE TESTING
+  if event=="UNIT_HEALTH_FREQUENT" or event=="UNIT_MAXHEALTH" or event=="UNIT_CONNECTION" or event=="UNIT_FACTION" then
+    self:updateHealth()
+  end
+  if true then return end 
+  
+  if event=="UNIT_MAXHEALTH" or event=="UNIT_HEALTH_FREQUENT" then
+    self:updateHealth()
+    --it's not health ... https://i.imgur.com/KkGBLji.png
+  elseif event=="UNIT_AURA" then
+    --if true then return end --TBA: remove once bmark done
+    --LOOK INTO UNIT_AURA! https://i.imgur.com/r8JNKlh.png
+    --eF.counter=eF.counter+1
+
+    --------ONAURA
+    local tasks=self.tasks
+    local c=tasks.onAura
+    for j=1,#c do
+      local v=c[j]
+      --eF.counter=eF.counter+1 --TBA  ------THOSE COUNTERS ARE HIGHER FOR EF2, MIGHT HAVE TOO MANY THINGS LOADED
+      v[1](v[2])
+    end 
+    --------BUFFS
+    --https://i.imgur.com/ELddpwS.png not the "HELPFUL" thing
+    for i=1,40 do
+      local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HELPFUL")
+      if not name then break end       
+      local c=tasks.onBuff
+      for j=1,#c do
+        local v=c[j]
+        --eF.counter=eF.counter+1 --TBA
+        v[1](v[2],name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss)
+      end   
+    end
+    --------DEBUFFS
+    for i=1,40 do
+      local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HARMFUL")
+      if not name then break end 
+      local c=tasks.onDebuff
+      for j=1,#c do
+        local v=c[j]
+        --eF.counter=eF.counter+1 --TBA
+        v[1](v[2],name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss)
+      end 
+    end 
+    --------POST AURA
+    local c=tasks.postAura
+    for j=1,#c do
+      local v=c[j]
+      --eF.counter=eF.counter+1 --TBA
+      v[1](v[2])
+    end
+  
+  elseif event=="UNIT_POWER_UPDATE" then
+    --if true then return end
+    --NOT THAT EITHER https://i.imgur.com/rNn6AjI.png
+    
+    --------ONPOWER
+    local tasks=self.tasks
+    local c=tasks.onPower
+    for j=1,#c do
+      local v=c[j]
+      v[1](v[2])
+    end 
+    
+  elseif event=="UNIT_CONNETION" or event=="UNIT_NAME_UPDATE" then
+    self:updateName()
+  elseif event=="UNIT_FLAGS" then 
+    self:updateFlags()
+  elseif event=="UNIT_HEAL_ABSORB_AMOUNT_CHANGED" then
+  
+
+  end
+end
+
 function frameFunctions:updateFlags()
   local id=self.id
   local dead,connected,charmed=UnitIsDeadOrGhost(id),UnitIsConnected(id),UnitIsCharmed(id)
@@ -214,17 +353,24 @@ function frameFunctions:updateFlags()
 end
 
 function frameFunctions:checkOOR()
-  if self.playerFrame then return end
   local unit=self.id
   local oor=not UnitInRange(unit)
   --local para=self.header.partyHeader and eF.para.unitsGroup or eF.para.units
   if oor and not self.oor then
+    self:setOOR()
+  elseif not oor and self.oor then
+    self:setInRange()
+  end
+end
+
+function frameFunctions:setInRange()
+    self:SetAlpha(1)
+    self.oor=false
+end
+
+function frameFunctions:setOOR()
     self:SetAlpha(self.oorA) 
     self.oor=true
-  elseif not oor and self.oor then
-    self:SetAlpha(1)
-    self.oor=false 
-  end
 end
 
 local borderInfo=eF.borderInfo
@@ -246,9 +392,13 @@ function frameFunctions:updateBorders()
   
 end
 
+--TBA REMOVE
+GLOBAL_EF3_UPDATES=GLOBAL_EF3_UPDATES or {}
+GLOBAL_EF3_UPDATES["HP"]=0
 function frameFunctions:updateHealth()
   local unit=self.id
   self.hp:SetValue(UnitHealth(unit)/UnitHealthMax(unit))
+  GLOBAL_EF3_UPDATES["HP"]=GLOBAL_EF3_UPDATES["HP"]+1
 end
 
 local function metaFunction(t,k)
@@ -401,6 +551,8 @@ function eF:unit_added(event,name)
   frame.header=frame:GetParent()
   frame.oor=false --out of range boolean
   frame.baseLevel=frame.header:GetFrameLevel()
+ 
+  frame:SetScript("OnEvent",frame.unit_event)
  
   if not InCombatLockdown() then
     frame:SetFrameLevel(frame.baseLevel+11)

@@ -16,9 +16,11 @@ local function deepcopy(orig)
     return copy
 end
 
+
 eF.onUpdateFrame=CreateFrame("Frame","ElFramoOnUpdateFrame",UIParent)
 local eT,throttle=0,0.1
 local pairs=pairs
+local ipairs=ipairs
 function eF.onUpdateFrame:onUpdateFunction(elapsed)
   if eT<throttle then eT=eT+elapsed; return end
   eT=0
@@ -26,15 +28,16 @@ function eF.onUpdateFrame:onUpdateFunction(elapsed)
     frame:checkOOR()
   end
 end
-eF.onUpdateFrame:SetScript("OnUpdate",eF.onUpdateFrame.onUpdateFunction)
+--TBA REMOVE
+--eF.onUpdateFrame:SetScript("OnUpdate",eF.onUpdateFrame.onUpdateFunction)
 
 
 --------------UNIT_EVENTS--------------
 
 eF.counter=0
 eF.unitEventHandler=CreateFrame("Frame","ElFramoOnUnitEventFrame",UIParent)
-
-for _,v in pairs(eF.unitEvents) do eF.unitEventHandler:RegisterEvent(v) end
+--TBA REMOVE IT, NOW DONE PER UNIT
+--for _,v in pairs(eF.unitEvents) do eF.unitEventHandler:RegisterEve nt(v) end
 function eF.unitEventHandler:handleEvent(event,unit)
   --if true then return end  --TBA REMOVE, BENCHMARKING
   local frame=eF.activeFrames[unit]
@@ -109,9 +112,6 @@ function eF.unitEventHandler:handleEvent(event,unit)
   
 
   end
-  
-  
-  
 end
 eF.unitEventHandler:SetScript("OnEvent",eF.unitEventHandler.handleEvent)
 
@@ -126,14 +126,16 @@ function eF.layoutEventHandler:handleEvent(event,...)
   local check_visibility_flag=false 
   local spec=GetSpecialization()
   local role=select(5,GetSpecializationInfo(spec))
-  --print("yo")
-  --print(print(select(5,GetSpecializationInfo(GetSpecialization()))))
   if eF.info.playerRole~=role then check_visibility_flag=true; eF.info.playerRole=role end
 
-  --check roles and classes
-  for unit,frame in pairs(eF.activeFrames) do
+  --check roles AND NAME
+  local all_frames=eF.list_all_active_unit_frames()
+  for _,frame in ipairs(all_frames) do
+    local unit=frame.id
     local role=UnitGroupRolesAssigned(unit)
+    local name=UnitName(unit)
     --local class,CLASS=UnitClass(unit)
+    if name~=frame.name then frame:updateUnit(true) end
     if role~=frame.role then frame.role=role; frame:loadAllElements() end
     --if class~=frame.class then frame.class=class; frame.CLASS=CLASS; end
   end

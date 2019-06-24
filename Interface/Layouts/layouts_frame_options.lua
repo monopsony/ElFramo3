@@ -265,7 +265,6 @@ do
         values=LSM:HashTable("font"),
         set=function(self,value)
             set_current_layout_parameter("textFont",value)
-            print(value)
         end,
         get=function(self)
             return get_current_parameter("textFont")
