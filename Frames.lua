@@ -4,18 +4,20 @@ local next=next
 local ipairs=ipairs
 
 local frameEvents={}
+eF.visible_unit_frames={}
 function frameEvents:OnShow()
+    eF.visible_unit_frames=eF.list_all_active_unit_frames()
+
 end
 
 function frameEvents:OnHide()
-    --print(self.id,"hide")
+    eF.visible_unit_frames=eF.list_all_active_unit_frames()
 end
 
 function frameEvents:OnAttributeChanged(name,value)
   --if not eF.doneLoading then return end
   --print(name,value)
   if name=="unit" then
-    print(name,value)
     self:updateUnit()
   end
 end
@@ -33,7 +35,13 @@ end
 function frameFunctions:updateUnit(name_changed)
   local unit=SecureButton_GetModifiedUnit(self)
   local unit_changed,flag1,flag2=self.id~=unit,self.current_layout_version~=eF.current_layout_version,eF.current_family_version~=self.current_family_version
-
+  print("testest")
+  print(self:GetName(),self:GetName()=="ElFramoHeaderGroup1UnitButton1")
+  if self:GetName()=="ElFramoHeaderGroup1UnitButton1" then
+  print("SADAOISJDAUISDHIAUSHDAIUSHDIUAHDAIUSHDAIUSDHAISDHUASIUDHASIUDHASIUDHASDUIh")
+  print(self:GetName())
+  print(unit,self.id)
+  end
   --event registration + onUpdate
   if unit_changed then
     local playerFrame= (unit and UnitIsUnit(unit,"player")) or false
@@ -51,12 +59,13 @@ function frameFunctions:updateUnit(name_changed)
         end
     end
     
+    --TBA REMOVE SHIT, CENTrALIZEd
     if playerFrame and (not self.playerFrame) then
         self:setInRange()
-        self:SetScript("OnUpdate",nil)
+        --self:SetScript("OnUpdate",nil)
     elseif (not playerFrame) then
         self.elapsed=1
-        self:SetScript("OnUpdate",self.OnUpdate)
+        --self:SetScript("OnUpdate",self.OnUpdate)
     end
     self.playerFrame=playerFrame
   end
@@ -568,6 +577,8 @@ function eF:unit_added(event,name)
   frame:resetTasks()
   eF.familyUtils.applyAllElements(frame)
   frame:loadAllElements()
+  
+  eF.visible_unit_frames=eF.list_all_active_unit_frames()
 end
 eF:RegisterMessage("UNIT_ADDED","unit_added")
 

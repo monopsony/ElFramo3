@@ -24,12 +24,12 @@ local ipairs=ipairs
 function eF.onUpdateFrame:onUpdateFunction(elapsed)
   if eT<throttle then eT=eT+elapsed; return end
   eT=0
-  for unit,frame in pairs(eF.activeFrames) do
+  for _,frame in ipairs(eF.visible_unit_frames) do
     frame:checkOOR()
   end
 end
 --TBA REMOVE
---eF.onUpdateFrame:SetScript("OnUpdate",eF.onUpdateFrame.onUpdateFunction)
+eF.onUpdateFrame:SetScript("OnUpdate",eF.onUpdateFrame.onUpdateFunction)
 
 
 --------------UNIT_EVENTS--------------
@@ -157,6 +157,7 @@ function eF.layoutEventHandler:handleEvent(event,...)
   
   for _,v in pairs(eF.registered_layouts) do v:updateFilters() end
   
+  C_Timer.After(0,function() eF.visible_unit_frames=eF.list_all_active_unit_frames() end)
 end
 eF.layoutEventHandler:SetScript("OnEvent",eF.layoutEventHandler.handleEvent)
 

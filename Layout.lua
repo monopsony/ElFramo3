@@ -106,7 +106,6 @@ local header_default_parameters={
     healthGrow="up", 
     textColorByClass=true,
     bg=true,
-    by_group=false,
     textLim=4,
     borderA=0.7,  
 }
@@ -130,148 +129,28 @@ local function ForceFramesCreation(header)
 end
 
 function eF:applyLayoutParas()
-
   for i=1,#eF.registered_layouts do eF:apply_layout_para_index(i) end 
-
-end
-
-function eF:updateActiveLayout()
-  --just remove funciton if needed
-  if true then return end 
-  
-  local raid=IsInRaid()
-  local groupParas,byGroup,showSolo=eF.para.groupParas,eF.para.layoutByGroup,eF.para.showSolo
-  local para,layout
-  
-  eF.info.raid=raid
-  
-  if raid then layout=(byGroup and "raidGroup") or "raid"; para=eF.para.units 
-  elseif (not raid) and groupParas then layout="party"; para=eF.para.unitsGroup
-  elseif (not raid) and (not groupParas) then layout=(byGroup and "raidGroup") or "raid"; para=eF.para.units
-  end
-  
-  local flag1= not (eF.activeLayout==layout)
-  eF.activeLayout=layout
-  
-  if layout=="raidGroup" then
-    if flag1 then
-        eF.party_header.active=false
-        eF.party_header:SetAttribute("showParty",false)
-        eF.party_header:SetAttribute("showSolo",false)
-        eF.party_header:SetAttribute("showPlayer",false)
-        
-        eF.raid_header.active=false
-        eF.raid_header:SetAttribute("showRaid",false)
-        eF.raid_header:SetAttribute("showSolo",false)
-        eF.raid_header:SetAttribute("showParty",false)
-        eF.raid_header:SetAttribute("showPlayer",false)
-        
-        eF.raidGroupHeaders[1]:SetAttribute("showParty", (not raid) and (not groupParas)  )
-        for _,v in pairs(eF.raidGroupHeaders) do 
-          ForceFramesCreation(v)
-          v.active=true
-          v:SetAttribute("showRaid",true)
-          v:SetAttribute("showSolo",showSolo or false)
-          v:SetAttribute("showPlayer",true)
-        end  
-    end
-    
-    wipe(eF.activeFrames)
-    for _,v in pairs(eF.raidGroupHeaders) do
-      for i=1,v.FrameCount do
-        local fi=v[i]
-        if fi.id then eF.activeFrames[fi.id]=fi end
-      end
-    end
-    
-  end
-  
-  if layout=="raid" then
-    if flag1 then
-        eF.party_header.active=false
-        eF.party_header:SetAttribute("showParty",false)
-        eF.party_header:SetAttribute("showSolo",false)
-        eF.party_header:SetAttribute("showPlayer",false)
-        
-        eF.raid_header.active=true
-        eF.raid_header:SetAttribute("showRaid",true)
-        eF.raid_header:SetAttribute("showParty", (not raid) and (not groupParas)  )
-        eF.raid_header:SetAttribute("showSolo",showSolo or false)
-        eF.raid_header:SetAttribute("showPlayer",true)
-        ForceFramesCreation(eF.raid_header)
-        
-        for _,v in pairs(eF.raidGroupHeaders) do     
-          v.active=false
-          v:SetAttribute("showRaid",false)
-          v:SetAttribute("showParty",false)
-          v:SetAttribute("showSolo",false)
-          v:SetAttribute("showPlayer",false)
-        end  
-    end
-    
-    wipe(eF.activeFrames)
-    for i=1,eF.raid_header.FrameCount do
-      local fi=eF.raid_header[i]
-      if fi.id then eF.activeFrames[fi.id]=fi end
-    end
-    
-  end 
-  
-  if layout=="party" then
-    if flag1 then
-        eF.party_header.active=true
-        eF.party_header:SetAttribute("showParty",true)
-        eF.party_header:SetAttribute("showSolo",showSolo or false)
-        eF.party_header:SetAttribute("showPlayer",true)
-        ForceFramesCreation(eF.party_header)
-        
-        eF.raid_header.active=false
-        eF.raid_header:SetAttribute("showRaid",false)
-        eF.raid_header:SetAttribute("showSolo",false)
-        eF.raid_header:SetAttribute("showParty",false)
-        eF.raid_header:SetAttribute("showPlayer",false)
-        
-        for _,v in pairs(eF.raidGroupHeaders) do 
-          v.active=false
-          v:SetAttribute("showRaid",false)
-          v:SetAttribute("showSolo",false)
-          v:SetAttribute("showPlayer",false)
-          v:SetAttribute("showParty",false)
-        end  
-    end
-    
-    wipe(eF.activeFrames)
-    for i=1,eF.party_header.FrameCount do
-      local fi=eF.party_header[i]
-      if fi.id then eF.activeFrames[fi.id]=fi end
-    end
-    
-  end 
-  
-  for unit,_ in pairs(eF.activeFrames) do
-    for i=1,#refreshEvents do eF.unitEventHandler:handleEvent(refreshEvents[i],unit) end
-  end
-  
-end
-
-function eF:setHeaderPositions()
-
-  local p1,p2=eF.para.units,eF.para.unitsGroup
-  eF.raid_header:ClearAllPoints()
-  local header_anchor=generate_header_anchor(p1.grow1,p1.grow2)
-  eF.raid_header:SetPoint(header_anchor,UIParent,"BOTTOMLEFT",p1.xPos,p1.yPos)
-  
-  eF.raidGroupHeaders[1]:ClearAllPoints()
-  eF.raidGroupHeaders[1]:SetPoint(header_anchor,UIParent,"BOTTOMLEFT",p1.xPos,p1.yPos)
-  
-  eF.party_header:ClearAllPoints()
-  local header_anchor=generate_header_anchor(p2.grow1,p2.grow2)
-  eF.party_header:SetPoint(header_anchor,UIParent,"BOTTOMLEFT",p2.xPos,p2.yPos)
 end
 
 --on their own they just really dont do what I want them to so..
 local setVisible_keys={"showRaid","showParty","showSolo"}
 function layout_methods:setVisible(bool)
+
+  --[[ if self.by_group then
+        local bool,keys=bool,setVisible_keys
+        if not bool then bool=false end
+        if bool==self.visible then return end
+        self.visible=bool
+        
+        for i=1,#self do 
+            for j=1,#keys do
+                self:SetAttribute(keys[j],bool)
+            end
+        end
+        
+        self:updateFilters()
+        
+    else    ]]--shouldnt be needed because SetAttribute is altered (to apply to all groups if by_group==true)
     local bool,keys=bool,setVisible_keys
     if not bool then bool=false end
     if bool==self.visible then return end
@@ -280,6 +159,8 @@ function layout_methods:setVisible(bool)
         self:SetAttribute(keys[i],bool)
     end
     self:updateFilters()
+    --end
+    
 end
 
 function layout_methods:checkVisibility()
@@ -314,9 +195,25 @@ function layout_methods:reload_layout()
 end
 
 function layout_methods:set_position()
-    local xPos,yPos=self.para.xPos,self.para.yPos
-    self:ClearAllPoints()
-    self:SetPoint(self.header_anchor or "BOTTOMLEFT",UIParent,"BOTTOMLEFT",xPos,yPos)
+
+    if self.by_group then
+        local xPos,yPos=self.para.xPos,self.para.yPos
+        self[1]:ClearAllPoints()
+        --self[1]:SetPoint(self.header_anchor or "BOTTOMLEFT",UIParent,"BOTTOMLEFT",xPos,yPos)   --TBA PROPER       
+        self[1]:SetPoint("CENTER",UIParent,"CENTER")
+        --TBA REMOVE, DEBUGGING
+        self[1].texture=self[1].texture or self[1]:CreateTexture(nil,"OVERLAY")
+        local tex=self[1].texture
+        tex:SetAllPoints()
+        tex:SetColorTexture(.5,0,.5)
+        
+        
+    else
+        local xPos,yPos=self.para.xPos,self.para.yPos
+        self:ClearAllPoints()
+        self:SetPoint(self.header_anchor or "BOTTOMLEFT",UIParent,"BOTTOMLEFT",xPos,yPos)
+    end
+    
 end
 
 local strf=string.format
@@ -331,6 +228,13 @@ local function generate_nameList(list)
     return s
 end
 
+local function by_group_SetAttribute(self,k,v)
+    if not self.by_group then return end
+    --if k=="maxColumns" or k=="groupFilter" then return end --TBA REMOVE COMMENTED
+    for i=1,#self do
+        self[i]:SetAttribute(k,v)
+    end
+end
 
 function layout_methods:updateFilters()
     if not self.visible then return end 
@@ -362,6 +266,7 @@ function layout_methods:updateFilters()
             
         end
     end
+    
     
     self:SetAttribute("nameList",generate_nameList(namelist))
     
@@ -398,9 +303,40 @@ function eF:register_new_layout(key)
     
     if not att or not para then print("NO ATT/PARA in register_new_layout") end --toad proper error management
     local by_group=para.by_group
-
+    
     if by_group then
+        local header={}
+        header.index=index
+        header.visible=false
+        header.para=eF.para.layouts[index].parameters
+        header.att=eF.para.layouts[index].attributes
+        header.by_group=true
+        header.SetAttribute=by_group_SetAttribute
+        for k,v in pairs(layout_methods) do header[k]=v end
         
+        eF.registered_layouts[index]=header
+        eF.layout_indices[para.displayName]=index
+      
+        for i=1,8 do
+          header[i]=CreateFrame("Frame","ElFramoHeader"..tostring(index)..tostring(i),UIParent,"SecureGroupHeaderTemplate")
+          local rh=header[i]
+          rh:SetSize(36,36)
+          rh.initialConfigFunction=initialConfigFunction
+          rh.by_group=false
+          rh.by_group_sub=true
+          rh.para=eF.para.layouts[index].parameters
+          rh.att=eF.para.layouts[index].attributes
+          for k,v in pairs(layout_methods) do rh[k]=v end
+          rh:SetAttribute("groupFilter",tostring(i)) 
+          rh:Show()
+        end
+        
+        header.initialConfigFunction=initialConfigFunction
+        header[1]:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",200,500) 
+        
+        eF:apply_layout_para_index(index)
+        header[1]:Show()
+               
     else
     
         local header=CreateFrame("Frame","ElFramoHeader"..tostring(index),UIParent,"SecureGroupHeaderTemplate")
@@ -409,13 +345,14 @@ function eF:register_new_layout(key)
         header.visible=false
         header.para=eF.para.layouts[index].parameters
         header.att=eF.para.layouts[index].attributes
+        header.by_group=false
         for k,v in pairs(layout_methods) do header[k]=v end
         
         --save the header for easy access
         eF.registered_layouts[index]=header        
         eF.layout_indices[para.displayName]=index
         
-        --initial pos. doesn't matter, paras are applyied afterwards
+        --initial pos. doesn't matter, paras are applied afterwards
         header:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",200,500) 
         header.initialConfigFunction=initialConfigFunction
         
@@ -428,9 +365,29 @@ function eF:register_new_layout(key)
     
 end
 
+function layout_methods:by_group_layout()
+  if not self.by_group then return end
+  local para=self.para
+  local g1,g2=para.grow1,para.grow2
+  local prev
+  self:set_position()
+  local prev=self[1]
+  for i=2,#self do 
+      local header=self[i]
+      header:ClearAllPoints()
+      local x,y
+      if g2=="up" then x=0; y=para.spacing or 0
+      elseif g2=="down" then x=0; y=-para.spacing or 0
+      elseif g2=="left" then x=-para.spacing or 0; y=0
+      elseif g2=="right" then x=para.spacing or 0; y=0 
+      end
+      header:SetPoint(growAnchor[para.grow2],prev,growAnchorTo[para.grow2],x,y)
+      prev=header
+  end
+end
+
 function eF:apply_layout_para_index(index)
-    
-    
+        
     --helping variables
     local header=eF.registered_layouts[index]
     local para,att=eF.para.layouts[index]["parameters"],eF.para.layouts[index]["attributes"]    
@@ -438,7 +395,7 @@ function eF:apply_layout_para_index(index)
     header.att.point=anchor
     header.att.columnAnchorPoint=anchor2
 
-    --set oder defaults
+    --set order defaults
     if header.att.groupBy=="CLASS" then att.groupingOrder=default_class_order
     elseif header.att.groupBy=="GROUP" then att.groupingOrder=default_group_order
     elseif header.att.groupBy=="ROLE" then att.gorupingOrder=default_role_order end
@@ -459,6 +416,8 @@ function eF:apply_layout_para_index(index)
     --set header position
     header.header_anchor=generate_header_anchor(para.grow1,para.grow2)
     header:set_position()
+    
+    header:by_group_layout()
     
     --reload and shit
     header:reload_layout()

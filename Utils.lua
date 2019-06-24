@@ -156,18 +156,37 @@ end
 function eF.list_all_active_unit_frames(layout)
     local a={}
     
-    if (not layout) or (not eF.registered_layouts[layout]) then 
+    if (not layout) or (not eF.registered_layouts[layout]) then    
         for _,v in pairs(eF.registered_layouts) do 
+        
+            if v.by_group then
+                for j=1,#v do
+                    local v2=v[j]
+                    for i=1,#v2 do 
+                        if v2[i] and v2[i].id then a[#a+1]=v2[i] end
+                    end
+                end
+            else
+                for i=1,#v do 
+                    if v[i] and v[i].id then a[#a+1]=v[i] end
+                end
+            end
+            
+        end              
+    else
+        local v=eF.registered_layouts[layout]
+        if v.by_group then
+            for j=1,#v do
+                local v2=v[j]
+                for i=1,#v2 do 
+                    if v2[i] and v2[i].id then a[#a+1]=v2[i] end
+                end
+            end
+        else
             for i=1,#v do 
                 if v[i] and v[i].id then a[#a+1]=v[i] end
             end
         end
-    else
-        local v=eF.registered_layouts[layout]
-        for i=1,#v do 
-            if v[i] and v[i].id then a[#a+1]=v[i] end
-        end
     end
-    
     return a
 end
