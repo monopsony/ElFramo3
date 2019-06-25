@@ -11,6 +11,17 @@ local wipe=table.wipe
 local growAnchor={up="BOTTOM",down="TOP",right="LEFT",left="RIGHT"}
 local growAnchorTo={up="TOP",down="BOTTOM",right="RIGHT",left="LEFT"}
 local growToAnchor={left="RIGHT",right="LEFT",up="BOTTOM",down="TOP"}
+local orientations={[1]="Right-Down",[2]="Right-Up",[3]="Left-Down",[4]="Left-Up",[5]="Up-Right",[6]="Up-Left",[7]="Down-Right",[8]="Down-Left"}
+local orient_to_anchors={[1]={"TOPLEFT","BOTTOMLEFT"},
+                         [2]={"BOTTOMLEFT","TOPLEFT"},
+                         [3]={"TOPRIGHT","BOTTOMRIGHT"},
+                         [4]={"BOTTOMRIGHT","TOPRIGHT"},
+                         [5]={"BOTTOMLEFT","BOTTOMRIGHT"},
+                         [6]={"BOTTOMRIGHT","BOTTOMLEFT"},
+                         [7]={"TOPLEFT","TOPRIGHT"},
+                         [8]={"TOPRIGHT","TOPLEFT"},
+                        }
+                        
 local layout_methods={}
 eF.registered_layouts={}
 eF.layout_indices={}
@@ -195,25 +206,9 @@ function layout_methods:reload_layout()
 end
 
 function layout_methods:set_position()
-
-    if self.by_group then
-        local xPos,yPos=self.para.xPos,self.para.yPos
-        self[1]:ClearAllPoints()
-        --self[1]:SetPoint(self.header_anchor or "BOTTOMLEFT",UIParent,"BOTTOMLEFT",xPos,yPos)   --TBA PROPER       
-        self[1]:SetPoint("CENTER",UIParent,"CENTER")
-        --TBA REMOVE, DEBUGGING
-        self[1].texture=self[1].texture or self[1]:CreateTexture(nil,"OVERLAY")
-        local tex=self[1].texture
-        tex:SetAllPoints()
-        tex:SetColorTexture(.5,0,.5)
-        
-        
-    else
-        local xPos,yPos=self.para.xPos,self.para.yPos
-        self:ClearAllPoints()
-        self:SetPoint(self.header_anchor or "BOTTOMLEFT",UIParent,"BOTTOMLEFT",xPos,yPos)
-    end
-    
+    local xPos,yPos=self.para.xPos,self.para.yPos
+    self:ClearAllPoints()
+    self:SetPoint(self.header_anchor or "BOTTOMLEFT",UIParent,"BOTTOMLEFT",xPos,yPos)
 end
 
 local strf=string.format
@@ -228,12 +223,59 @@ local function generate_nameList(list)
     return s
 end
 
-local function by_group_SetAttribute(self,k,v)
+local by_group_methods={}
+function by_group_methods:SetAttribute(k,v)
     if not self.by_group then return end
     --if k=="maxColumns" or k=="groupFilter" then return end --TBA REMOVE COMMENTED
     for i=1,#self do
         self[i]:SetAttribute(k,v)
     end
+end
+
+function by_group_methods:SetPoint(...)
+    self[1]:SetPoint(...)
+end
+
+function by_group_methods:ClearAllPoints()
+    self[1]:ClearAllPoints()
+end
+
+function by_group_methods:Show(...)
+    for i=1,#self do 
+        self[i]:Show()
+    end
+end
+
+function by_group_methods:Hide(...)
+    for i=1,#self do 
+        self[i]:Hide()
+    end
+end
+
+function by_group_methods:by_group_layout()
+  if not self.by_group then return end
+
+  local para=self.para
+  local g1,g2=para.grow1,para.grow2
+  local prev
+  self:set_position()
+  self:Show()
+  local prev=self[1]
+  for i=2,#self do 
+      local header=self[i]
+      header:ClearAllPoints()
+      
+      local x,y
+      if g2=="up" then x=0; y=para.spacing or 0
+      elseif g2=="down" then x=0; y=-para.spacing or 0
+      elseif g2=="left" then x=-para.spacing or 0; y=0
+      elseif g2=="right" then x=para.spacing or 0; y=0 
+      end
+      local anchor1,anchor2=unpack(orient_to_anchors[para.grow])
+      print(anchor1,anchor2)
+      header:SetPoint(anchor1,prev,anchor2,x,y)
+      prev=header
+  end
 end
 
 function layout_methods:updateFilters()
@@ -311,32 +353,28 @@ function eF:register_new_layout(key)
         header.para=eF.para.layouts[index].parameters
         header.att=eF.para.layouts[index].attributes
         header.by_group=true
-        header.SetAttribute=by_group_SetAttribute
         for k,v in pairs(layout_methods) do header[k]=v end
+        for k,v in pairs(by_group_methods) do header[k]=v end  
+        
+        for i=1,8 do
+            header[i]=CreateFrame("Frame","ElFramoHeader"..tostring(index)..tostring(i),UIParent,"SecureGroupHeaderTemplate")
+            header[i]:SetAttribute("groupFilter",tostring(i)) 
+            header[i].initialConfigFunction=initialConfigFunction
+            header[i].para=header.para
+            header[i].att=header.att
+        end
         
         eF.registered_layouts[index]=header
         eF.layout_indices[para.displayName]=index
-      
-        for i=1,8 do
-          header[i]=CreateFrame("Frame","ElFramoHeader"..tostring(index)..tostring(i),UIParent,"SecureGroupHeaderTemplate")
-          local rh=header[i]
-          rh:SetSize(36,36)
-          rh.initialConfigFunction=initialConfigFunction
-          rh.by_group=false
-          rh.by_group_sub=true
-          rh.para=eF.para.layouts[index].parameters
-          rh.att=eF.para.layouts[index].attributes
-          for k,v in pairs(layout_methods) do rh[k]=v end
-          rh:SetAttribute("groupFilter",tostring(i)) 
-          rh:Show()
-        end
         
+        --initial pos. doesn't matter, paras are applied afterwards
+        header:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",200,500) 
         header.initialConfigFunction=initialConfigFunction
-        header[1]:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",200,500) 
         
+        --apply layout para
         eF:apply_layout_para_index(index)
-        header[1]:Show()
-               
+        header:Show()  --toad streamlined showing
+        
     else
     
         local header=CreateFrame("Frame","ElFramoHeader"..tostring(index),UIParent,"SecureGroupHeaderTemplate")
@@ -363,27 +401,6 @@ function eF:register_new_layout(key)
     end
     
     
-end
-
-function layout_methods:by_group_layout()
-  if not self.by_group then return end
-  local para=self.para
-  local g1,g2=para.grow1,para.grow2
-  local prev
-  self:set_position()
-  local prev=self[1]
-  for i=2,#self do 
-      local header=self[i]
-      header:ClearAllPoints()
-      local x,y
-      if g2=="up" then x=0; y=para.spacing or 0
-      elseif g2=="down" then x=0; y=-para.spacing or 0
-      elseif g2=="left" then x=-para.spacing or 0; y=0
-      elseif g2=="right" then x=para.spacing or 0; y=0 
-      end
-      header:SetPoint(growAnchor[para.grow2],prev,growAnchorTo[para.grow2],x,y)
-      prev=header
-  end
 end
 
 function eF:apply_layout_para_index(index)
@@ -417,7 +434,7 @@ function eF:apply_layout_para_index(index)
     header.header_anchor=generate_header_anchor(para.grow1,para.grow2)
     header:set_position()
     
-    header:by_group_layout()
+    if header.by_group then header:by_group_layout() end
     
     --reload and shit
     header:reload_layout()

@@ -15,8 +15,7 @@ function frameEvents:OnHide()
 end
 
 function frameEvents:OnAttributeChanged(name,value)
-  --if not eF.doneLoading then return end
-  --print(name,value)
+
   if name=="unit" then
     self:updateUnit()
   end
@@ -35,14 +34,7 @@ end
 function frameFunctions:updateUnit(name_changed)
   local unit=SecureButton_GetModifiedUnit(self)
   local unit_changed,flag1,flag2=self.id~=unit,self.current_layout_version~=eF.current_layout_version,eF.current_family_version~=self.current_family_version
-  print("testest")
-  print(self:GetName(),self:GetName()=="ElFramoHeaderGroup1UnitButton1")
-  if self:GetName()=="ElFramoHeaderGroup1UnitButton1" then
-  print("SADAOISJDAUISDHIAUSHDAIUSHDIUAHDAIUSHDAIUSDHAISDHUASIUDHASIUDHASIUDHASDUIh")
-  print(self:GetName())
-  print(unit,self.id)
-  end
-  --event registration + onUpdate
+
   if unit_changed then
     local playerFrame= (unit and UnitIsUnit(unit,"player")) or false
     if not unit then 
