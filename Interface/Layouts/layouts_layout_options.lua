@@ -3,6 +3,7 @@ local layouts=elFramo.optionsTable.args.layouts
 local args=layouts.args.layout_options.args
 --eF.optionsTable.currently_selected_layout
 local highlight_colour="|cFFFFF569"
+local deepcopy=eF.table_deep_copy
 
 
 local function set_current_layout_parameter(key,value)
@@ -128,6 +129,33 @@ do
         end,
     }      
     
+    args["by_group"]={
+        name="Keep groups separated",
+        type="toggle",
+        order=13,
+        set=function(self,value) 
+            local name=eF.optionsTable.currently_selected_layout or nil
+            if not name then return end
+            local old=eF.para.layouts[name].parameters["by_group"]
+            eF.para.layouts[name].parameters["by_group"]=value
+            if old~=value then 
+                if value then 
+                    eF.para.layouts[name].attributes.unitsPerColumn=5
+                end
+                local tbl=deepcopy(eF.para.layouts[name])
+                eF:remove_layout_by_name(name)                
+                eF.para.layouts[name]=tbl
+                eF:add_new_layout_by_name(name)   
+                eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE")
+            end
+            
+        end,
+        
+        get=function(self) 
+            return eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.by_group
+        end,
+    }
+    
 end
 
 --positions
@@ -198,6 +226,11 @@ do
         order=32,
         isPercent=false,
         step=1,
+        disabled=function()
+            local name=eF.optionsTable.currently_selected_layout or nil
+            if not name then return end
+            return eF.para.layouts[name].parameters["by_group"]
+            end,
         set=function(self,value)
             set_current_layout_attribute("unitsPerColumn",value)
         end,

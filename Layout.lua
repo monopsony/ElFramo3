@@ -357,7 +357,8 @@ function eF:register_new_layout(key)
         for k,v in pairs(by_group_methods) do header[k]=v end  
         
         for i=1,8 do
-            header[i]=CreateFrame("Frame","ElFramoHeader"..tostring(index)..tostring(i),UIParent,"SecureGroupHeaderTemplate")
+            local header_name="ElFramoHeader"..tostring(index)..tostring(i)
+            header[i]=_G[header_name] or CreateFrame("Frame",header_name,UIParent,"SecureGroupHeaderTemplate")
             header[i]:SetAttribute("groupFilter",tostring(i)) 
             header[i].initialConfigFunction=initialConfigFunction
             header[i].para=header.para
@@ -376,8 +377,8 @@ function eF:register_new_layout(key)
         header:Show()  --toad streamlined showing
         
     else
-    
-        local header=CreateFrame("Frame","ElFramoHeader"..tostring(index),UIParent,"SecureGroupHeaderTemplate")
+        local header_name="ElFramoHeader"..tostring(index)
+        local header= _G[header_name] or CreateFrame("Frame",header_name,UIParent,"SecureGroupHeaderTemplate")
         header.index=index
         header:SetSize(36,36) 
         header.visible=false

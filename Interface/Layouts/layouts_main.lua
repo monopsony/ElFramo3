@@ -6,27 +6,30 @@ local tContains=tContains
 local deepcopy=eF.table_deep_copy
 local wipe=table.wipe
 
-local function add_new_layout_by_name(name)
+function eF:add_new_layout_by_name(name)
     local name=eF.find_valid_name_in_table(name,eF.registered_layouts)
     eF:register_new_layout(name)
     args.layout_drop_down:set(name)
+    eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE")  --TBA SHOULD BE A BETTER WAY TO DO IT, IS MOSTLY THERE TO FIX OnUpdate of gone units
 end
 
-local function remove_layout_by_name(name)
+function eF:remove_layout_by_name(name)
     if not eF.registered_layouts[name] then return end
     eF.registered_layouts[name]:setVisible(false)
     eF.registered_layouts[name]=nil
     wipe(eF.para.layouts[name])
     eF.para.layouts[name]=nil
     eF.optionsTable.currently_selected_layout=nil
+    eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE")  --TBA SHOULD BE A BETTER WAY TO DO IT, IS MOSTLY THERE TO FIX OnUpdate of gone units
 end
 
-local function copy_layout_by_name_to_new(name,new)
+function eF:copy_layout_by_name_to_new(name,new)
     if not eF.registered_layouts[name] then return end
     local new=eF.find_valid_name_in_table(new,eF.registered_layouts)
     eF.para.layouts[new]=deepcopy(eF.para.layouts[name])
     
-    add_new_layout_by_name(new)    
+    eF:add_new_layout_by_name(new)   
+    eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE")   --TBA SHOULD BE A BETTER WAY TO DO IT, IS MOSTLY THERE TO FIX OnUpdate of gone units   
 end
 
 --add layout creator/picker
@@ -75,7 +78,7 @@ do
         set=function(self,name)
                 name=string.gsub(name, "%s+", "")
                 if not name or name=="" then return end
-                add_new_layout_by_name(name)
+                eF:add_new_layout_by_name(name)
             end,
         get=function(self) 
                 return "" 
@@ -95,7 +98,7 @@ do
                 if not eF.optionsTable.currently_selected_layout then
                     --TOAD ERROR MESSAGE
                 else               
-                    remove_layout_by_name(eF.optionsTable.currently_selected_layout) 
+                    eF:remove_layout_by_name(eF.optionsTable.currently_selected_layout) 
                 end                
             end,
     }
@@ -111,7 +114,7 @@ do
                 if not name then
                     --ERROR MESSAGE
                 else                               
-                    copy_layout_by_name_to_new(name,name)
+                    eF:copy_layout_by_name_to_new(name,name)
                 end                
             end,
     }
@@ -126,8 +129,8 @@ do
                 local old=eF.optionsTable.currently_selected_layout or nil
                 if not old then return end
                 local new_name=eF.find_valid_name_in_table(name,eF.registered_layouts)
-                copy_layout_by_name_to_new(old,new_name)
-                remove_layout_by_name(old)
+                eF:copy_layout_by_name_to_new(old,new_name)
+                eF:remove_layout_by_name(old)
                 args.layout_drop_down:set(new_name)
             end,
         get=function(self) 
