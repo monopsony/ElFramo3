@@ -1,6 +1,6 @@
 local eF=elFramo
 
-eF.taskFuncs={}
+eF.taskFuncs=eF.taskFuncs or {}
 local taskFuncs=eF.taskFuncs
 
 
@@ -16,27 +16,42 @@ function taskFuncs:frameEnable()
   self.filled=true
 end
 
+--count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId
+local function is_aura_new(self,count,expirationTime,spellId)
+    return not ((count==self.count) and (expirationTime==self.expirationTime) and (spellID==self.spellID))
+end
+
 --local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss=...
-function taskFuncs:applyAuraAdopt(...)
-  if self.filled then return end
-  local bool=self:auraAdopt(...)
-  
-  if bool then
-    local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss=...
-    self.name=name
-    self.icon=icon
-    self.count=count
-    self.debuffType=debuffType
-    self.duration=duration
-    self.expirationTime=expirationTime
-    self.unitCaster=unitCaster
-    self.canSteal=canSteal
-    self.spellId=spellId
-    self.isBoss=isBoss
-    self.filled=true
-    self:enable()
-    return true
-  end
+function taskFuncs:applyBuffAdopt(unit)
+    for i=1,40 do
+        local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HELPFUL")
+        if not name then break end       
+        local bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss)
+        
+        if bool then
+            if is_aura_new(self,count,expirationTime,spellID) then
+                self.new_aura=true
+                self.name=name
+                self.icon=icon
+                self.count=count
+                self.debuffType=debuffType
+                self.duration=duration
+                self.expirationTime=expirationTime
+                self.unitCaster=unitCaster
+                self.canSteal=canSteal
+                self.spellId=spellId
+                self.isBoss=isBoss
+            else
+                self.new_aura=false
+            end
+            
+            if not self.filled then self:enable() end    
+            return
+        end
+    end
+
+    --only reaches this if no fitting aura found (because of return)
+    if self.filled then self:disable() end
 end
 
 function taskFuncs:iconAdoptAuraByName(name,_,_,_,_,_,unitCaster)
@@ -48,12 +63,12 @@ function taskFuncs:iconAdoptAuraBySpellID(_,_,_,_,_,_,unitCaster,_,spellID)
 end
 
 function taskFuncs:iconApplySmartIcon()
-  if not self.filled then return end
+  if not (self.filled and self.new_aura) then return end
   self.texture:SetTexture(self.icon)
 end
 
 function taskFuncs:iconUpdateCDWheel()
-  if not self.filled then return end
+  if not (self.filled and self.new_aura) then return end
   local dur=self.duration
   self.cdFrame:SetCooldown(self.expirationTime-dur,dur)
 end

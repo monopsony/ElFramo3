@@ -259,7 +259,30 @@ local defaults={
                 },                   
             },  --end of layouts[1]
         },  --end of layouts
-        families={
+        elements={
+            ["rejuv"]={
+                type="icon",
+                width=30,
+                height=30,
+                anchor="CENTER",
+                anchorTo="CENTER",
+                xPos=0,
+                yPos=0,
+                hasTexture=true,
+                smartIcon=true,
+                textureR=1,
+                textureG=1,
+                textureB=1,
+                textureA=1,
+                hasBorder=false,
+                cdWheel=true,
+                cdReverse=true,
+                hasText=false,
+                hasText2=false,
+                trackType="Buffs",
+                adoptFunc="Name",
+                arg1="Rejuvenation",
+            },
         },  --end of families
     },  --end of profile
 }--end of defaults
@@ -368,22 +391,20 @@ function elFramo:OnInitialize()
     --load group stuff
     --eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE") (doing it above anyways)
     
+    --element metas
+    eF:update_element_meta()
     
-    --load layouts
+    
+    --load layouts and frames
     --toad: REMOVE COMMENTS, FIX
     eF:register_all_headers_inits()
     eF:applyLayoutParas()
     --eF:updateActiveLayout()
     --eF:setHeaderPositions()
     
-    --ALL INITS
-    if eF.para.families and (#eF.para.families>0) then 
-        eF.familyUtils.updateAllMetas()
-        for k,v in pairs(eF.activeFrames) do
-            eF.familyUtils.applyAllElements(v)
-            v:loadAllElements()
-        end  
-    end
+
+    
+    
     --eF.intSetInitValues() --toad init values interface
 
     self:UnregisterEvent("PLAYER_ENTERING_WORLD")

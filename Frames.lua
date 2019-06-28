@@ -21,19 +21,12 @@ function frameEvents:OnAttributeChanged(name,value)
   end
 end
 
-
-local frameFunctions={}
-
-
-function frameFunctions:OnUpdate(elapsed)
-    if self.elapsed<self.throttle then self.elapsed=self.elapsed+elapsed; return end
-    self.elapsed=0
-    self:checkOOR()
-end
+local frameFunctions=eF.frameFunctions or {}
+eF.frameFunctions=frameFunctions
 
 function frameFunctions:updateUnit(name_changed)
   local unit=SecureButton_GetModifiedUnit(self)
-  local unit_changed,flag1,flag2=self.id~=unit,self.current_layout_version~=eF.current_layout_version,eF.current_family_version~=self.current_family_version
+  local unit_changed,flag1,flag2=self.id~=unit,self.current_layout_version~=eF.current_layout_version,eF.current_elements_version~=self.current_elements_version
 
   if unit_changed then
     local playerFrame= (unit and UnitIsUnit(unit,"player")) or false
@@ -90,12 +83,12 @@ function frameFunctions:updateUnit(name_changed)
       self:updateHPBarColor()
     end
     
-    if flag2 then eF.familyUtils.applyAllElements(self) end
+    if flag2 then self:apply_element_paras() end
 
     
-    self:loadAllElements()
+    self:apply_and_reload_loads()
     self.current_layout_version=eF.current_layout_version
-    self.current_family_version=eF.current_family_version
+    self.current_elements_version=eF.current_elements_version
   end
 end
 
@@ -266,79 +259,21 @@ function frameFunctions:unit_event(event)
   if not unit then return end
   
   
-  --TBA REMOVE THIS WHEN DONE TESTING
-  if event=="UNIT_HEALTH_FREQUENT" or event=="UNIT_MAXHEALTH" or event=="UNIT_CONNECTION" or event=="UNIT_FACTION" then
-    self:updateHealth()
-  end
-  if true then return end 
-  
   if event=="UNIT_MAXHEALTH" or event=="UNIT_HEALTH_FREQUENT" then
     self:updateHealth()
     --it's not health ... https://i.imgur.com/KkGBLji.png
   elseif event=="UNIT_AURA" then
-    --if true then return end --TBA: remove once bmark done
-    --LOOK INTO UNIT_AURA! https://i.imgur.com/r8JNKlh.png
-    --eF.counter=eF.counter+1
-
-    --------ONAURA
-    local tasks=self.tasks
-    local c=tasks.onAura
-    for j=1,#c do
-      local v=c[j]
-      --eF.counter=eF.counter+1 --TBA  ------THOSE COUNTERS ARE HIGHER FOR EF2, MIGHT HAVE TOO MANY THINGS LOADED
-      v[1](v[2])
-    end 
-    --------BUFFS
-    --https://i.imgur.com/ELddpwS.png not the "HELPFUL" thing
-    for i=1,40 do
-      local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HELPFUL")
-      if not name then break end       
-      local c=tasks.onBuff
-      for j=1,#c do
-        local v=c[j]
-        --eF.counter=eF.counter+1 --TBA
-        v[1](v[2],name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss)
-      end   
+    print("in unit_aura")
+    local task=self.tasks.onAura
+    for i=1,#task,2 do 
+        task[i](task[i+1],unit)
     end
-    --------DEBUFFS
-    for i=1,40 do
-      local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HARMFUL")
-      if not name then break end 
-      local c=tasks.onDebuff
-      for j=1,#c do
-        local v=c[j]
-        --eF.counter=eF.counter+1 --TBA
-        v[1](v[2],name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss)
-      end 
-    end 
-    --------POST AURA
-    local c=tasks.postAura
-    for j=1,#c do
-      local v=c[j]
-      --eF.counter=eF.counter+1 --TBA
-      v[1](v[2])
-    end
-  
+    
   elseif event=="UNIT_POWER_UPDATE" then
-    --if true then return end
-    --NOT THAT EITHER https://i.imgur.com/rNn6AjI.png
-    
-    --------ONPOWER
-    local tasks=self.tasks
-    local c=tasks.onPower
-    for j=1,#c do
-      local v=c[j]
-      v[1](v[2])
-    end 
-    
-  elseif event=="UNIT_CONNETION" or event=="UNIT_NAME_UPDATE" then
-    self:updateName()
-  elseif event=="UNIT_FLAGS" then 
-    self:updateFlags()
-  elseif event=="UNIT_HEAL_ABSORB_AMOUNT_CHANGED" then
-  
-
+        --power handling TBA
   end
+  
+  
 end
 
 function frameFunctions:updateFlags()
@@ -408,9 +343,8 @@ local function metaFunction(t,k)
 end
 local setmetatable=setmetatable
 local wipe=table.wipe
-function frameFunctions:resetTasks()
-  if self.tasks then wipe(self.tasks) else self.tasks={} end
-  setmetatable(self.tasks,{__index=metaFunction})
+function frameFunctions:reset_tasks()
+  if self.tasks then wipe(self.tasks) else self.tasks={}; setmetatable(self.tasks,{__index=metaFunction}) end
 end
 
 local inList=eF.isInList
@@ -537,6 +471,46 @@ function frameFunctions:loadAllElements()
 
 end
 
+function frameFunctions:apply_load_conditions()
+    local el,flag=self.elements,false
+    for k,v in pairs(el) do 
+        local bool=self:check_element_load(k)
+        if bool~=v.loaded then
+            flag=true
+            v.loaded=bool
+        end
+    end  
+    return flag
+end
+
+function frameFunctions:reload_loaded_elements()
+    local el,tasks=self.elements,eF.tasks
+    self:reset_tasks()
+    for k,v in pairs(el) do 
+        if v.loaded then
+            for event,tbl in pairs(tasks[k]) do 
+            
+                for i=1,#tbl do 
+                    local n=#self.tasks[event]
+                    self.tasks[event][n+1]=tbl[i]
+                    self.tasks[event][n+2]=v
+                end
+                
+            end
+        end
+    end
+end
+
+function frameFunctions:apply_and_reload_loads()
+    local bool=self:apply_load_conditions()
+    if bool then self:reload_loaded_elements() end
+end
+
+function frameFunctions:check_element_load(k)
+    --TBA ACTUAL LOADING
+    return true
+end
+
 local fu=eF.familyUtils
 function eF:unit_added(event,name)
   print("unit added",event,name)
@@ -552,6 +526,7 @@ function eF:unit_added(event,name)
   frame.header=frame:GetParent()
   frame.oor=false --out of range boolean
   frame.baseLevel=frame.header:GetFrameLevel()
+  frame.elements={}
  
   frame:SetScript("OnEvent",frame.unit_event)
  
@@ -566,9 +541,11 @@ function eF:unit_added(event,name)
   frame:updateText()
   frame:updateBorders()
   
-  frame:resetTasks()
-  eF.familyUtils.applyAllElements(frame)
-  frame:loadAllElements()
+  
+  frame:apply_element_paras()
+  frame:reset_tasks() 
+  frame:apply_and_reload_loads()
+  
   
   eF.visible_unit_frames=eF.list_all_active_unit_frames()
 end
