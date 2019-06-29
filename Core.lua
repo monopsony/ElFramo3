@@ -278,10 +278,12 @@ local defaults={
                 cdWheel=true,
                 cdReverse=true,
                 hasText=false,
+                textSize=20,
                 hasText2=false,
                 trackType="Buffs",
                 adoptFunc="Name",
                 arg1="Rejuvenation",
+                
             },
         },  --end of families
     },  --end of profile

@@ -656,6 +656,8 @@ function frameFunctions:apply_element_paras(name)
       el.cdFrame:Hide()
     end
     
+    
+    --TBA font handling
     --text1 handling
     if not el.text then el.text=el:CreateFontString(nil,"OVERLAY") end
     if para.hasText then
