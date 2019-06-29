@@ -571,6 +571,7 @@ local function updateAllMetas()
 end
 fu.updateAllMetas=updateAllMetas
 
+local LSM=LibStub:GetLibrary("LibSharedMedia-3.0")
 function frameFunctions:apply_element_paras(name)
   if not name then
     for k,_ in pairs(eF.para.elements) do self:apply_element_paras(k) end
@@ -662,7 +663,7 @@ function frameFunctions:apply_element_paras(name)
     if not el.text then el.text=el:CreateFontString(nil,"OVERLAY") end
     if para.hasText then
       el.text:Show()
-      local font,extra=para.textFont or "Fonts\\FRIZQT__.ttf",para.textExtra or "OUTLINE"
+      local font,extra=(LSM:IsValid("font",para.textFont) and LSM:Fetch("font",para.textFont)) or "",para.textExtra or "OUTLINE"
       local size,xOS,yOS=para.textSize or 20,para.textXOS or 0, para.textYOS or 0
       local r,g,b,a=para.textR or 1,para.textG or 1,para.textB or 1, para.textA or 1
       el.text:SetFont(font,size,extra)
@@ -677,7 +678,7 @@ function frameFunctions:apply_element_paras(name)
     if not el.text2 then el.text2=el:CreateFontString(nil,"OVERLAY") end
     if para.hasText2 then
       el.text2:Show()
-      local font,extra=para.text2Font or "Fonts\\FRIZQT__.ttf",para.text2extra or "OUTLINE"
+      local font,extra=LSM:IsValid("font",para.text2Font) and LSM:Fetch("font",para.text2Font)) or "",para.text2extra or "OUTLINE"
       local size,xOS,yOS=para.text2Size or 20,para.text2XOS or 0, para.text2YOS or 0
       local r,g,b,a=para.text2R or 1,para.text2G or 1,para.text2B or 1, para.text2A or 1
       el.text2:SetFont(font,size,extra)
@@ -688,6 +689,15 @@ function frameFunctions:apply_element_paras(name)
       el.text2:Hide()
     end
     
+
+    if #el.tasks.onUpdate>0 then
+        local throttle=((para.throttleValue~=-1) and para.throttleValue) or math.min((0.1^math.floor(math.max(para.textDecimals,para.text2Decimals) or 1))*0.15,0.2)
+        self.elapsed=self.throttle+1
+        el:SetScript("OnUpdate",taskFuncs.frameOnUpdateFunction)
+    else
+        el:SetScript("OnUpdate",nil)
+    end
+
   end --end of if para.type=="icon" then
   
   --TBA DO BAR
@@ -868,7 +878,7 @@ function eF:update_element_meta(name)
       if para.text2Type=="Stacks" then tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateText2TypeS end
     end
     
-
+  
     
   end --end of if para.type=="icon" then
   
