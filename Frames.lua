@@ -263,7 +263,6 @@ function frameFunctions:unit_event(event)
     self:updateHealth()
     --it's not health ... https://i.imgur.com/KkGBLji.png
   elseif event=="UNIT_AURA" then
-    print("in unit_aura")
     local task=self.tasks.onAura
     for i=1,#task,2 do 
         task[i](task[i+1],unit)

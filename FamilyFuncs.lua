@@ -22,11 +22,35 @@ local function is_aura_new(self,count,expirationTime,spellId)
 end
 
 --local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss=...
-function taskFuncs:applyBuffAdopt(unit)
-    for i=1,40 do
-        local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HELPFUL")
-        if not name then break end       
-        local bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss)
+function taskFuncs:applyBuffAdopt_TEST(unit)
+    local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss
+    local prev,found,bool=self.prev or nil,false,false
+    local ante,post,i_ante,i_post
+    if prev then
+        ante,post,i_ante,i_post=true,true,prev-1,prev
+    else
+        ante,post,i_ante,i_post=false,true,0,1
+    end
+    while ante or post do 
+        if ante and i_ante<1 then ante=false end
+        if post and i_post>40 then post=false end
+        
+        if post then 
+            name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i_post,"HELPFUL")
+            if not name then post=false        
+            else 
+                bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss) 
+                if bool then self.prev=i_post end
+            end
+        end         
+        if ante and (not bool) then  --end of if post 
+            name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i_ante,"HELPFUL")
+            if not name then post=false        
+            else 
+                bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss) 
+                if bool then self.prev=i_ante end
+            end     
+        end  --end of if post    elseif (not bool) and ante
         
         if bool then
             if is_aura_new(self,count,expirationTime,spellID) then
@@ -41,21 +65,55 @@ function taskFuncs:applyBuffAdopt(unit)
                 self.canSteal=canSteal
                 self.spellId=spellId
                 self.isBoss=isBoss
-            else
+            else         
                 self.new_aura=false
             end
             
             if not self.filled then self:enable() end    
             return
-        end
+        end--end of if bool
+        if ante then i_ante=i_ante-1 end
+        if post then i_post=i_post+1 end
     end
-
     --only reaches this if no fitting aura found (because of return)
     if self.filled then self:disable() end
 end
 
+function taskFuncs:applyBuffAdopt(unit)
+
+
+    for i=1,40 do 
+        local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HELPFUL")
+        if not name then break end
+        local bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss) 
+            
+        if bool then
+            if is_aura_new(self,count,expirationTime,spellID) then
+                self.new_aura=true
+                self.name=name
+                self.icon=icon
+                self.count=count
+                self.debuffType=debuffType
+                self.duration=duration
+                self.expirationTime=expirationTime
+                self.unitCaster=unitCaster
+                self.canSteal=canSteal
+                self.spellId=spellId
+                self.isBoss=isBoss
+            else         
+                self.new_aura=false
+            end
+            
+            if not self.filled then self:enable() end    
+            return
+        end--end of if bool
+    end
+    
+    if self.filled then self:disable() end
+end
+
 function taskFuncs:iconAdoptAuraByName(name,_,_,_,_,_,unitCaster)
-  return name==self.para.arg1 and ((not self.para.ownOnly) or (self.para.ownOnly and UnitIsUnit(unitCaster or "boss1","player"))) 
+   return name==self.para.arg1 and ((not self.para.ownOnly) or (self.para.ownOnly and UnitIsUnit(unitCaster or "boss1","player"))) 
 end
 
 function taskFuncs:iconAdoptAuraBySpellID(_,_,_,_,_,_,unitCaster,_,spellID)
