@@ -800,6 +800,131 @@ function frameFunctions:apply_element_paras(name)
     
   end
   
+  if para.type=="list" then 
+    if not frame.elements[name] then frame.elements[name]={} end
+    local list=frame.elements[name]
+    list.para=para
+    --TBA disable/enable/onUpdate funcs
+    list.tasks=eF.tasks[name]
+    local N=para.count
+    list.count=N
+
+    --list elements creation
+    for i=1,N do 
+        if not list[i] then list[i]=CreateFrame("Frame",("%sElement%s"):format(frame:GetName(),name),frame) end
+        local el=list[i]
+        
+        el:SetFrameLevel(frame.hp:GetFrameLevel()+1+(para.displayLevel or 0))
+        el.para=para
+        el.enable=taskFuncs.frameEnable
+        el.disable=taskFuncs.frameDisable
+        el.onUpdateFunction=taskFuncs.frameOnUpdateFunction
+        el.tasks=eF.tasks[name]
+       
+        --dimensions and position
+        el:SetWidth(para.width)
+        el:SetHeight(para.height)
+        el:ClearAllPoints()
+        el:SetPoint(para.anchor,frame,para.anchorTo,para.xPos,para.yPos)
+    
+        --static handling
+        if para.trackType=="Static" then  --TBA STATIC HANDLING
+          el:Show()
+          el.static=true
+          el.expirationTime=0
+          el.duration=0
+        else
+          el.static=false
+          el:Hide()
+        end --end of if para.trackType=="Static" 
+    
+        --texture handling
+        if not el.texture then el.texture=el:CreateTexture(nil,"BACKGROUND") end
+        if para.hasTexture then 
+          local r,g,b,a=para.textureR or 1,para.textureG or 1,para.textureB or 1, para.textureA or 1
+          el.texture:Show()   
+          el.texture:ClearAllPoints()
+          el.texture:SetAllPoints()
+      
+          if para.smartIcon then
+            --nothing needed here for now
+          elseif para.solidTexture then
+            el.texture:SetColorTexture(r,g,b,a)
+          elseif para.texture=="" or para.texture=="nil" then
+            el.texture:SetColorTexture(r,g,b,a)
+          else
+            el.texture:SetTexture(para.texture)
+            el.texture:SetVertexColor(r,g,b)
+          end
+      
+        else --end of if para.hasTexture
+          el.texture:Hide()
+        end
+    
+        --border handling
+        if not el.border then 
+          el.border=el:CreateTexture(nil,"OVERLAY")
+          el.border:SetTexture([[Interface\Buttons\UI-Debuff-Overlays]])
+          el.border:SetAllPoints()
+          el.border:SetTexCoord(.296875, .5703125, 0, .515625)
+        end
+        if para.hasBorder then
+          el.border:Hide()
+        else
+          el.border:Hide()
+        end
+    
+        --cdWheel handling
+        if not el.cdFrame then 
+          el.cdFrame=CreateFrame("Cooldown",el:GetName().."CooldownFrame",el,"CooldownFrameTemplate")
+          el.cdFrame:SetAllPoints()
+          el.cdFrame:SetFrameLevel(el:GetFrameLevel())
+        end
+        if para.cdWheel then
+          if para.cdReverse then el.cdFrame:SetReverse(true) else el.cdFrame:SetReverse(false) end
+          el.cdFrame:Show()
+        else
+          el.cdFrame:Hide()
+        end
+    
+    
+        --TBA font handling
+        --text1 handling
+        if not el.text then el.text=el:CreateFontString(nil,"OVERLAY") end
+        if para.hasText then
+          el.text:Show()
+          local font,extra=(LSM:IsValid("font",para.textFont) and LSM:Fetch("font",para.textFont)) or "",para.textExtra or "OUTLINE"
+          local size,xOS,yOS=para.textSize or 20,para.textXOS or 0, para.textYOS or 0
+          local r,g,b,a=para.textR or 1,para.textG or 1,para.textB or 1, para.textA or 1
+          el.text:SetFont(font,size,extra)
+          el.text:ClearAllPoints()
+          el.text:SetPoint(para.textAnchor,el,para.textAnchorTo,xOS,yOS)
+          el.text:SetTextColor(r,g,b,a)
+        else
+          el.text:Hide()
+        end
+    
+         --text2 handling
+        if not el.text2 then el.text2=el:CreateFontString(nil,"OVERLAY") end
+        if para.hasText2 then
+          el.text2:Show()
+          local font,extra=(LSM:IsValid("font",para.text2Font) and LSM:Fetch("font",para.text2Font)) or "",para.text2extra or "OUTLINE"
+          local size,xOS,yOS=para.text2Size or 20,para.text2XOS or 0, para.text2YOS or 0
+          local r,g,b,a=para.text2R or 1,para.text2G or 1,para.text2B or 1, para.text2A or 1
+          el.text2:SetFont(font,size,extra)
+          el.text2:ClearAllPoints()
+          el.text2:SetPoint(para.text2Anchor,el,para.text2AnchorTo,xOS,yOS)
+          el.text2:SetTextColor(r,g,b,a)
+        else
+          el.text2:Hide()
+        end
+    end 
+
+    --onUpdate based on para (like at the end of =="icon"
+    
+    
+  end
+
   --apply work funcs
   for funcName,func in pairs(eF.workFuncs[name]) do
     frame.elements[name][funcName]=func

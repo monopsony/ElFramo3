@@ -80,8 +80,6 @@ function taskFuncs:applyBuffAdopt_TEST(unit)
 end
 
 function taskFuncs:applyBuffAdopt(unit)
-
-
     for i=1,40 do 
         local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HELPFUL")
         if not name then break end
@@ -110,6 +108,39 @@ function taskFuncs:applyBuffAdopt(unit)
     end
     
     if self.filled then self:disable() end
+end
+
+function taskFuncs:applyListBuffAdopt(unit)
+    self.active=0
+    for i=1,40 do 
+        local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HELPFUL")
+        if not name then break end
+        local bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss) 
+
+        if bool then
+            local frame=self.active
+            if is_aura_new(self,count,expirationTime,spellID) then
+                self.new_aura=true
+                self.name=name
+                self.icon=icon
+                self.count=count
+                self.debuffType=debuffType
+                self.duration=duration
+                self.expirationTime=expirationTime
+                self.unitCaster=unitCaster
+                self.canSteal=canSteal
+                self.spellId=spellId
+                self.isBoss=isBoss
+            else         
+                self.new_aura=false
+            end
+            
+            if not self.filled then self:enable() end    
+            if self.active==self.count then return end
+        end--end of if bool
+    end
+    
+    
 end
 
 function taskFuncs:iconAdoptAuraByName(name,_,_,_,_,_,unitCaster)
