@@ -937,7 +937,6 @@ function frameFunctions:apply_element_paras(name)
   local el=frame.elements[name]
   if el.isListElement then 
       for funcName,func in pairs(eF.workFuncs[name]) do
-        print(funcName,func)
         el[funcName]=func
         for i=1,el.count do el[i][funcName]=func end      
       end
@@ -981,9 +980,9 @@ function eF:update_element_meta(name)
   --NOTE: ORDER MATTERS! first find the aura THEN CD etc
   if para.type=="icon" then
     --tasks.onAura[#tasks.onAura+1]=taskFuncs.frameDisable
-    
-    if para.trackType=="Buffs" then
-      tasks.onAura[#tasks.onAura+1]=taskFuncs.applyBuffAdopt
+    local tt=para.trackType
+    if tt=="HEPLFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then
+      tasks.onAura[#tasks.onAura+1]=taskFuncs.applyAuraAdopt
       
       if para.adoptFunc=="Name" then
         work.auraAdopt=taskFuncs.iconAdoptAuraByName
@@ -992,16 +991,7 @@ function eF:update_element_meta(name)
       end  
     end --end of if para.trackType=="Buffs" then
     
-    if para.trackType=="Debuffs" then
-      tasks.onAura[#tasks.onAura+1]=taskFuncs.applyAuraAdopt
-      
-      if para.adoptFunc=="Name" then
-        work.auraAdopt=taskFuncs.iconAdoptAuraByName
-      elseif para.adoptFunc=="Spell ID" then
-        work.auraAdopt=taskFuncs.iconAdoptAuraBySpellID
-      end
-    end --end of if para.trackType=="Debuffs" then
-    
+
     if para.hasTexture and para.smartIcon then
       tasks.onAura[#tasks.onAura+1]=taskFuncs.iconApplySmartIcon
     end
@@ -1068,13 +1058,11 @@ function eF:update_element_meta(name)
     
   end 
 
-
   if para.type=="list" then
     --tasks.onAura[#tasks.onAura+1]=taskFuncs.frameDisable
-    
-    
-    if para.trackType=="Buffs" then
-      tasks.onAura[#tasks.onAura+1]=taskFuncs.applyListBuffAdopt
+    local tt=para.trackType
+    if tt=="HEPLFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then
+      tasks.onAura[#tasks.onAura+1]=taskFuncs.applyListAuraAdopt
       
       if para.adoptFunc=="Name Whitelist" then
         work.auraAdopt=taskFuncs.iconAdoptAuraByNameWhitelist
@@ -1083,15 +1071,6 @@ function eF:update_element_meta(name)
       end  
     end --end of if para.trackType=="Buffs" then
     
-    if para.trackType=="Debuffs" then
-      tasks.onAura[#tasks.onAura+1]=taskFuncs.applyAuraAdopt
-      
-      if para.adoptFunc=="Name" then
-        work.auraAdopt=taskFuncs.iconAdoptAuraByName
-      elseif para.adoptFunc=="Spell ID" then
-        work.auraAdopt=taskFuncs.iconAdoptAuraBySpellID
-      end
-    end --end of if para.trackType=="Debuffs" then
     
     if para.hasTexture and para.smartIcon then
       tasks.onAura[#tasks.onAura+1]=taskFuncs.iconApplySmartIcon

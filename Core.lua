@@ -172,94 +172,9 @@ eF.para={throttle=0.1, --currently not actually applying, it's set to 0.1
                   }--end of all  
          }  --end of default para
 end 
-   
-local defaults={
-    profile={
-        layouts={
-            ["Default"]={
-                attributes={
-                    templateType="Button",
-                    template="SecureUnitButtonTemplate",
-                    point="TOP",
-                    xOffset=10,
-                    yOffset=-10,
-                    columnSpacing=10,
-                    columnAnchorPoint="LEFT",
-                    initialConfigFunction=[[
-                    --RegisterUnitWatch(self);
-                    self:SetAttribute("*type1","target");
-                    self:SetHeight(34)
-                    self:SetWidth(34)
-                    local header=self:GetParent();
-                    self:SetFrameLevel(header:GetFrameLevel()+11)
-                    header:CallMethod("initialConfigFunction",self:GetName())
-                    ]],
-                    allowVehicleTarget=false,
-                    toggleForVehicle=false,
-                    unitsPerColumn=5,
-                    groupingOrder="1,2,3,4,5,6,7,8",
-                    groupFilter=default_group_order,
-                    groupBy="GROUP", --TBA PUT BACL
-                    groupBy=nil,
-                    showPlayer=true, --in para now
-                    --showSolo=true,
-                    --showRaid=true,
-                    --showParty=true,
-                    maxColumns=8,
-                    strictFiltering=false,
-                },
-                parameters={
-                    by_group=false,
-                    displayName="Default",
-                    xPos=1000,
-                    yPos=500,
-                    grow1="down",
-                    grow2="right",
-                    grow=7,
-                    spacing=10,
-                    hpR=0.2,
-                    hpG=0.4,
-                    hpB=0.6,
-                    showPlayer=true,
-                    showSolo=true,
-                    showRaid=true,
-                    showParty=true,
-                    show_classes={Any=true},
-                    show_roles={Any=true},
-                    filter_classes={Any=true},
-                    filter_roles={Any=true},
-                    filter_player=true,
-                    hpOrientation="VERTICAL",
-                    hpGrad=true,
-                    hpGradOrientation="VERTICAL",
-                    hpGrad1R=0.5,
-                    hpGrad1G=0.5,
-                    hpGrad1B=0.5,  
-                    hpGrad2R=0.8,
-                    hpGrad2G=0.8,
-                    hpGrad2B=0.8, 
-                    oorA=0.45,
-                    height=50,
-                    width=70,
-                    textFont ="Friz Quadrata TT",
-                    textExtra="OUTLINE",
-                    textR=1,
-                    textPos="CENTER",
-                    textA=1,
-                    borderR=0,
-                    borderG=0,
-                    borderB=0,
-                    textSize=13,
-                    borderSize=2,
-                    healthGrow="up", 
-                    textColorByClass=true,
-                    bg=true,
-                    textLim=4,
-                    borderA=0.7,   
-                },                   
-            },  --end of layouts[1]
-        },  --end of layouts
-        elements={
+  
+if false then
+local a=[[
             ["rejuv"]={
                 type="icon",
                 width=15,
@@ -404,6 +319,100 @@ local defaults={
                 adoptFunc="Name",
                 arg1="Lifebloom",               
             },
+]]
+end
+  
+local defaults={
+    profile={
+        layouts={
+            ["Default"]={
+                attributes={
+                    templateType="Button",
+                    template="SecureUnitButtonTemplate",
+                    point="TOP",
+                    xOffset=10,
+                    yOffset=-10,
+                    columnSpacing=10,
+                    columnAnchorPoint="LEFT",
+                    initialConfigFunction=[[
+                    --RegisterUnitWatch(self);
+                    self:SetAttribute("*type1","target");
+                    self:SetHeight(34)
+                    self:SetWidth(34)
+                    local header=self:GetParent();
+                    self:SetFrameLevel(header:GetFrameLevel()+11)
+                    header:CallMethod("initialConfigFunction",self:GetName())
+                    ]],
+                    allowVehicleTarget=false,
+                    toggleForVehicle=false,
+                    unitsPerColumn=5,
+                    groupingOrder="1,2,3,4,5,6,7,8",
+                    groupFilter=default_group_order,
+                    groupBy="GROUP", --TBA PUT BACL
+                    groupBy=nil,
+                    showPlayer=true, --in para now
+                    --showSolo=true,
+                    --showRaid=true,
+                    --showParty=true,
+                    maxColumns=8,
+                    strictFiltering=false,
+                },
+                parameters={
+                    by_group=false,
+                    displayName="Default",
+                    xPos=1000,
+                    yPos=500,
+                    grow1="down",
+                    grow2="right",
+                    grow=7,
+                    spacing=10,
+                    hpR=0.2,
+                    hpG=0.4,
+                    hpB=0.6,
+                    showPlayer=true,
+                    showSolo=true,
+                    showRaid=true,
+                    showParty=true,
+                    show_classes={Any=true},
+                    show_roles={Any=true},
+                    filter_classes={Any=true},
+                    filter_roles={Any=true},
+                    filter_player=true,
+                    hpOrientation="VERTICAL",
+                    hpGrad=true,
+                    hpGradOrientation="VERTICAL",
+                    hpGrad1R=0.5,
+                    hpGrad1G=0.5,
+                    hpGrad1B=0.5,  
+                    hpGrad2R=0.8,
+                    hpGrad2G=0.8,
+                    hpGrad2B=0.8, 
+                    oorA=0.45,
+                    height=50,
+                    width=70,
+                    textFont ="Friz Quadrata TT",
+                    textExtra="OUTLINE",
+                    textR=1,
+                    textPos="CENTER",
+                    textA=1,
+                    borderR=0,
+                    borderG=0,
+                    borderB=0,
+                    textSize=13,
+                    borderSize=2,
+                    healthGrow="up", 
+                    textColorByClass=true,
+                    bg=true,
+                    textLim=4,
+                    borderA=0.7,   
+                },                   
+            },  --end of layouts[1]
+        },  --end of layouts
+        elements={
+            ["rejuv"]=nil,
+            ["germ"]=nil,
+            ["wild"]=nil,
+            ["lifebloom"]=nil,
             ["bufflist"]={
                 type="list",
                 width=15,
@@ -439,7 +448,7 @@ local defaults={
                 textDecimals=0,
                 textType="Time left",
                 hasText2=false,
-                trackType="Buffs",
+                trackType="PLAYER HELPFUL",
                 adoptFunc="Name Whitelist",
                 arg1={["Lifebloom"]=true,["Rejuvenation"]=true,["Wild Growth"]=true,["Rejuvenation (Germination)"]=true},               
             },

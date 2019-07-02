@@ -272,7 +272,6 @@ function by_group_methods:by_group_layout()
       elseif g2=="right" then x=para.spacing or 0; y=0 
       end
       local anchor1,anchor2=unpack(orient_to_anchors[para.grow])
-      print(anchor1,anchor2)
       header:SetPoint(anchor1,prev,anchor2,x,y)
       prev=header
   end
