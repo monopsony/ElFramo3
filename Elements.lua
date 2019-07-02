@@ -808,6 +808,10 @@ function frameFunctions:apply_element_paras(name)
     local list=frame.elements[name]
     list:SetAllPoints()
     list.para=para
+    list.isListElement=true
+    list.active=0
+    list.enable=taskFuncs.frameEnable
+    list.disable=taskFuncs.frameDisable
     --TBA disable/enable/onUpdate funcs
     list.tasks=eF.tasks[name]
     local N=para.count
@@ -815,7 +819,7 @@ function frameFunctions:apply_element_paras(name)
 
     --list elements creation
     for i=1,N do 
-        if not list[i] then list[i]=CreateFrame("Frame",("%List%sElement%s"):format(frame:GetName(),name,tostring(i)),list) end
+        if not list[i] then list[i]=CreateFrame("Frame",("%sList%sElement%s"):format(frame:GetName(),name,tostring(i)),list) end
         local el=list[i]
         
         el:SetFrameLevel(frame.hp:GetFrameLevel()+1+(para.displayLevel or 0))
@@ -829,11 +833,11 @@ function frameFunctions:apply_element_paras(name)
         el:SetWidth(para.width)
         el:SetHeight(para.height)
         el:ClearAllPoints()
-        if i==1 then el:SetPoint(para.anchor,frame,para.anchorTo,para.xPos,para.yPos) 
+        if i==1 then  el:SetPoint(para.anchor,frame,para.anchorTo,para.xPos,para.yPos)            
         else
             local a1,a2,xOS,yOS=growToAnchor[para.grow],growAnchorTo[para.grow],0,0
             if para.grow=="left" or para.grow=="right" then xOS=para.spacing else yOS=para.spacing end
-            el:SetPoint(a1,frame,a2,xOS,yOS) 
+            el:SetPoint(a1,list[i-1],a2,xOS,yOS) 
         end
 
         --texture handling
@@ -918,16 +922,31 @@ function frameFunctions:apply_element_paras(name)
         end
     end 
 
-    --onUpdate based on para (like at the end of =="icon"
-    
-    
+    if #list.tasks.onUpdate>0 then
+        local throttle=((para.throttleValue~=-1) and para.throttleValue) or math.min((0.1^math.floor(math.max(para.textDecimals or 0,para.text2Decimals or 0) or 1))*0.2,0.2)
+        list.throttle=throttle
+        list.elapsed=throttle+1
+        list:SetScript("OnUpdate",taskFuncs.frameOnUpdateFunction)
+    else
+        list:SetScript("OnUpdate",nil)
+    end
+    list:disable()
   end
 
   --apply work funcs
-  for funcName,func in pairs(eF.workFuncs[name]) do
-    frame.elements[name][funcName]=func
+  local el=frame.elements[name]
+  if el.isListElement then 
+      for funcName,func in pairs(eF.workFuncs[name]) do
+        print(funcName,func)
+        el[funcName]=func
+        for i=1,el.count do el[i][funcName]=func end      
+      end
+  else
+      for funcName,func in pairs(eF.workFuncs[name]) do
+        el[funcName]=func
+      end
+
   end
-   
 end
 
 local function resetTaskList(name)
@@ -1049,6 +1068,58 @@ function eF:update_element_meta(name)
     
   end 
 
+
+  if para.type=="list" then
+    --tasks.onAura[#tasks.onAura+1]=taskFuncs.frameDisable
+    
+    
+    if para.trackType=="Buffs" then
+      tasks.onAura[#tasks.onAura+1]=taskFuncs.applyListBuffAdopt
+      
+      if para.adoptFunc=="Name Whitelist" then
+        work.auraAdopt=taskFuncs.iconAdoptAuraByNameWhitelist
+      elseif para.adoptFunc=="Name Blacklist" then
+        work.auraAdopt=taskFuncs.iconAdoptAuraByNameBlacklist
+      end  
+    end --end of if para.trackType=="Buffs" then
+    
+    if para.trackType=="Debuffs" then
+      tasks.onAura[#tasks.onAura+1]=taskFuncs.applyAuraAdopt
+      
+      if para.adoptFunc=="Name" then
+        work.auraAdopt=taskFuncs.iconAdoptAuraByName
+      elseif para.adoptFunc=="Spell ID" then
+        work.auraAdopt=taskFuncs.iconAdoptAuraBySpellID
+      end
+    end --end of if para.trackType=="Debuffs" then
+    
+    if para.hasTexture and para.smartIcon then
+      tasks.onAura[#tasks.onAura+1]=taskFuncs.iconApplySmartIcon
+    end
+    
+    if para.cdWheel then
+      tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateCDWheel
+    end
+    
+    if para.hasText then
+      if para.textType=="Time left" then 
+        tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateTextTypeT 
+        work.textDecimalFunc=eF.toDecimal[para.textDecimals]
+      end
+      if para.textType=="Stacks" then tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateTextTypeS end
+    end
+    
+    if para.hasText2 then
+      if para.text2Type=="Time left" then 
+        tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateText2TypeT 
+        work.text2DecimalFunc=eF.toDecimal[para.text2Decimals]
+      end
+      if para.text2Type=="Stacks" then tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateText2TypeS end
+    end
+
+  end --end of if para.type=="list" then
+  
+  
 end
 
 

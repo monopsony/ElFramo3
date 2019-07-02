@@ -2,7 +2,7 @@ local eF=elFramo
 
 eF.taskFuncs=eF.taskFuncs or {}
 local taskFuncs=eF.taskFuncs
-
+local iconApplySmartIcon,iconUpdateCDWheel,iconUpdateTextTypeT,iconUpdateText2TypeT,iconUpdateTextTypeS,iconUpdateText2TypeS
 
 ----------------------------------ICONS--------------------------------------------------
 
@@ -141,21 +141,29 @@ function taskFuncs:applyListBuffAdopt(unit)
         end--end of if bool
     end
     
-    if self.active==0 and self.filled then self:disable() 
-    else 
+    if active==0 and self.filled then self:disable() end
+    if active>0 then
         if not self.filled then self:enable() end
-        self.active=active
         for i=1,active do 
-            if not self[i].filled then self[i]:disable() end
+            if not self[i].filled then self[i]:enable() end
         end
-        for i=active,self.count do 
+        for i=active+1,self.count do 
             if self[i].filled then self[i]:disable() end
         end
     end
+    self.active=active
 end
 
 function taskFuncs:iconAdoptAuraByName(name,_,_,_,_,_,unitCaster)
    return name==self.para.arg1 and ((not self.para.ownOnly) or (self.para.ownOnly and UnitIsUnit(unitCaster or "boss1","player"))) 
+end
+
+function taskFuncs:iconAdoptAuraByNameWhitelist(name,_,_,_,_,_,unitCaster)
+   return self.para.arg1[name] and ((not self.para.ownOnly) or (self.para.ownOnly and UnitIsUnit(unitCaster or "boss1","player"))) 
+end
+
+function taskFuncs:iconAdoptAuraByNameBlacklist(name,_,_,_,_,_,unitCaster)
+   return (not self.para.arg1[name]) and ((not self.para.ownOnly) or (self.para.ownOnly and UnitIsUnit(unitCaster or "boss1","player"))) 
 end
 
 function taskFuncs:iconAdoptAuraBySpellID(_,_,_,_,_,_,unitCaster,_,spellID)
@@ -163,39 +171,69 @@ function taskFuncs:iconAdoptAuraBySpellID(_,_,_,_,_,_,unitCaster,_,spellID)
 end
 
 function taskFuncs:iconApplySmartIcon()
+  if self.isListElement then
+    for i=1,self.active do iconApplySmartIcon(self[i]) end
+    return
+  end
   if not (self.filled and self.new_aura) then return end
   self.texture:SetTexture(self.icon)
 end
+iconApplySmartIcon=taskFuncs.iconApplySmartIcon
 
 function taskFuncs:iconUpdateCDWheel()
+  if self.isListElement then
+    for i=1,self.active do iconUpdateCDWheel(self[i]) end
+    return
+  end
   if not (self.filled and self.new_aura) then return end
   local dur=self.duration
   self.cdFrame:SetCooldown(self.expirationTime-dur,dur)
 end
+iconUpdateCDWheel=taskFuncs.iconUpdateCDWheel
 
 function taskFuncs:iconUpdateTextTypeT()
+  if self.isListElement then
+    for i=1,self.active do iconUpdateTextTypeT(self[i]) end
+    return
+  end
   local t=GetTime()
   local s=self.expirationTime-t
   self.text:SetText(self.textDecimalFunc(s))
 end
+iconUpdateTextTypeT=taskFuncs.iconUpdateTextTypeT
 
 function taskFuncs:iconUpdateText2TypeT()
+  if self.isListElement then
+    for i=1,self.active do iconUpdateText2TypeT(self[i]) end
+    return
+  end
   local t=GetTime()
   local s=self.expirationTime-t
   self.text:SetText(self.text2DecimalFunc(s))
 end
+iconUpdateText2TypeT=taskFuncs.iconUpdateText2TypeT
 
 function taskFuncs:iconUpdateTextTypeS()
+  if self.isListElement then
+    for i=1,self.active do iconUpdateTextTypeS(self[i]) end
+    return
+  end
   local s=self.count or ""
   if (s==0) or (s==1) then s="" end  
   self.text:SetText(s)
 end
+iconUpdateTextTypeS=taskFuncs.iconUpdateTextTypeS
 
 function taskFuncs:iconUpdateText2TypeS()
+  if self.isListElement then
+    for i=1,self.active do iconUpdateText2TypeS(self[i]) end
+    return
+  end
   local s=self.count or ""
   if (s==0) or (s==1) then s="" end  
   self.text2:SetText(s)
 end
+iconUpdateText2TypeS=taskFuncs.iconUpdateText2TypeS
 
 function taskFuncs:statusBarPowerUpdate()
   local unit=self.id
