@@ -56,15 +56,32 @@ function eF.borderInfo(pos)
   return loc,p1,p2,w,f11,f12,f21,f22
 end
 
-function eF.toDecimal(f,d)
-  if not f then return end
-  if not d then return f end
-  local m=math.pow(10,d)
-  f=f*m
-  f=floor(f+0.5)
-  f=f/m
-  return f
-end
+eF.toDecimal={
+    [0]=function(n)
+        return ("%.0f"):format(n)
+    end,
+    
+    [1]=function(n)
+        return ("%.1f"):format(n)
+    end,
+    
+    [2]=function(n)
+        return ("%.2f"):format(n)
+    end,
+    
+    [3]=function(n)
+        return ("%.3f"):format(n)
+    end,
+    
+    [4]=function(n)
+        return ("%.4f"):format(n)
+    end,
+    
+    [5]=function(n)
+        return ("%.5f"):format(n)
+    end,
+}
+
 
 function eF.table_deep_copy(orig)
     local orig_type = type(orig)

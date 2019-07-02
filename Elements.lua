@@ -9,6 +9,9 @@ local setmetatable=setmetatable
 local pairs=pairs
 local taskFuncs=eF.taskFuncs
 
+local growAnchorTo={up="TOP",down="BOTTOM",right="RIGHT",left="LEFT"}
+local growToAnchor={left="RIGHT",right="LEFT",up="BOTTOM",down="TOP"}
+
 local function metaFunction(t,k)
   --if not k then return nil end
   t[k]={}
@@ -24,7 +27,7 @@ eF.frameFunctions=frameFunctions
 local function applyElement(frame,j,k)
   if not frame then return end
   local smart=eF.para.families[j].smart
-  if smart and k then return end --to apply a smart family, you need to only give j 
+  if smart and k then return end 
   
   if j and k then fu.applyOrphan(frame,j,k)
   elseif j then fu.applyFamily(frame,j) end
@@ -690,7 +693,7 @@ function frameFunctions:apply_element_paras(name)
     end
     
     if #el.tasks.onUpdate>0 then
-        local throttle=((para.throttleValue~=-1) and para.throttleValue) or math.min((0.1^math.floor(math.max(para.textDecimals or 0,para.text2Decimals or 0) or 1))*0.15,0.2)
+        local throttle=((para.throttleValue~=-1) and para.throttleValue) or math.min((0.1^math.floor(math.max(para.textDecimals or 0,para.text2Decimals or 0) or 1))*0.2,0.2)
         el.throttle=throttle
         el.elapsed=throttle+1
         el:SetScript("OnUpdate",taskFuncs.frameOnUpdateFunction)
@@ -801,8 +804,9 @@ function frameFunctions:apply_element_paras(name)
   end
   
   if para.type=="list" then 
-    if not frame.elements[name] then frame.elements[name]={} end
+    if not frame.elements[name] then frame.elements[name]=CreateFrame("Frame",("%sElement%s"):format(frame:GetName(),name),frame) end
     local list=frame.elements[name]
+    list:SetAllPoints()
     list.para=para
     --TBA disable/enable/onUpdate funcs
     list.tasks=eF.tasks[name]
@@ -811,7 +815,7 @@ function frameFunctions:apply_element_paras(name)
 
     --list elements creation
     for i=1,N do 
-        if not list[i] then list[i]=CreateFrame("Frame",("%sElement%s"):format(frame:GetName(),name),frame) end
+        if not list[i] then list[i]=CreateFrame("Frame",("%List%sElement%s"):format(frame:GetName(),name,tostring(i)),list) end
         local el=list[i]
         
         el:SetFrameLevel(frame.hp:GetFrameLevel()+1+(para.displayLevel or 0))
@@ -825,19 +829,13 @@ function frameFunctions:apply_element_paras(name)
         el:SetWidth(para.width)
         el:SetHeight(para.height)
         el:ClearAllPoints()
-        el:SetPoint(para.anchor,frame,para.anchorTo,para.xPos,para.yPos)
-    
-        --static handling
-        if para.trackType=="Static" then  --TBA STATIC HANDLING
-          el:Show()
-          el.static=true
-          el.expirationTime=0
-          el.duration=0
+        if i==1 then el:SetPoint(para.anchor,frame,para.anchorTo,para.xPos,para.yPos) 
         else
-          el.static=false
-          el:Hide()
-        end --end of if para.trackType=="Static" 
-    
+            local a1,a2,xOS,yOS=growToAnchor[para.grow],growAnchorTo[para.grow],0,0
+            if para.grow=="left" or para.grow=="right" then xOS=para.spacing else yOS=para.spacing end
+            el:SetPoint(a1,frame,a2,xOS,yOS) 
+        end
+
         --texture handling
         if not el.texture then el.texture=el:CreateTexture(nil,"BACKGROUND") end
         if para.hasTexture then 
@@ -994,12 +992,18 @@ function eF:update_element_meta(name)
     end
     
     if para.hasText then
-      if para.textType=="Time left" then tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateTextTypeT end
+      if para.textType=="Time left" then 
+        tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateTextTypeT 
+        work.textDecimalFunc=eF.toDecimal[para.textDecimals]
+      end
       if para.textType=="Stacks" then tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateTextTypeS end
     end
     
     if para.hasText2 then
-      if para.text2Type=="Time left" then tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateText2TypeT end
+      if para.text2Type=="Time left" then 
+        tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateText2TypeT 
+        work.text2DecimalFunc=eF.toDecimal[para.text2Decimals]
+      end
       if para.text2Type=="Stacks" then tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateText2TypeS end
     end
     

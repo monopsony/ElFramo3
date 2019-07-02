@@ -112,35 +112,46 @@ end
 
 function taskFuncs:applyListBuffAdopt(unit)
     self.active=0
+    local active=0
     for i=1,40 do 
         local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HELPFUL")
         if not name then break end
         local bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss) 
 
         if bool then
-            local frame=self.active
-            if is_aura_new(self,count,expirationTime,spellID) then
-                self.new_aura=true
-                self.name=name
-                self.icon=icon
-                self.count=count
-                self.debuffType=debuffType
-                self.duration=duration
-                self.expirationTime=expirationTime
-                self.unitCaster=unitCaster
-                self.canSteal=canSteal
-                self.spellId=spellId
-                self.isBoss=isBoss
+            active=active+1
+            local frame=self[active]
+            if is_aura_new(frame,count,expirationTime,spellID) then
+                frame.new_aura=true
+                frame.name=name
+                frame.icon=icon
+                frame.count=count
+                frame.debuffType=debuffType
+                frame.duration=duration
+                frame.expirationTime=expirationTime
+                frame.unitCaster=unitCaster
+                frame.canSteal=canSteal
+                frame.spellId=spellId
+                frame.isBoss=isBoss
             else         
-                self.new_aura=false
+                frame.new_aura=false
             end
-            
-            if not self.filled then self:enable() end    
-            if self.active==self.count then return end
+                
+            if active==self.count then break end
         end--end of if bool
     end
     
-    
+    if self.active==0 and self.filled then self:disable() 
+    else 
+        if not self.filled then self:enable() end
+        self.active=active
+        for i=1,active do 
+            if not self[i].filled then self[i]:disable() end
+        end
+        for i=active,self.count do 
+            if self[i].filled then self[i]:disable() end
+        end
+    end
 end
 
 function taskFuncs:iconAdoptAuraByName(name,_,_,_,_,_,unitCaster)
@@ -165,17 +176,13 @@ end
 function taskFuncs:iconUpdateTextTypeT()
   local t=GetTime()
   local s=self.expirationTime-t
-  local dec=self.para.textDecimals or 1
-  s=eF.toDecimal(s,dec) 
-  self.text:SetText(s)
+  self.text:SetText(self.textDecimalFunc(s))
 end
 
 function taskFuncs:iconUpdateText2TypeT()
   local t=GetTime()
   local s=self.expirationTime-t
-  local dec=self.para.textDecimals or 1
-  s=eF.toDecimal(s,dec) 
-  self.text2:SetText(s)
+  self.text:SetText(self.text2DecimalFunc(s))
 end
 
 function taskFuncs:iconUpdateTextTypeS()
