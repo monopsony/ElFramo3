@@ -470,6 +470,67 @@ function frameFunctions:loadAllElements()
 
 end
 
+--load
+--1: player class
+--2: player role
+--3: unit class
+--4: unit role
+--5: instance
+--6: encounter(try)
+local info=eF.info
+local element_load_functions={
+    [1]=function(frame,para)
+        if para.loadAlways then return true end
+        return para[info.playerClass]
+    end,
+
+    [2]=function(frame,para)
+        if para.loadAlways then return true end
+        return para[info.playerRole]
+    end,
+    
+    [3]=function(frame,para)
+        if para.loadAlways then return true end
+        return para[frame.class]
+    end,
+
+    [4]=function(frame,para)
+        if para.loadAlways then return true end
+        return para[frame.role]
+    end,
+
+    [5]=function(frame,para)
+        if para.loadAlways then return true end
+        return para[info.instanceID] or para[info.instanceName]
+    end,
+
+    [6]=function(frame,para)
+        if para.loadAlways then return true end
+        return para[info.encounterID]
+    end,
+}
+
+local function element_update_load_table(frame,self,index)
+    local index=index or nil
+    local para=self.para.load
+    if index then 
+        self.load_table[index]=element_load_functions[index](frame,para[index])
+    else 
+        for index=1,6 do 
+            self.load_table[index]=element_load_functions[index](frame,para[index])
+        end
+    end
+    
+end
+
+function frameFunctions:update_load_tables(index)   
+    local index=index or nil 
+    local el=self.elements
+    for k,v in pairs(el) do 
+        element_update_load_table(self,v,index)
+    end    
+end
+
 function frameFunctions:apply_load_conditions()
     local el,flag=self.elements,false
     for k,v in pairs(el) do 
@@ -506,8 +567,8 @@ function frameFunctions:apply_and_reload_loads()
 end
 
 function frameFunctions:check_element_load(k)
-    --TBA ACTUAL LOADING
-    return true
+    local l=self.elements[k].loads
+    return  l[1] and l[2] and l[3] and l[4] and l[5] and l[6] 
 end
 
 local fu=eF.familyUtils
