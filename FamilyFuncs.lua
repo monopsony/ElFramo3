@@ -98,19 +98,19 @@ function taskFuncs:applyListAuraAdopt(unit)
     self.active=active
 end
 
-function taskFuncs:iconAdoptAuraByName(name,_,_,_,_,_,unitCaster)
+function taskFuncs:iconAdoptAuraByName(name)
    return name==self.para.arg1
 end
 
-function taskFuncs:iconAdoptAuraByNameWhitelist(name,_,_,_,_,_,unitCaster)
+function taskFuncs:iconAdoptAuraByNameWhitelist(name)
    return self.para.arg1[name] 
 end
 
-function taskFuncs:iconAdoptAuraByNameBlacklist(name,_,_,_,_,_,unitCaster)
+function taskFuncs:iconAdoptAuraByNameBlacklist(name)
    return not self.para.arg1[name]
 end
 
-function taskFuncs:iconAdoptAuraBySpellID(_,_,_,_,_,_,unitCaster,_,spellID)
+function taskFuncs:iconAdoptAuraBySpellID(_,_,_,_,_,_,_,_,spellID)
   return spellID==self.para.arg1 
 end
 
