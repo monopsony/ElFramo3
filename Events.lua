@@ -32,112 +32,35 @@ end
 eF.onUpdateFrame:SetScript("OnUpdate",eF.onUpdateFrame.onUpdateFunction)
 
 
---------------UNIT_EVENTS--------------
-
-eF.counter=0
-eF.unitEventHandler=CreateFrame("Frame","ElFramoOnUnitEventFrame",UIParent)
---TBA REMOVE IT, NOW DONE PER UNIT
---for _,v in pairs(eF.unitEvents) do eF.unitEventHandler:RegisterEve nt(v) end
-function eF.unitEventHandler:handleEvent(event,unit)
-  --if true then return end  --TBA REMOVE, BENCHMARKING
-  local frame=eF.activeFrames[unit]
-  if not frame then return end
-  local unit=frame.id
-  if not unit then return end
-  
-  if event=="UNIT_MAXHEALTH" or event=="UNIT_HEALTH_FREQUENT" then
-    frame:updateHealth()
-    --it's not health ... https://i.imgur.com/KkGBLji.png
-  elseif event=="UNIT_AURA" then
-    --if true then return end --TBA: remove once bmark done
-    --LOOK INTO UNIT_AURA! https://i.imgur.com/r8JNKlh.png
-    --eF.counter=eF.counter+1
-
-    --------ONAURA
-    local tasks=frame.tasks
-    local c=tasks.onAura
-    for j=1,#c do
-      local v=c[j]
-      --eF.counter=eF.counter+1 --TBA  ------THOSE COUNTERS ARE HIGHER FOR EF2, MIGHT HAVE TOO MANY THINGS LOADED
-      v[1](v[2])
-    end 
-    --------BUFFS
-    --https://i.imgur.com/ELddpwS.png not the "HELPFUL" thing
-    for i=1,40 do
-      local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HELPFUL")
-      if not name then break end       
-      local c=tasks.onBuff
-      for j=1,#c do
-        local v=c[j]
-        --eF.counter=eF.counter+1 --TBA
-        v[1](v[2],name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss)
-      end   
-    end
-    --------DEBUFFS
-    for i=1,40 do
-      local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,"HARMFUL")
-      if not name then break end 
-      local c=tasks.onDebuff
-      for j=1,#c do
-        local v=c[j]
-        --eF.counter=eF.counter+1 --TBA
-        v[1](v[2],name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss)
-      end 
-    end 
-    --------POST AURA
-    local c=tasks.postAura
-    for j=1,#c do
-      local v=c[j]
-      --eF.counter=eF.counter+1 --TBA
-      v[1](v[2])
-    end
-  
-  elseif event=="UNIT_POWER_UPDATE" then
-    --if true then return end
-    --NOT THAT EITHER https://i.imgur.com/rNn6AjI.png
-    
-    --------ONPOWER
-    local tasks=frame.tasks
-    local c=tasks.onPower
-    for j=1,#c do
-      local v=c[j]
-      v[1](v[2])
-    end 
-    
-  elseif event=="UNIT_CONNETION" or event=="UNIT_NAME_UPDATE" then
-    frame:updateName()
-  elseif event=="UNIT_FLAGS" then 
-    frame:updateFlags()
-  elseif event=="UNIT_HEAL_ABSORB_AMOUNT_CHANGED" then
-  
-
-  end
-end
-eF.unitEventHandler:SetScript("OnEvent",eF.unitEventHandler.handleEvent)
-
-
 --------------GROUP_ROSTER_UPDATE--------------
 
 if not eF.layoutEventHandler then eF.layoutEventHandler=CreateFrame("Frame","ElFramoOnRosterUpdateFrame",UIParent) end
 eF.layoutEventHandler:RegisterEvent("GROUP_ROSTER_UPDATE")
+local ipairs=ipairs
 function eF.layoutEventHandler:handleEvent(event,...)
+
+  local all_frames=eF.list_all_active_unit_frames()
 
   --check player role
   local check_visibility_flag=false 
   local spec=GetSpecialization()
   local role=select(5,GetSpecializationInfo(spec))
-  if eF.info.playerRole~=role then check_visibility_flag=true; eF.info.playerRole=role end
+  if eF.info.playerRole~=role then 
+    check_visibility_flag=true; eF.info.playerRole=role 
+    for i_,frame in ipairs(all_frames) do 
+        frame:update_load_tables(2)
+    end
+  end
 
   --check roles AND NAME
-  local all_frames=eF.list_all_active_unit_frames()
+  
   for _,frame in ipairs(all_frames) do
     local unit=frame.id
     local role=UnitGroupRolesAssigned(unit)
     local name=UnitName(unit)
     --local class,CLASS=UnitClass(unit)
-    if name~=frame.name then frame:updateUnit(true) end
-    if role~=frame.role then frame.role=role; frame:loadAllElements() end
-    --if class~=frame.class then frame.class=class; frame.CLASS=CLASS; end
+    if (name~=frame.name) then frame:updateUnit(true) end
+    if (role~=frame.role) then frame:update_load_tables(4) end
   end
 
   --check raid or not
@@ -157,77 +80,50 @@ function eF.layoutEventHandler:handleEvent(event,...)
   
   for _,v in pairs(eF.registered_layouts) do v:updateFilters() end
   
+  for _,frame in ipairs(all_frames) do 
+    frame:apply_and_reload_loads()
+  end
+  
   C_Timer.After(0,function() eF.visible_unit_frames=eF.list_all_active_unit_frames() end)
 end
 eF.layoutEventHandler:SetScript("OnEvent",eF.layoutEventHandler.handleEvent)
 
 
---------------PLAYER_ENTERING_WORLD--------------
-
-
-if false then
-if not eF.initFrame then eF.initFrame=CreateFrame("Frame","ElFramoOnInitFrame",UIParent) end
-eF.initFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-function eF.initFrame:handleEvent(event)
-
-  eF.doneLoading=true
-  eF.current_layout_version=1
-  eF.current_family_version=1
-
-  --LOAD DB
-  update_WTF()
-  
-  --load player class
-  eF.info.playerClass=UnitClass("player")
-  
-  --load player role
-  local spec=GetSpecialization()
-  local role=select(5,GetSpecializationInfo(spec))
-  eF.info.playerRole=role
-  
-  --load instance
-  local instanceName,_,_,_,_,_,_,instanceID=GetInstanceInfo()
-  eF.info.instanceName=instanceName
-  eF.info.instanceID=instanceID
-  
-  --toad: REMOVE COMMENTS, FIX
-  eF:applyLayoutParas()
-  --eF:updateActiveLayout()
-  --eF:setHeaderPositions()
-  
-  --ALL INITS
-  eF.familyUtils.updateAllMetas()
-  for k,v in pairs(eF.activeFrames) do
-    eF.familyUtils.applyAllElements(v)
-    v:loadAllElements()
-  end  
-  --eF.intSetInitValues() --toad init values interface
-  
-  self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-  eF.loadingFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-end
-eF.initFrame:SetScript("OnEvent",eF.initFrame.handleEvent)
-end --TOAD IF FALSE 
---------------ENCOUNTER_START--------------
+--------------MIST: ENCOUNTER/PLAYER_ENTERING_WORLD etc--------------
 
 if not eF.loadingFrame then eF.loadingFrame=CreateFrame("Frame","ElFramoLoadingFrame",UIParent) end
 eF.loadingFrame:RegisterEvent("ENCOUNTER_START")
+eF.loadingFrame:RegisterEvent("ENCOUNTER_END")
+eF.loadingFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eF.loadingFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 eF.loadingFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 function eF.loadingFrame:handleEvent(event,ID)
-    
-  local flag=false --flag controls whether reloading of families is necessary
+  local flag=false
+  local all_frames=eF.list_all_active_unit_frames()
   if event=="ENCOUNTER_START" then
-    eF.info.encounterID=ID
-    flag=true
-  elseif event=="PLAYER_REGEN_ENABLED" then
-    if eF.info.encounterID then flag=true end  --only need to reload if we were in an encounter before
-    eF.info.encounterID=nil
+    if eF.info.counter~=ID then 
+        eF.info.encounterID=ID;  
+        flag=true
+        for _,v in ipairs(all_frames) do 
+            v:update_load_tables(6)
+        end
+     end   
+  elseif event=="PLAYER_REGEN_ENABLED" or event=="ENCOUNTER_END" then
+    if eF.info.encounterID and not UnitExists("boss1") then 
+        eF.info.encounterID=nil
+        for _,v in ipairs(all_frames) do 
+            v:update_load_tables(6)
+        end
+        flag=true 
+    end  --only need to reload if we were in an encounter before
   elseif event=="PLAYER_ENTERING_WORLD" then
     local instanceName,_,_,_,_,_,_,instanceID=GetInstanceInfo()
     if (instanceName~=eF.info.instanceName) or (instanceID~=eF.info.instanceID) then
       eF.info.instanceName=instanceName
       eF.info.instanceID=instanceID
+      for _,v in ipairs(all_frames) do 
+          v:update_load_tables(5)
+      end
       flag=true
     end
   elseif event=="ACTIVE_TALENT_GROUP_CHANGED" then
@@ -235,15 +131,19 @@ function eF.loadingFrame:handleEvent(event,ID)
     local role=select(5,GetSpecializationInfo(spec))
     if role~=eF.info.playerRole then 
       eF.info.playerRole=role
+      for _,v in ipairs(all_frames) do 
+          v:update_load_tables(2)
+      end
       flag=true
     end
   end
   
-  if flag then
-    for k,v in pairs(eF.activeFrames) do
-      v:loadAllElements()
-    end  
+  if flag then 
+    for _,v in ipairs(all_frames) do 
+        v:apply_and_reload_loads()
+    end
   end
+  
 end
 eF.loadingFrame:SetScript("OnEvent",eF.loadingFrame.handleEvent)
 

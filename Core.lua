@@ -450,7 +450,29 @@ local defaults={
                 hasText2=false,
                 trackType="PLAYER HELPFUL",
                 adoptFunc="Name Whitelist",
-                arg1={["Lifebloom"]=true,["Rejuvenation"]=true,["Wild Growth"]=true,["Rejuvenation (Germination)"]=true},               
+                arg1={["Lifebloom"]=true,["Rejuvenation"]=true,["Wild Growth"]=true,["Rejuvenation (Germination)"]=true},   
+                load={
+                    [1]={
+                           loadAlways=false,
+                           Druid=true,
+                          },
+                    [2]={
+                           loadAlways=true,
+                          },
+                    [3]={
+                           loadAlways=true,
+                          },
+                    [4]={
+                           loadAlways=true,
+                          },
+                    [5]={
+                           loadAlways=true,
+                          },
+                    [6]={
+                           loadAlways=true,
+                          },
+                          
+                },
             },
      },  --end of families
     },  --end of profile

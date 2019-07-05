@@ -85,7 +85,10 @@ function frameFunctions:updateUnit(name_changed)
     
     if flag2 then self:apply_element_paras() end
 
-    
+    if unit_changed then 
+        self:update_load_tables(3)
+        self:update_load_tables(4)
+    end
     self:apply_and_reload_loads()
     self.current_layout_version=eF.current_layout_version
     self.current_elements_version=eF.current_elements_version
@@ -567,7 +570,7 @@ function frameFunctions:apply_and_reload_loads()
 end
 
 function frameFunctions:check_element_load(k)
-    local l=self.elements[k].loads
+    local l=self.elements[k].load_table
     return  l[1] and l[2] and l[3] and l[4] and l[5] and l[6] 
 end
 
@@ -587,7 +590,7 @@ function eF:unit_added(event,name)
   frame.oor=false --out of range boolean
   frame.baseLevel=frame.header:GetFrameLevel()
   frame.elements={}
- 
+  
   frame:SetScript("OnEvent",frame.unit_event)
  
   if not InCombatLockdown() then
@@ -604,6 +607,8 @@ function eF:unit_added(event,name)
   
   frame:apply_element_paras()
   frame:reset_tasks() 
+  
+  frame:update_load_tables()
   frame:apply_and_reload_loads()
   
   

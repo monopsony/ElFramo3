@@ -933,9 +933,9 @@ function frameFunctions:apply_element_paras(name)
     list:disable()
   end
 
-  if not el.loads then el.loads={} end
   --apply work funcs
   local el=frame.elements[name]
+  if not el.load_table then el.load_table={} end
   if el.isListElement then 
       for funcName,func in pairs(eF.workFuncs[name]) do
         el[funcName]=func
