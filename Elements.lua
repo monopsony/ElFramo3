@@ -8,7 +8,7 @@ local wipe=table.wipe
 local setmetatable=setmetatable
 local pairs=pairs
 local taskFuncs=eF.taskFuncs
-
+eF.current_elements_version=0
 local growAnchorTo={up="TOP",down="BOTTOM",right="RIGHT",left="LEFT"}
 local growToAnchor={left="RIGHT",right="LEFT",up="BOTTOM",down="TOP"}
 
@@ -584,6 +584,7 @@ function frameFunctions:apply_element_paras(name)
   local para=eF.para.elements[name]
   local frame=self
   local taskFuncs=eF.taskFuncs
+  
   if para.type=="icon" then 
     if not frame.elements[name] then frame.elements[name]=CreateFrame("Frame",("%sElement%s"):format(frame:GetName(),name),frame) end --check whether element even exists already
     local el=frame.elements[name] 
@@ -963,6 +964,12 @@ local function resetWorkFuncs(name)
     setmetatable(eF.workFuncs[name],{__index=metaFunction})
 end
 fu.resetWorkFuncs=resetWorkFuncs
+
+function eF:refresh_element(name)
+    eF.current_elements_version=eF.current_elements_version+1
+    if name then eF:update_element_meta(name) end
+    eF:reload_all_layouts()
+end
 
 function eF:update_element_meta(name)
     if not name then

@@ -12,7 +12,9 @@ elFramo.optionsTable = {
 --      type = "toggle",
 --      set = function(info,val) print("setting "); bool=val end,
 --      get = function(info) return bool end
---    },
+--    }
+
+
     layouts={
       name = "Layouts",
       type = "group",
@@ -40,8 +42,20 @@ elFramo.optionsTable = {
 AceConfig:RegisterOptionsTable("elFramo",elFramo.optionsTable)
 local AceConfigDialog=LibStub("AceConfigDialog-3.0")
 AceConfigDialog:SetDefaultSize("elFramo", 1000, 650)
+local initialised=false
 function eF:open_options_frame()
+    --if not initialised then eF.interface_generate_element_groups(); initialised=true end
     AceConfigDialog:Open("elFramo")
 end
 eF:RegisterChatCommand("ef",eF.open_options_frame)
+
+function eF:close_options_frame()
+    --if not initialised then eF.interface_generate_element_groups(); initialised=true end
+    AceConfigDialog:Close("elFramo")
+end
+
+function eF:reload_elements_options_frame()
+    AceConfigDialog:SelectGroup("elFramo",elFramo.optionsTable.layouts)
+    AceConfigDialog:SelectGroup("elFramo",elFramo.optionsTable.elements)
+end
 

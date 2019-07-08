@@ -24,6 +24,7 @@ end
 local frameFunctions=eF.frameFunctions or {}
 eF.frameFunctions=frameFunctions
 
+local refresh_events={"UNIT_FLAG","UNIT_HEALTH_FREQUENT","UNIT_AURA","UNIT_POWER_UPDATE"}
 function frameFunctions:updateUnit(name_changed)
   local unit=SecureButton_GetModifiedUnit(self)
   local unit_changed,flag1,flag2=self.id~=unit,self.current_layout_version~=eF.current_layout_version,eF.current_elements_version~=self.current_elements_version
@@ -92,6 +93,11 @@ function frameFunctions:updateUnit(name_changed)
     self:apply_and_reload_loads()
     self.current_layout_version=eF.current_layout_version
     self.current_elements_version=eF.current_elements_version
+    
+    for i=1,#refresh_events do 
+        self:unit_event(refresh_events[i])
+    end
+    
   end
 end
 
@@ -267,7 +273,7 @@ function frameFunctions:unit_event(event)
     --it's not health ... https://i.imgur.com/KkGBLji.png
   elseif event=="UNIT_AURA" then
     local task=self.tasks.onAura
-    for i=1,#task,2 do 
+    for i=1,#task,2 do
         task[i](task[i+1],unit)
     end
     
@@ -516,17 +522,19 @@ local element_load_functions={
 local function element_update_load_table(frame,self,index)
     local index=index or nil
     local para=self.para.load
+    if not para then self.load_table.loadAlways=false; self.load_table.loadNever=true; return end --this will trigger when an element gets deleted
     if index then 
         self.load_table[index]=element_load_functions[index](frame,para[index])
     else 
         for index=1,6 do 
             self.load_table[index]=element_load_functions[index](frame,para[index])
+            self.load_table.loadAlways=para.loadAlways
+            self.load_table.loadNever=para.loadNever
         end
-    end
-    
+    end  
 end
 
-function frameFunctions:update_load_tables(index)   
+function frameFunctions:update_load_tables(index) 
     local index=index or nil 
     local el=self.elements
     for k,v in pairs(el) do 
@@ -550,9 +558,11 @@ function frameFunctions:reload_loaded_elements()
     local el,tasks=self.elements,eF.tasks
     self:reset_tasks()
     for k,v in pairs(el) do 
+        print(k)
+        print(v.loaded)
+        print(v.filled)
         if v.loaded then
-            for event,tbl in pairs(tasks[k]) do 
-            
+            for event,tbl in pairs(tasks[k]) do            
                 for i=1,#tbl do 
                     local n=#self.tasks[event]
                     self.tasks[event][n+1]=tbl[i]
@@ -560,6 +570,8 @@ function frameFunctions:reload_loaded_elements()
                 end
                 
             end
+        elseif v.filled then
+            v:disable()
         end
     end
 end
@@ -571,6 +583,8 @@ end
 
 function frameFunctions:check_element_load(k)
     local l=self.elements[k].load_table
+    if l.loadAlways then return true 
+    elseif l.loadNever then return false end
     return  l[1] and l[2] and l[3] and l[4] and l[5] and l[6] 
 end
 

@@ -447,7 +447,11 @@ function eF:register_all_headers_inits()
     end
 end
 
-
+function eF:reload_all_layouts()
+    for _,layout in pairs(eF.registered_layouts) do 
+        layout:reload_layout()
+    end
+end
 
 --toad: GridLayout line 256
 
