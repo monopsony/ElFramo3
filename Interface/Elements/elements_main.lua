@@ -25,7 +25,6 @@ end
 
 function eF:interface_remove_element_by_name(name)
     if not (name and eF.para.elements[name]) then return end
-    
     wipe(eF.tasks[name])
     eF.tasks[name]=nil
     wipe(eF.workFuncs[name])

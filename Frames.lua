@@ -558,9 +558,6 @@ function frameFunctions:reload_loaded_elements()
     local el,tasks=self.elements,eF.tasks
     self:reset_tasks()
     for k,v in pairs(el) do 
-        print(k)
-        print(v.loaded)
-        print(v.filled)
         if v.loaded then
             for event,tbl in pairs(tasks[k]) do            
                 for i=1,#tbl do 
@@ -586,6 +583,18 @@ function frameFunctions:check_element_load(k)
     if l.loadAlways then return true 
     elseif l.loadNever then return false end
     return  l[1] and l[2] and l[3] and l[4] and l[5] and l[6] 
+end
+
+local pairs=pairs
+function eF:fully_reload_element(key)
+    local frame=self
+    eF:update_element_meta(key)
+    for _,frame in pairs(eF.list_all_active_unit_frames(name)) do 
+        frame:apply_element_paras(key)
+        frame:reset_tasks() 
+        frame:update_load_tables()
+        frame:apply_and_reload_loads()
+    end
 end
 
 local fu=eF.familyUtils

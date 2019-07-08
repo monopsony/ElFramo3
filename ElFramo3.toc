@@ -24,3 +24,5 @@ Interface\Layouts\layouts_range_options.lua
 
 Interface\Elements\elements_main.lua
 Interface\Elements\elements_icons.lua
+Interface\Elements\elements_icons_tracking.lua
+Interface\Elements\elements_icons_display.lua
