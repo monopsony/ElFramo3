@@ -111,7 +111,6 @@ do
     }
 
 
-
     args["anchorTo"]={
         name="Anchor to",
         type="select",
@@ -131,6 +130,7 @@ do
 
 end
 
+--icon
 do
     args["icon_header"]={
         order=20,
@@ -155,7 +155,9 @@ do
         name="Smart icon",
         type="toggle",
         order=22,
-        disabled=function() return eF.para.elements[eF.optionsTable.currently_selected_element_key].solidTexture end,
+        disabled=function() 
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or eF.para.elements[eF.optionsTable.currently_selected_element_key].solidTexture 
+        end,
         set=function(self,key) 
             set_current_parameter("smartIcon",key)
         end,       
@@ -168,7 +170,9 @@ do
         name="Solid Colour",
         type="toggle",
         order=23,
-        disabled=function() return eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon end,
+        disabled=function() 
+            return (not not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon 
+         end,
         set=function(self,key) 
             set_current_parameter("solidTexture",key)
         end,
@@ -178,7 +182,22 @@ do
         end,
     }
     
-    
+    args["texture"]={
+        type="input",
+        order=24,
+        name="Texture",
+        disabled=function() 
+            return (not not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or eF.para.elements[eF.optionsTable.currently_selected_element_key].solidTexture or eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon 
+        end,
+        set=function(self,value)
+                value=string.gsub(value, "%s+", "")
+                if not value or value=="" then return end
+                set_current_parameter("texture",value)
+            end,
+        get=function(self) 
+                return get_current_parameter("texture")
+            end,
+    }  
 
 end
 

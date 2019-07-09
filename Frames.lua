@@ -304,7 +304,8 @@ end
 
 function frameFunctions:checkOOR()
   local unit=self.id
-  local oor=not UnitInRange(unit)
+  local oor
+  if self.playerFrame then oor=false else oor=not UnitInRange(unit) end  --TBA POTENTIALLY MAKE THIS BETTER
   --local para=self.header.partyHeader and eF.para.unitsGroup or eF.para.units
   if oor and not self.oor then
     self:setOOR()
@@ -579,9 +580,9 @@ function frameFunctions:reload_loaded_elements()
     end
 end
 
-function frameFunctions:apply_and_reload_loads()
+function frameFunctions:apply_and_reload_loads(force)
     local bool=self:apply_load_conditions()
-    if bool then self:reload_loaded_elements() end
+    if bool or force then self:reload_loaded_elements() end
 end
 
 function frameFunctions:check_element_load(k)
@@ -599,12 +600,11 @@ function eF:fully_reload_element(key)
         frame:apply_element_paras(key)
         frame:reset_tasks() 
         frame:update_load_tables()
-        frame:apply_and_reload_loads()
+        frame:apply_and_reload_loads(true)
     
         for i=1,#refresh_events do 
             frame:unit_event(refresh_events[i])
         end        
-        
     end
 end
 
