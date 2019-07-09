@@ -623,7 +623,7 @@ function frameFunctions:apply_element_paras(name)
       el.texture:SetAllPoints()
       
       if para.smartIcon then
-        --nothing needed here for now
+        --el.texture:SetColorTexture(r,g,b,a)
       elseif para.solidTexture then
         el.texture:SetColorTexture(r,g,b,a)
       elseif para.texture=="" or para.texture=="nil" then

@@ -48,7 +48,7 @@ do
     args["height"]={
         order=3,
         type="range",
-        name="Width",
+        name="Height",
         softMin=4,
         softMax=100,
         isPercent=false,
@@ -171,7 +171,7 @@ do
         type="toggle",
         order=23,
         disabled=function() 
-            return (not not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon 
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon 
          end,
         set=function(self,key) 
             set_current_parameter("solidTexture",key)
@@ -187,7 +187,7 @@ do
         order=24,
         name="Texture",
         disabled=function() 
-            return (not not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or eF.para.elements[eF.optionsTable.currently_selected_element_key].solidTexture or eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon 
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or eF.para.elements[eF.optionsTable.currently_selected_element_key].solidTexture or eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon 
         end,
         set=function(self,value)
                 value=string.gsub(value, "%s+", "")
@@ -199,7 +199,87 @@ do
             end,
     }  
 
+    args["icon_color"]={
+        order=25,
+        type="color",
+        name="Color",
+        hasAlpha=true,
+        disabled=function()
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture)
+        end,
+        set=function(self,R,G,B,A)
+            local name=eF.optionsTable.currently_selected_element_key or nil
+            if not name then return end
+            local para=eF.para.elements[name]
+            para.textureR=R
+            para.textureG=G
+            para.textureB=B
+            set_current_parameter("textureA",A)
+            print(R,G,B,A)
+        end,
+        get=function(self)
+            local name=eF.optionsTable.currently_selected_element_key or nil
+            if not name then return end
+            local para=eF.para.elements[name]
+            R,G,B,A=para.textureR,para.textureG,para.textureB,para.textureA
+            return R,G,B,A
+        end
+    } 
+
 end
+
+--icon
+do
+    args["CDWheel_header"]={
+        order=40,
+        name="Cooldown wheel",
+        type="header",
+    }
+    
+    args["cdWheel"]={
+        name="CD wheel",
+        type="toggle",
+        order=41,
+        set=function(self,key) 
+            set_current_parameter("cdWheel",key)
+        end,
+        
+        get=function(self) 
+            return get_current_parameter("cdWheel")
+        end,
+    }  
+    
+    args["cdReverse"]={
+        name="Reverse spin",
+        type="toggle",
+        order=42,
+        disabled=function() return not eF.para.elements[eF.optionsTable.currently_selected_element_key].cdWheel end,
+        set=function(self,key) 
+            set_current_parameter("cdReverse",key)
+        end,
+        
+        get=function(self) 
+            return get_current_parameter("cdReverse")
+        end,
+    }  
+    
+end
+
+--icon
+do
+    args["border_headers"]={
+        order=60,
+        name="Border",
+        type="header",
+    }
+    
+    args["border_NYI"]={
+        order=61,
+        name="NYI",
+        type="description",  
+    }
+end
+
 
 if false then 
 --Dimensions
