@@ -84,8 +84,10 @@ do
                 if not name or name=="" then return end
                 local old=eF.optionsTable.currently_selected_element_key or nil
                 if not old then return end
+                name=eF.find_valid_name_in_table(name,eF.para.elements)
                 eF:interface_create_new_element("icon",name,old)
                 eF:interface_remove_element_by_name(old)
+                eF:interface_set_selected_group("elements",name)
             end,
         get=function(self) 
                 return "" 
@@ -109,7 +111,6 @@ do
                 end                
             end,
     }
- 
 
     args["tracking"]={
         name="Tracking",
@@ -124,8 +125,7 @@ do
         type="group",
         args={},
     }
-    
-    
+       
     args["texts"]={
         name="Texts",
         order=12,

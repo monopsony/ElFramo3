@@ -28,9 +28,11 @@ local refresh_events={"UNIT_FLAG","UNIT_HEALTH_FREQUENT","UNIT_AURA","UNIT_POWER
 function frameFunctions:updateUnit(name_changed)
   local unit=SecureButton_GetModifiedUnit(self)
   local unit_changed,flag1,flag2=self.id~=unit,self.current_layout_version~=eF.current_layout_version,eF.current_elements_version~=self.current_elements_version
-
+  local previous_unit=true
+  
   if unit_changed then
-    local playerFrame= (unit and UnitIsUnit(unit,"player")) or false
+    previous_unit=self.id
+    local playerFrame=(unit and UnitIsUnit(unit,"player")) or false
     if not unit then 
         self:unregister_events()
         self.id=unit or nil
@@ -87,8 +89,12 @@ function frameFunctions:updateUnit(name_changed)
     if flag2 then self:apply_element_paras() end
 
     if unit_changed then 
-        self:update_load_tables(3)
-        self:update_load_tables(4)
+        if not previous_unit then 
+            self:update_load_tables()
+        else
+            self:update_load_tables(3)
+            self:update_load_tables(4)
+        end
     end
     self:apply_and_reload_loads()
     self.current_layout_version=eF.current_layout_version
@@ -594,6 +600,11 @@ function eF:fully_reload_element(key)
         frame:reset_tasks() 
         frame:update_load_tables()
         frame:apply_and_reload_loads()
+    
+        for i=1,#refresh_events do 
+            frame:unit_event(refresh_events[i])
+        end        
+        
     end
 end
 

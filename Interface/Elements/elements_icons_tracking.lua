@@ -1,7 +1,5 @@
 local eF=elFramo
-local elements=elFramo.optionsTable.args.elements.args.tracking.args
-eF.interface_elements_config_tables["icon"]={}
-local args=eF.interface_elements_config_tables["icon"]
+local args=eF.interface_elements_config_tables["icon"].tracking.args
 --eF.current_elements_version
 local LSM=LibStub:GetLibrary("LibSharedMedia-3.0")
 
@@ -32,7 +30,6 @@ do
         order=1,
         values=trackTypes,
         set=function(self,value)
-            print(value)
             set_current_parameter("trackType",value)
         end,
         get=function(self)
@@ -49,7 +46,6 @@ do
         order=2,
         values=adoptFuncs,
         set=function(self,value)
-            print(value)
             set_current_parameter("adoptFunc",value)
         end,
         get=function(self)
@@ -60,7 +56,7 @@ do
     args["arg1_name"]={
         type="input",
         order=3,
-        hidden=function() if eF.para[eF.optionsTable.currently_selected_element_key].adoptFunc=="Name" then return true else return false end end,
+        hidden=function() return eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="Name" end,
         name="Name",
         set=function(self,value)
             set_current_parameter("arg1",value)
@@ -73,7 +69,7 @@ do
     args["arg1_spellID"]={
         type="input",
         order=3,
-        hidden=function() if eF.para[eF.optionsTable.currently_selected_element_key].adoptFunc=="SpellID" then return true else return false end end,
+        hidden=function() if eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="SpellID" then return true else return false end end,
         name="Name",
         set=function(self,value)
             set_current_parameter("arg1",value)
@@ -106,7 +102,7 @@ do
         isPercent=false,
         step=5,
         set=function(self,value)
-            set_current_layout_parameter("width",value)
+            set_current_parameter("width",value)
         end,
         get=function(self)
             return get_current_parameter("width")
@@ -122,7 +118,7 @@ do
         isPercent=false,
         step=5,
         set=function(self,value)
-            set_current_layout_parameter("height",value)
+            set_current_parameter("height",value)
         end,
         get=function(self)
             return get_current_parameter("height")
@@ -148,7 +144,7 @@ do
         values=orientations,
         set=function(self,value)
             local name=eF.optionsTable.currently_selected_layout or nil
-            set_current_layout_parameter("healthGrow",value)
+            set_current_parameter("healthGrow",value)
         end,
         get=function(self)
             return get_current_parameter("healthGrow")
@@ -160,7 +156,7 @@ do
         type="toggle",
         order=13,
         set=function(self,key) 
-            set_current_layout_parameter("byClassColor",key)
+            set_current_parameter("byClassColor",key)
         end,
         
         get=function(self) 
@@ -203,7 +199,7 @@ do
         type="toggle",
         order=15,
         set=function(self,key) 
-            set_current_layout_parameter("hpGrad",key)
+            set_current_parameter("hpGrad",key)
         end,
         
         get=function(self) 
@@ -284,7 +280,7 @@ do
         values={VERTICAL="Vertical",HORIZONTAL="Horizontal"},
         set=function(self,value)
             local name=eF.optionsTable.currently_selected_layout or nil
-            set_current_layout_parameter("hpGradOrientation",value)
+            set_current_parameter("hpGradOrientation",value)
         end,
         get=function(self)
             return get_current_parameter("hpGradOrientation")
@@ -312,7 +308,7 @@ do
         isPercent=false,
         step=1,
         set=function(self,value)
-            set_current_layout_parameter("textSize",value)
+            set_current_parameter("textSize",value)
         end,
         get=function(self)
             return get_current_parameter("textSize")
@@ -328,7 +324,7 @@ do
         order=23,
         values=LSM:HashTable("font"),
         set=function(self,value)
-            set_current_layout_parameter("textFont",value)
+            set_current_parameter("textFont",value)
         end,
         get=function(self)
             return get_current_parameter("textFont")
@@ -345,7 +341,7 @@ do
         isPercent=false,
         step=1,
         set=function(self,value)
-            set_current_layout_parameter("textLim",value)
+            set_current_parameter("textLim",value)
         end,
         get=function(self)
             return get_current_parameter("textLim")
@@ -360,7 +356,7 @@ do
         values=positions,
         set=function(self,value)
             local name=eF.optionsTable.currently_selected_layout or nil
-            set_current_layout_parameter("textPos",value)
+            set_current_parameter("textPos",value)
         end,
         get=function(self)
             return get_current_parameter("textPos")
@@ -376,7 +372,7 @@ do
         isPercent=false,
         step=1,
         set=function(self,value)
-            set_current_layout_parameter("textXOS",value)
+            set_current_parameter("textXOS",value)
         end,
         get=function(self)
             return get_current_parameter("textXOS")
@@ -392,7 +388,7 @@ do
         isPercent=false,
         step=1,
         set=function(self,value)
-            set_current_layout_parameter("textYOS",value)
+            set_current_parameter("textYOS",value)
         end,
         get=function(self)
             return get_current_parameter("textYOS")
@@ -436,7 +432,7 @@ do
         type="toggle",
         order=29,
         set=function(self,key) 
-            set_current_layout_parameter("textColorByClass",key)
+            set_current_parameter("textColorByClass",key)
         end,
         
         get=function(self) 
@@ -464,7 +460,7 @@ do
         isPercent=false,
         step=1,
         set=function(self,value)
-            set_current_layout_parameter("borderSize",value)
+            set_current_parameter("borderSize",value)
         end,
         get=function(self)
             return get_current_parameter("borderSize")

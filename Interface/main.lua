@@ -54,8 +54,13 @@ function eF:close_options_frame()
     AceConfigDialog:Close("elFramo")
 end
 
-function eF:reload_elements_options_frame()
-    AceConfigDialog:SelectGroup("elFramo",elFramo.optionsTable.layouts)
-    AceConfigDialog:SelectGroup("elFramo",elFramo.optionsTable.elements)
+function eF:interface_set_selected_group(...)
+    --if (not tbl) or not (type(tbl)=="table") then return end
+    AceConfigDialog:SelectGroup("elFramo",...)
 end
+
+function eF:reload_elements_options_frame()
+    eF:interface_set_selected_group()
+end
+
 

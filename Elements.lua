@@ -581,6 +581,8 @@ function frameFunctions:apply_element_paras(name)
     self.current_elements_version=eF.current_elements_version
     return
   elseif not eF.para.elements[name] then return end
+
+  
   local para=eF.para.elements[name]
   local frame=self
   local taskFuncs=eF.taskFuncs
@@ -603,13 +605,13 @@ function frameFunctions:apply_element_paras(name)
     
     --static handling
     if para.trackType=="Static" then  --TBA STATIC HANDLING
-      el:Show()
+      el:enable()
       el.static=true
       el.expirationTime=0
       el.duration=0
     else
       el.static=false
-      el:Hide()
+      el:disable()
     end --end of if para.trackType=="Static" 
     
     --texture handling

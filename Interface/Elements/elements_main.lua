@@ -3,12 +3,11 @@ local elements=elFramo.optionsTable.args.elements
 local args=elements.args
 eF.optionsTable.currently_selected_element_key=nil
 local tContains=tContains
-local deepcopy=eF.table_deep_copy
 local wipe=table.wipe
 eF.interface_element_defaults={}
 
 
-local deepcopy=eF.table_deep_copy(orig)
+local deepcopy=eF.table_deep_copy
 function eF:interface_create_new_element(typ,name,duplicate)
     if not name then return end
     local para=eF.para.elements
@@ -19,6 +18,7 @@ function eF:interface_create_new_element(typ,name,duplicate)
         if not typ then return end
         para[name]=deepcopy(eF.interface_element_defaults[typ])
     end
+    --eF:update_element_meta(name)
     eF:refresh_element(name)
 end
 
@@ -31,7 +31,7 @@ function eF:interface_remove_element_by_name(name)
     eF.workFuncs[name]=nil
     wipe(eF.para.elements[name])
     eF.para.elements[name]=nil
-    eF.refresh_element()
+    eF:refresh_element()
 end
 
 
@@ -45,7 +45,6 @@ do
         hidden=function()
             local t=GetTime()
             if t>last_opened then
-                print("IN HERE")
                 eF.interface_generate_element_groups()
                 last_opened=t
                 eF:reload_elements_options_frame()
@@ -64,12 +63,28 @@ do
      
 end
 
+local function find_first_valid_order(order,tbl)
+    if not tbl then return order end
+    for i=order,1000 do 
+        if not tbl[i] then return i end
+    end
+    return order
+end
+
 local pairs=pairs
 function eF.interface_generate_element_groups()
     local elements=elFramo.optionsTable.args.elements
     local args=elements.args
     local para=eF.para.elements
     local order_max=0
+    
+    for k,v in pairs(args) do 
+        if not (k=="invisible" or k=="help_message") and (not para[k]) then wipe(args[k]); args[k]=nil end
+    end
+    
+    local orders_found={}
+    for k,v in pairs(para) do if v.interface_order then  orders_found[v.interface_order]=true end end
+    
     for k,v in pairs(para) do
         args[k]=args[k] or {}
         local a=args[k]
@@ -77,10 +92,18 @@ function eF.interface_generate_element_groups()
         a.type="group"
         a.childGroups="tab"
         local order=para[k].interface_order or nil
-        if order then a.order=order; if order>order_max then order_max=order+1 end
-        else a.order=order_max; order_max=order_max+1 end
+        if order then 
+            a.order=order
+            if order>order_max then order_max=order+1 end
+        else 
+            order=find_first_valid_order(order_max,orders_found)
+            a.order=order
+            para[k].interface_order=order
+            order_max=order+1 
+        end
         a.args=eF.interface_elements_config_tables[para[k].type] or {}
     end  
+    wipe(orders_found)
 end
 eF.interface_elements_config_tables={}
 --add layout options main frames
