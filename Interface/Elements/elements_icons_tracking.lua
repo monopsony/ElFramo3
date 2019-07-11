@@ -56,7 +56,7 @@ do
     args["arg1_name"]={
         type="input",
         order=3,
-        hidden=function() return eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="Name" end,
+        hidden=function() return not (eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="Name") end,
         name="Name",
         set=function(self,value)
             set_current_parameter("arg1",value)
@@ -69,8 +69,8 @@ do
     args["arg1_spellID"]={
         type="input",
         order=3,
-        hidden=function() if eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="SpellID" then return true else return false end end,
-        name="Name",
+        hidden=function() return not (eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="SpellID") end,
+        name="Spell ID",
         set=function(self,value)
             set_current_parameter("arg1",value)
             end,

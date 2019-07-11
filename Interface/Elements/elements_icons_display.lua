@@ -205,7 +205,7 @@ do
         name="Color",
         hasAlpha=true,
         disabled=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture)
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or (eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon)
         end,
         set=function(self,R,G,B,A)
             local name=eF.optionsTable.currently_selected_element_key or nil
@@ -215,7 +215,6 @@ do
             para.textureG=G
             para.textureB=B
             set_current_parameter("textureA",A)
-            print(R,G,B,A)
         end,
         get=function(self)
             local name=eF.optionsTable.currently_selected_element_key or nil

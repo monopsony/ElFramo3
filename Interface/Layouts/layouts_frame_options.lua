@@ -255,7 +255,6 @@ do
         end,
     }
     
-
     args["text_font"]={
         name="Font",
         type="select",
