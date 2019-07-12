@@ -535,10 +535,10 @@ local function element_update_load_table(frame,self,index)
     else 
         for index=1,6 do 
             self.load_table[index]=element_load_functions[index](frame,para[index])
-            self.load_table.loadAlways=para.loadAlways
-            self.load_table.loadNever=para.loadNever
         end
     end  
+    self.load_table.loadAlways=para.loadAlways
+    self.load_table.loadNever=para.loadNever
 end
 
 function frameFunctions:update_load_tables(index) 

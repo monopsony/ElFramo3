@@ -153,7 +153,7 @@ function taskFuncs:iconUpdateText2TypeT()
   end
   local t=GetTime()
   local s=self.expirationTime-t
-  self.text:SetText(self.text2DecimalFunc(s))
+  self.text2:SetText(self.text2DecimalFunc(s))
 end
 iconUpdateText2TypeT=taskFuncs.iconUpdateText2TypeT
 

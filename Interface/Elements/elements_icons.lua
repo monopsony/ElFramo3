@@ -137,7 +137,7 @@ do
         name="Load",
         order=13,
         type="group",
-        args={},
+        args=eF.interface_elements_load_config_table,
     }
 
 end

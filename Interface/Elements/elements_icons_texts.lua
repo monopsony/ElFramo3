@@ -129,7 +129,7 @@ do
     args["textSize"]={
         order=7,
         type="range",
-        name="Text size",
+        name="Size",
         min=1,
         softMax=50,
         isPercent=false,
@@ -224,7 +224,7 @@ do
 
     args["text2_header"]={
         order=31,
-        name="text 2",
+        name="Text 2",
         type="header",  
     }
     
@@ -246,9 +246,9 @@ do
         name="Track",
         type="select",
         style="dropdown",
-        values=text2_tracks,
+        values=text_tracks,
         hidden=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hastext2)
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasText2)
         end,
         set=function(self,value)
             set_current_parameter("text2Type",value)
@@ -265,7 +265,7 @@ do
         dialogControl="LSM30_Font",
         order=34,
         hidden=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hastext2)
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasText2)
         end,
         values=LSM:HashTable("font"),
         set=function(self,value)
@@ -282,7 +282,7 @@ do
         name="Color",
         hasAlpha=true,
         hidden=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hastext2)
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasText2)
         end,
         set=function(self,R,G,B,A)
             local name=eF.optionsTable.currently_selected_element_key or nil
@@ -302,7 +302,7 @@ do
         end
     } 
     
-    args["decimals"]={
+    args["text2Decimals"]={
         order=36,
         type="range",
         name="Decimal places",
@@ -310,7 +310,7 @@ do
         max=6,
         isPercent=false,
         hidden=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hastext2)
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasText2)
         end,
         step=1,
         set=function(self,value)
@@ -324,12 +324,12 @@ do
     args["text2Size"]={
         order=37,
         type="range",
-        name="text2 size",
+        name="Size",
         min=1,
         softMax=50,
         isPercent=false,
         hidden=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hastext2)
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasText2)
         end,
         step=1,
         set=function(self,value)
@@ -347,7 +347,7 @@ do
         order=38,
         values=anchors,
         hidden=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hastext2)
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasText2)
         end,
         set=function(self,value)
             set_current_parameter("text2Anchor",value)
@@ -364,7 +364,7 @@ do
         order=39,
         values=anchors,
         hidden=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hastext2)
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasText2)
         end,
         set=function(self,value)
             set_current_parameter("text2AnchorTo",value)
@@ -374,7 +374,7 @@ do
         end,
     }
 
-    args["XOffset"]={
+    args["text2XOffset"]={
         order=40,
         type="range",
         name="X Offset",
@@ -383,7 +383,7 @@ do
         isPercent=false,
         step=1,
         hidden=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hastext2)
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasText2)
         end,
         set=function(self,value)
             set_current_parameter("text2XOS",value)
@@ -393,7 +393,7 @@ do
         end,
     }
  
-    args["YOffset"]={
+    args["text2YOffset"]={
         order=41,
         type="range",
         name="Y Offset",
@@ -402,7 +402,7 @@ do
         isPercent=false,
         step=1,
         hidden=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hastext2)
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasText2)
         end,
         set=function(self,value)
             set_current_parameter("text2YOS",value)
@@ -674,27 +674,6 @@ do
 end
 
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
