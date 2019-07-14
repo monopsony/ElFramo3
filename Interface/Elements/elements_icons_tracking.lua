@@ -46,6 +46,7 @@ do
         order=2,
         values=adoptFuncs,
         set=function(self,value)
+            set_current_parameter("arg1",nil)
             set_current_parameter("adoptFunc",value)
         end,
         get=function(self)

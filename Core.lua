@@ -456,9 +456,11 @@ local defaults={
                           },
                     [3]={
                            loadAlways=true,
+                            Druid=true,
                           },
                     [4]={
                            loadAlways=true,
+                            Druid=true,
                           },
                     [5]={
                            loadAlways=true,

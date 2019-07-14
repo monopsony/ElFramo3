@@ -35,7 +35,7 @@ local function hidden_function(index)
     if not index then 
         return bool
     else
-        return bool or eF.para.elements[name].load[index].Any
+        return bool or eF.para.elements[name].load[index].loadAlways
     end
 end
 
@@ -49,7 +49,11 @@ do
         set=function(self,key) 
             set_current_parameter(nil,"loadAlways",key)
         end,
-        
+        disabled=function()
+            local name=eF.optionsTable.currently_selected_element_key or nil
+            if not name then return false end
+            return eF.para.elements[name].load.loadNever
+        end,
         get=function(self) 
             return get_current_parameter(nil,"loadAlways")
         end,
@@ -62,33 +66,34 @@ do
         set=function(self,key) 
             set_current_parameter(nil,"loadNever",key)
         end,
-        
+        disabled=function()
+            local name=eF.optionsTable.currently_selected_element_key or nil
+            if not name then return false end
+            return eF.para.elements[name].load.loadAlways
+        end,
         get=function(self) 
             return get_current_parameter(nil,"loadNever")
         end,
     }
        
     args["showPlayerClassHeader"]={
-        name="Show when player class is",
+        name="Own class",
         type="header",  
         order=4,
-    }
-    
-        
+    }       
        
     args["showPlayerClassesAny"]={
         name=highlight_colour.."Any",
         type="toggle",
         order=5,
         set=function(self,value) 
-            set_current_parameter(1,"Any",value)
+            set_current_parameter(1,"loadAlways",value)
         end,
-        disabled=function() hidden_function() end,
+        disabled=function() return hidden_function() end,
         get=function(self)
-            return get_current_parameter(1,"Any")
+            return get_current_parameter(1,"loadAlways")
         end,
     }
- 
   
     args["showPlayerClasses"]={
         name="Show when player class is",
@@ -98,14 +103,14 @@ do
         set=function(self,key,value) 
             set_current_parameter(1,key,value)
         end,
-        disabled=function() hidden_function(1) end,
+        hidden=function() return hidden_function(1) end,
         get=function(self,key)
             return get_current_parameter(1,key)
         end,
     }
        
     args["showPlayerRoleHeader"]={
-        name="Show when player role is",
+        name="Own role",
         type="header",  
         order=10,
     }
@@ -115,56 +120,57 @@ do
         type="toggle",
         order=11,
         set=function(self,value) 
-            set_current_parameter(2,"Any",value)
+            set_current_parameter(2,"loadAlways",value)
         end,
-        disabled=function() hidden_function() end,
+        disabled=function() return hidden_function() end,
         get=function(self)
-            return get_current_parameter(2,"Any")
+            return get_current_parameter(2,"loadAlways")
         end,
     }
        
     args["showPlayerRoles"]={
         type="multiselect",
         order=12,
+        name="Show when player role is",
         values={DAMAGER="DPS",HEALER="Healer",TANK="Tank"},
         set=function(self,key,value) 
             set_current_parameter(2,key,value)
         end,
-        disabled=function() hidden_function(2) end,
+        hidden=function() return hidden_function(2) end,
         get=function(self,key) 
             return get_current_parameter(2,key)
         end,
     }
      
-     
     args["showUnitClassesHeader"]={
-        name="Show when unit class is",
+        name="Unit class",
         type="header",  
         order=20,
     }
      
      
-    args["showPlayerRolesAny"]={
+    args["showUnitClassesAny"]={
         name=highlight_colour.."Any",
         type="toggle",
         order=21,
         set=function(self,value) 
-            set_current_parameter(3,"Any",value)
+            set_current_parameter(3,"loadAlways",value)
         end,
-        disabled=function() hidden_function() end,
+        disabled=function() return hidden_function() end,
         get=function(self)
-            return get_current_parameter(3,"Any")
+            return get_current_parameter(3,"loadAlways")
         end,
     }
      
     args["showUnitClasses"]={
         type="multiselect",
-        order=21,
+        name="Show when unit class is",
+        order=22,
         values={["Warrior"]="Warrior",["Death Knight"]="Death Knight",Rogue="Rogue",Monk="Monk",Paladin="Paladin",Druid="Druid",Shaman="Shaman",Priest="Priest",Mage="Mage",Warlock="Warlock",Hunter="Hunter",["Demon Hunter"]="Demon Hunter"},
         set=function(self,key,value) 
             set_current_parameter(3,key,value)
         end,
-        disabled=function() hidden_function(3) end,
+        hidden=function() return hidden_function(3) end,
         get=function(self,key)
             return get_current_parameter(3,key)
         end,
@@ -172,7 +178,7 @@ do
        
      
     args["showUnitRoleHeader"]={
-        name="Show when unit role is",
+        name="Unit role",
         type="header",  
         order=30,
     }
@@ -183,23 +189,24 @@ do
         type="toggle",
         order=31,
         set=function(self,value) 
-            set_current_parameter(4,"Any",value)
+            set_current_parameter(4,"loadAlways",value)
         end,
-        disabled=function() hidden_function() end,
+        disabled=function() return hidden_function() end,
         get=function(self)
-            return get_current_parameter(4,"Any")
+            return get_current_parameter(4,"loadAlways")
         end,
     }
        
        
     args["showUnitRoles"]={
+        name="Show when unit role is",
         type="multiselect",
         order=32,
         values={DAMAGER="DPS",HEALER="Healer",TANK="Tank"},
         set=function(self,key,value) 
             set_current_parameter(4,key,value)
         end,
-        disabled=function() hidden_function(4) end,
+        hidden=function() return hidden_function(4) end,
         get=function(self,key) 
             return get_current_parameter(4,key)
         end,
