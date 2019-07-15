@@ -1070,7 +1070,7 @@ function eF:update_element_meta(name)
   if para.type=="list" then
     --tasks.onAura[#tasks.onAura+1]=taskFuncs.frameDisable
     local tt=para.trackType
-    if tt=="HEPLFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then
+    if tt=="HELPFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then
       tasks.onAura[#tasks.onAura+1]=taskFuncs.applyListAuraAdopt
       
       if para.adoptFunc=="Name Whitelist" then

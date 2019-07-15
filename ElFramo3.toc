@@ -25,7 +25,13 @@ Interface\Layouts\layouts_range_options.lua
 
 Interface\Elements\elements_main.lua
 Interface\Elements\elements_load.lua
+
 Interface\Elements\elements_icons.lua
 Interface\Elements\elements_icons_tracking.lua
 Interface\Elements\elements_icons_display.lua
 Interface\Elements\elements_icons_texts.lua
+
+Interface\Elements\elements_list.lua
+Interface\Elements\elements_list_tracking.lua
+Interface\Elements\elements_list_display.lua
+Interface\Elements\elements_list_texts.lua

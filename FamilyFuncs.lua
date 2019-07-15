@@ -41,6 +41,7 @@ function taskFuncs:applyAuraAdopt(unit)
                 self.canSteal=canSteal
                 self.spellId=spellId
                 self.isBoss=isBoss
+                self.isPermanent=self.expirationTime==0
             else         
                 self.new_aura=false
             end
@@ -77,6 +78,7 @@ function taskFuncs:applyListAuraAdopt(unit)
                 frame.canSteal=canSteal
                 frame.spellId=spellId
                 frame.isBoss=isBoss
+                frame.isPermanent=frame.expirationTime==0
             else         
                 frame.new_aura=false
             end
@@ -141,8 +143,8 @@ function taskFuncs:iconUpdateTextTypeT()
     return
   end
   local t=GetTime()
-  local s=self.expirationTime-t
-  self.text:SetText(self.textDecimalFunc(s))
+  local s=(self.isPermanent and "") or self.textDecimalFunc(self.expirationTime-t)
+  self.text:SetText(s)
 end
 iconUpdateTextTypeT=taskFuncs.iconUpdateTextTypeT
 
@@ -152,8 +154,8 @@ function taskFuncs:iconUpdateText2TypeT()
     return
   end
   local t=GetTime()
-  local s=self.expirationTime-t
-  self.text2:SetText(self.text2DecimalFunc(s))
+  local s=(self.isPermanent and "") or self.text2DecimalFunc(self.expirationTime-t)
+  self.text2:SetText(s)
 end
 iconUpdateText2TypeT=taskFuncs.iconUpdateText2TypeT
 
