@@ -99,6 +99,13 @@ end
 
 
 --filters
+local function filter_hidden_func()
+    if not eF.optionsTable.currently_selected_layout then return true end
+    
+    local para=eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters
+    if para.hasNamelist then return false else return true end 
+end
+
 do
     local function set_current_layout_attribute(key,value)
         local name=eF.optionsTable.currently_selected_layout or nil
@@ -120,15 +127,18 @@ do
     end
     
     args["filter_options"]={
-        name="Filters",
+        name="Filters - NYI",
         type="header",  
         order=21,
     }
+    
+    
     
     args["filter_player"]={
         name="Create frame for player",
         type="toggle",
         order=22,
+        disabled=filter_hidden_func,
         set=function(self,key) 
             update_selected_layout_parameter("filter_player",key)
         end,
@@ -151,6 +161,8 @@ do
         name="Create frames for roles:",
         type="multiselect",
         order=23,
+        disabled=filter_hidden_func,
+
         values={Any=highlight_colour.."Any|r",DAMAGER="DPS",HEALER="Healer",TANK="Tank"},
         set=function(self,key,value) 
             update_selected_layout_filter_roles(key,value)
@@ -165,6 +177,7 @@ do
         name="Create frames for classes:",
         type="multiselect",
         order=24,
+        disabled=filter_hidden_func,
         values={Any=highlight_colour.."Any|r",["Warrior"]="Warrior",["Death Knight"]="Death Knight",Rogue="Rogue",Monk="Monk",Paladin="Paladin",Druid="Druid",Shaman="Shaman",Priest="Priest",Mage="Mage",Warlock="Warlock",Hunter="Hunter",["Demon Hunter"]="Demon Hunter"},
         set=function(self,key,value) 
             update_selected_layout_filter_classes(key,value)

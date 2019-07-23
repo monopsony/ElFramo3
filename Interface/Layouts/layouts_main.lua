@@ -170,19 +170,24 @@ do
         name="Flag Frames",
         order=4, 
         args={
-            dead_frame={
+            dead={
                 type="group",
                 name="Dead",
                 args={},
             },
-            offline_frame={
+            offline={
                 type="group",
                 name="Offline",
                 args={},
             },
-            summon_frame={
+            mc={
                 type="group",
-                name="Summon",
+                name="MC",
+                args={},
+            },
+            summon={
+                type="group",
+                name="Summon NYI",
                 args={},
             },         
         },

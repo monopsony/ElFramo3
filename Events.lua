@@ -1,5 +1,6 @@
 local eF=elFramo
 eF.info={}
+eF.post_combat={}
 
 local function deepcopy(orig)
     local orig_type = type(orig)
@@ -90,6 +91,15 @@ eF.layoutEventHandler:SetScript("OnEvent",eF.layoutEventHandler.handleEvent)
 
 
 --------------MIST: ENCOUNTER/PLAYER_ENTERING_WORLD etc--------------
+local post_combat_functions={
+    ["updateFilters"]=function()
+        for k,v in pairs(eF.registered_layouts) do 
+            v:updateFilters()
+        end
+    end,
+      
+}
+
 
 if not eF.loadingFrame then eF.loadingFrame=CreateFrame("Frame","ElFramoLoadingFrame",UIParent) end
 eF.loadingFrame:RegisterEvent("ENCOUNTER_START")
@@ -116,6 +126,11 @@ function eF.loadingFrame:handleEvent(event,ID)
         end
         flag=true 
     end  --only need to reload if we were in an encounter before
+    
+    for k,v in pairs(eF.post_combat) do 
+        if v and post_combat_functions[k] then post_combat_functions[k](); eF.post_combat[k]=false end
+    end
+    
   elseif event=="PLAYER_ENTERING_WORLD" then
     local instanceName,_,_,_,_,_,_,instanceID=GetInstanceInfo()
     if (instanceName~=eF.info.instanceName) or (instanceID~=eF.info.instanceID) then

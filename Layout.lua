@@ -119,6 +119,7 @@ local header_default_parameters={
     bg=true,
     textLim=4,
     borderA=0.7,  
+    hasNamelist=false,
 }
 
 local function initialConfigFunction(self,name)
@@ -279,6 +280,13 @@ end
 
 function layout_methods:updateFilters()
     if not self.visible then return end 
+    if InCombatLockdown() then eF.post_combat.updateFilters=true; return end
+    
+    if not self.para.hasNamelist then 
+        self:SetAttribute("nameList",nil)
+        return
+    end
+    
     local player,classes,roles=self.para.filter_player,self.para.filter_classes,self.para.filter_roles
     local namelist={}
     if not eF.grouped then 

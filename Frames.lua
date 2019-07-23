@@ -194,6 +194,7 @@ function frameFunctions:updateOORParas()
     self.elapsed=1
 end
 
+local flag_frames={"dead","offline","mc"}
 function frameFunctions:updateFlagFrames()
   local unit=self.id
   local para=self.header.para
@@ -201,44 +202,28 @@ function frameFunctions:updateFlagFrames()
   
   self.oorA=para.oorA or 0.45
   
-  --dead frame
-  if not self.deadFrame then self.deadFrame=CreateFrame("Frame",frameName.."deadFrame",self.hp) end
-  self.deadFrame:SetAllPoints(true)
-  self.deadFrame:SetFrameLevel(self:GetFrameLevel()+1)
-  self.deadFrame.texture=self.deadFrame:CreateTexture(nil,"BACKGROUND")
-  self.deadFrame.texture:SetAllPoints(true)
-  self.deadFrame.texture:SetColorTexture(0.5,0.5,0.5,0.2)
-  self.deadFrame.text=self.deadFrame:CreateFontString(nil,"OVERLAY")
-  self.deadFrame.text:SetFont(para.textFont,para.textSize,para.textExtra)
-  self.deadFrame.text:SetText("DEAD")
-  self.deadFrame.text:SetPoint("CENTER")
-  self.deadFrame:Hide()
-  
-  --offline frame
-  if not self.offlineFrame then self.offlineFrame=CreateFrame("Frame",frameName.."offlineFrame",self.hp) end
-  self.offlineFrame:SetAllPoints(true)
-  self.offlineFrame:SetFrameLevel(self:GetFrameLevel()+1)
-  self.offlineFrame.texture=self.offlineFrame:CreateTexture(nil,"BACKGROUND")
-  self.offlineFrame.texture:SetAllPoints(true)
-  self.offlineFrame.texture:SetColorTexture(0.3,0.3,0.3,0.3)
-  self.offlineFrame.text=self.offlineFrame:CreateFontString(nil,"OVERLAY")
-  self.offlineFrame.text:SetFont(para.textFont,para.textSize,para.textExtra)
-  self.offlineFrame.text:SetText("OFFLINE")
-  self.offlineFrame.text:SetPoint("CENTER")
-  self.offlineFrame:Hide()
-  
-  --create MC frame
-  if not self.mcFrame then self.mcFrame=CreateFrame("Frame",frameName.."mcFrame",self.hp) end
-  self.mcFrame:SetAllPoints(true)
-  self.mcFrame:SetFrameLevel(self:GetFrameLevel()+1)
-  self.mcFrame.texture=self.mcFrame:CreateTexture(nil,"BACKGROUND")
-  self.mcFrame.texture:SetAllPoints(true)
-  self.mcFrame.texture:SetColorTexture(0.3,0.3,0.3,0.3)
-  self.mcFrame.text=self.mcFrame:CreateFontString(nil,"OVERLAY")
-  self.mcFrame.text:SetFont(para.textFont,para.textSize,para.textExtra)
-  self.mcFrame.text:SetText("MC")
-  self.mcFrame.text:SetPoint("CENTER")
-  self.mcFrame:Hide()
+  for k,v in ipairs(flag_frames) do
+    local name=v.."Frame"
+    local p=para.flagFrames[v]
+    if not self[name] then self[name]=CreateFrame("Frame",frameName..name,self.hp) end
+    local f=self[name]
+    f:SetAllPoints(true)
+    f:SetFrameLevel(self:GetFrameLevel()+1)
+    
+    if not f.texture then f.texture=f:CreateTexture(nil,"BACKGROUND") end
+    f.texture:SetAllPoints(true)
+    f.texture:SetColorTexture(p.frameR,p.frameG,p.frameB,p.frameA)
+    
+    local font=(LSM:IsValid("font",p.textFont) and LSM:Fetch("font",p.textFont)) or ""
+    if not f.text then f.text=f:CreateFontString(nil,"OVERLAY") end
+    f.text:ClearAllPoints()
+    f.text:SetPoint(p.textPos,f,p.textPos)
+    f.text:SetFont(font,p.textSize,p.textExtra)
+    f.text:SetTextColor(p.textR,p.textG,p.textB,p.textA)
+    f.text:SetText(p.text)
+    
+    f:Hide()
+    end   
   
 end
 
@@ -283,6 +268,12 @@ function frameFunctions:unit_event(event)
         task[i](task[i+1],unit)
     end
     
+  elseif event=="UNIT_CONNECTION" or event=="UNIT_FLAGS" then
+    print(event)
+    self:updateFlags()
+  elseif event=="UNIT_NAME_UPDATE" then
+     self:updateUnit(true)
+     
   elseif event=="UNIT_POWER_UPDATE" then
         --power handling TBA
   end
