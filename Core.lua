@@ -758,6 +758,38 @@ local defaults={
                           },                        
                 },
             },
+            ["bordertest"]={
+                type="border",
+                borderSize=2,
+                borderR=1,
+                borderG=1,
+                borderB=1,
+                borderA=1,
+                trackType="Static",
+                flatBorder=true, 
+                load={
+                    loadAlways=true,
+                    loadNever=false,
+                    [1]={
+                           loadAlways=true,
+                          },
+                    [2]={
+                           loadAlways=true,
+                          },
+                    [3]={
+                           loadAlways=true,
+                          },
+                    [4]={
+                           loadAlways=true,
+                          },
+                    [5]={
+                           loadAlways=true,
+                          },
+                    [6]={
+                           loadAlways=true,
+                          },
+                },
+            },
      },  --end of families
     },  --end of profile
 }--end of defaults

@@ -768,41 +768,59 @@ function frameFunctions:apply_element_paras(name)
   
   --TBA DO BORDER
   if para.type=="border" then
-    if not frame[j][k] then frame[j][k]=CreateFrame("Frame",("%sElement%s%s"):format(frame:GetName(),j,k),frame) end 
-    local el=frame[j][k] 
+    if not frame.elements[name] then frame.elements[name]=CreateFrame("Frame",("%sElement%s"):format(frame:GetName(),name),frame) end --check whether element even exists already
+    local el=frame.elements[name] 
     el:SetFrameLevel(frame.hp:GetFrameLevel()+1+(para.displayLevel or 0))
     el.para=para
     el.enable=taskFuncs.frameEnable
     el.disable=taskFuncs.frameDisable
     el.onUpdateFunction=taskFuncs.frameOnUpdateFunction
-    el.tasks=eF.tasks[j][k]
+    el.tasks=eF.tasks[name]
         
-    --position and visuals
-    el:ClearAllPoints()
-    el:SetAllPoints()
-    local r,g,b,a=para.borderR or 1,para.borderG or 1,para.borderB or 1,para.borderA or 1
-    local size=para.borderSize or 2
-    for k,v in next,{"RIGHT","TOP","LEFT","BOTTOM"} do
-      local loc,p1,p2,w,f11,f12,f21,f22=eF.borderInfo(v)
-      if not el[loc] then el[loc]=el:CreateTexture(nil,"OVERLAY") end
-      el[loc]:SetColorTexture(1,1,1)
-      el[loc]:ClearAllPoints()
-      el[loc]:SetPoint(p1,el,p1,f11*(size),f12*(size))
-      el[loc]:SetPoint(p2,el,p2,f21*(size),f22*(size))
-      if w then el[loc]:SetWidth(size);
-      else el[loc]:SetHeight(size); end  
+        
+    if para.flatBorder or (not para.edgeFile) then
+        --position and visuals
+        el:ClearAllPoints()
+        el:SetAllPoints()
+        el:SetBackdrop(nil)
+        
+        local r,g,b,a=para.borderR or 1,para.borderG or 1,para.borderB or 1,para.borderA or 1
+        local size=para.borderSize or 2
+        for k,v in next,{"RIGHT","TOP","LEFT","BOTTOM"} do
+          local loc,p1,p2,w,f11,f12,f21,f22=eF.borderInfo(v)
+          if not el[loc] then el[loc]=el:CreateTexture(nil,"OVERLAY") end
+          el[loc]:SetColorTexture(1,1,1)
+          el[loc]:ClearAllPoints()
+          el[loc]:SetPoint(p1,el,p1,f11*(size),f12*(size))
+          el[loc]:SetPoint(p2,el,p2,f21*(size),f22*(size))
+          if w then el[loc]:SetWidth(size);
+          else el[loc]:SetHeight(size); end  
+        end    
+        
+    else
+        local r,g,b,a=para.borderR or 1,para.borderG or 1,para.borderB or 1,para.borderA or 1
+        local edgeFile=(LSM:IsValid("border",para.edgeFile) and LSM:Fetch("font",para.edgeFile)) or ""
+        el:SetBackdrop({edgeFile=edgeFile})
+        el:SetBackdropColor(r,g,b,a)
+        
+        for k,v in next,{"RIGHT","TOP","LEFT","BOTTOM"} do
+          local loc,p1,p2,w,f11,f12,f21,f22=eF.borderInfo(v)
+          if el[loc] then 
+              el[loc]:SetColorTexture(0,0,0,0)
+          end
+        end    
     end
     
     --static handling
-    if para.trackType=="Static" then
-      el:Show()
+    if para.trackType=="Static" then  --TBA STATIC HANDLING
+      el:enable()
       el.static=true
       el.expirationTime=0
       el.duration=0
     else
       el.static=false
-      el:Hide()
-    end
+      el:disable()
+    end --end of if para.trackType=="Static" 
     
   end
   
