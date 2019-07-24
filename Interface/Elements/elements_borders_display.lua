@@ -40,6 +40,7 @@ do
         order=2,
         values=LSM:HashTable("border"),
         set=function(self,value)
+            print(value)
             set_current_parameter("edgeFile",value)
         end,
         get=function(self)
@@ -67,10 +68,10 @@ do
         min=0,
         softMax=20,
         isPercent=false,
-        disabled=function()
-            return not get_current_parameter("flatBorder")
-        end,
-        step=2,
+        --disabled=function()
+        --    return not get_current_parameter("flatBorder")
+        --end,
+        step=1,
         set=function(self,value)
             set_current_parameter("borderSize",value)
         end,
@@ -79,6 +80,44 @@ do
         end,
     }
     
+
+    args["xOS"]={
+        order=11,
+        type="range",
+        name="X Offset",
+        softMin=-20,
+        softMax=20,
+        isPercent=false,
+        --disabled=function()
+        --    return not get_current_parameter("flatBorder")
+        --end,
+        step=1,
+        set=function(self,value)
+            set_current_parameter("xOS",value)
+        end,
+        get=function(self)
+            return get_current_parameter("xOS")
+        end,
+    }
+
+    args["yOS"]={
+        order=11,
+        type="range",
+        name="Y Offset",
+        softMin=-20,
+        softMax=20,
+        isPercent=false,
+        --disabled=function()
+        --    return not get_current_parameter("flatBorder")
+        --end,
+        step=1,
+        set=function(self,value)
+            set_current_parameter("yOS",value)
+        end,
+        get=function(self)
+            return get_current_parameter("yOS")
+        end,
+    }
 
     args["color"]={
         order=5,

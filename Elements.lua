@@ -777,11 +777,15 @@ function frameFunctions:apply_element_paras(name)
     el.onUpdateFunction=taskFuncs.frameOnUpdateFunction
     el.tasks=eF.tasks[name]
         
+    el:ClearAllPoints()
+    el:SetPoint("TOPRIGHT",frame,"TOPRIGHT",para.xOS or 0,para.yOS or 0)
+    el:SetPoint("BOTTOMLEFT",frame,"BOTTOMLEFT",-(para.xOS or 0),-(para.yOS or 0))
+        
         
     if para.flatBorder or (not para.edgeFile) then
         --position and visuals
-        el:ClearAllPoints()
-        el:SetAllPoints()
+
+        --el:SetAllPoints()
         el:SetBackdrop(nil)
         
         local r,g,b,a=para.borderR or 1,para.borderG or 1,para.borderB or 1,para.borderA or 1
@@ -789,7 +793,7 @@ function frameFunctions:apply_element_paras(name)
         for k,v in next,{"RIGHT","TOP","LEFT","BOTTOM"} do
           local loc,p1,p2,w,f11,f12,f21,f22=eF.borderInfo(v)
           if not el[loc] then el[loc]=el:CreateTexture(nil,"OVERLAY") end
-          el[loc]:SetColorTexture(1,1,1)
+          el[loc]:SetColorTexture(r,g,b,a)
           el[loc]:ClearAllPoints()
           el[loc]:SetPoint(p1,el,p1,f11*(size),f12*(size))
           el[loc]:SetPoint(p2,el,p2,f21*(size),f22*(size))
@@ -799,9 +803,9 @@ function frameFunctions:apply_element_paras(name)
         
     else
         local r,g,b,a=para.borderR or 1,para.borderG or 1,para.borderB or 1,para.borderA or 1
-        local edgeFile=(LSM:IsValid("border",para.edgeFile) and LSM:Fetch("font",para.edgeFile)) or ""
-        el:SetBackdrop({edgeFile=edgeFile})
-        el:SetBackdropColor(r,g,b,a)
+        local edgeFile=(LSM:IsValid("border",para.edgeFile) and LSM:Fetch("border",para.edgeFile)) or ""
+        el:SetBackdrop({edgeFile=edgeFile,edgeSize=para.borderSize})
+        el:SetBackdropBorderColor(r,g,b,a)
         
         for k,v in next,{"RIGHT","TOP","LEFT","BOTTOM"} do
           local loc,p1,p2,w,f11,f12,f21,f22=eF.borderInfo(v)
@@ -1008,7 +1012,7 @@ function eF:update_element_meta(name)
   if para.type=="icon" then
     --tasks.onAura[#tasks.onAura+1]=taskFuncs.frameDisable
     local tt=para.trackType
-    if tt=="HEPLFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then
+    if tt=="HELPFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then
       tasks.onAura[#tasks.onAura+1]=taskFuncs.applyAuraAdopt
       
       if para.adoptFunc=="Name" then
@@ -1060,29 +1064,18 @@ function eF:update_element_meta(name)
   
   --TBA bar handling
   if para.type=="border" then
-    
-    tasks.onAura[#tasks.onAura+1]=taskFuncs.frameDisable
-    
-    if para.trackType=="Buffs" then
-      tasks.onBuff[#tasks.onBuff+1]=taskFuncs.applyAuraAdopt
-      
+    print "yo"
+    local tt=para.trackType
+    if tt=="HELPFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then
+      tasks.onAura[#tasks.onAura+1]=taskFuncs.applyAuraAdopt
+      print(para.adoptFunc)
       if para.adoptFunc=="Name" then
         work.auraAdopt=taskFuncs.iconAdoptAuraByName
       elseif para.adoptFunc=="Spell ID" then
+        print(" in here")
         work.auraAdopt=taskFuncs.iconAdoptAuraBySpellID
       end  
     end --end of if para.trackType=="Buffs" then
-    
-    if para.trackType=="Debuffs" then
-      tasks.onDebuff[#tasks.onDebuff+1]=taskFuncs.applyAuraAdopt
-      
-      if para.adoptFunc=="Name" then
-        work.auraAdopt=taskFuncs.iconAdoptAuraByName
-      elseif para.adoptFunc=="Spell ID" then
-        work.auraAdopt=taskFuncs.iconAdoptAuraBySpellID
-      end
-    end --end of if para.trackType=="Debuffs" then
-    
   end 
 
   if para.type=="list" then

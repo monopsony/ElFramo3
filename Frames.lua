@@ -583,22 +583,6 @@ function frameFunctions:check_element_load(k)
     return  l[1] and l[2] and l[3] and l[4] and l[5] and l[6] 
 end
 
-local pairs=pairs
-function eF:fully_reload_element(key)
-    local frame=self
-    eF:update_element_meta(key)
-    for _,frame in pairs(eF.list_all_active_unit_frames(name)) do 
-        frame:apply_element_paras(key)
-        frame:reset_tasks() 
-        frame:update_load_tables()
-        frame:apply_and_reload_loads(true)
-    
-        for i=1,#refresh_events do 
-            frame:unit_event(refresh_events[i])
-        end        
-    end
-end
-
 local fu=eF.familyUtils
 function eF:unit_added(event,name)
   print("unit added",event,name)
@@ -640,4 +624,20 @@ function eF:unit_added(event,name)
   eF.visible_unit_frames=eF.list_all_active_unit_frames()
 end
 eF:RegisterMessage("UNIT_ADDED","unit_added")
+
+local pairs=pairs
+function eF:fully_reload_element(key)
+    local frame=self
+    eF:update_element_meta(key)
+    for _,frame in pairs(eF.list_all_active_unit_frames(name)) do 
+        frame:apply_element_paras(key)
+        frame:reset_tasks() 
+        frame:update_load_tables()
+        frame:apply_and_reload_loads(true)
+    
+        for i=1,#refresh_events do 
+            frame:unit_event(refresh_events[i])
+        end        
+    end
+end
 

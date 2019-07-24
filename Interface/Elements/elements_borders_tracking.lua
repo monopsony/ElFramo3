@@ -45,7 +45,7 @@ do
         if trackType=="PLAYER HELPFUL" or trackType=="PLAYER HARMFUL" or trackType=="HELPFUL" or trackType=="HARMFUL" then return false else return true end 
     end
 
-    local adoptFuncs={["Name"]="Name",["SpellID"]="Spell ID",["Custom"]="Custom"}
+    local adoptFuncs={["Name"]="Name",["Spell ID"]="Spell ID",["Custom"]="Custom"}
     args["adoptFunc"]={
         name="Adopt by",
         type="select",
@@ -54,8 +54,8 @@ do
         hidden=aura_hide,
         values=adoptFuncs,
         set=function(self,value)
-            set_current_parameter("arg1",nil)
             set_current_parameter("adoptFunc",value)
+            set_current_parameter("arg1",nil)
         end,
         get=function(self)
             return get_current_parameter("adoptFunc")
@@ -78,13 +78,14 @@ do
     args["arg1_spellID"]={
         type="input",
         order=3,
-        hidden=function() return aura_hide() or (not (eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="SpellID")) end,
+        hidden=function() return aura_hide() or (not (eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="Spell ID")) end,
         name="Spell ID",
         set=function(self,value)
+            value=tonumber(value)
             set_current_parameter("arg1",value)
             end,
         get=function(self) 
-            return get_current_parameter("arg1")
+            return tostring(get_current_parameter("arg1"))
         end,
     }
     
