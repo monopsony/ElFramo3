@@ -315,6 +315,7 @@ local defaults={
                 },
             },
             ["lifebloom"]={
+                interfaceGroup="grouptest",
                 type="icon",
                 width=15,
                 height=15,
@@ -468,6 +469,7 @@ local defaults={
             },
             ["bartest"]={
                 type="bar",
+                interfaceGroup="grouptest",
                 anchorTo="BOTTOMLEFT",
                 xPos=5,
                 yPos=0,
@@ -504,12 +506,36 @@ local defaults={
                           },
                 },
             },
+            ["grouptest"]={
+                type="group",
+                load={
+                    loadAlways=true,
+                    loadNever=false,
+                    [1]={
+                           loadAlways=true,
+                          },
+                    [2]={
+                           loadAlways=true,
+                          },
+                    [3]={
+                           loadAlways=true,
+                          },
+                    [4]={
+                           loadAlways=true,
+                          },
+                    [5]={
+                           loadAlways=true,
+                          },
+                    [6]={
+                           loadAlways=true,
+                          },
+                },
+            },
      },  --end of families
     },  --end of profile
 }--end of defaults
 
 elFramo=LibStub("AceAddon-3.0"):NewAddon("elFramo")
-elFramoGlobal3=elFramo
 
 local eF=elFramo    
 eF.activeFrames={}

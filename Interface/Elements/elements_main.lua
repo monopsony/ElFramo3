@@ -5,6 +5,9 @@ eF.optionsTable.currently_selected_element_key=nil
 local tContains=tContains
 local wipe=table.wipe
 eF.interface_element_defaults={}
+eF.interface_new_element_type=nil
+
+local element_types={icon="Icon",bar="Bar",border="Border",list="List",group="Group"}
 
 
 local deepcopy=eF.table_deep_copy
@@ -61,6 +64,39 @@ do
         name="|cFFFFF569Note|r: TBA Mierihn is very gay."
     }
      
+    
+    args["new_element_type"]={
+        name="Type",
+        type="select",
+        style="dropdown",
+        order=2,
+        values=element_types,
+        set=function(self,value)
+            eF.interface_new_element_type=value
+        end,
+        get=function(self)
+            return eF.interface_new_element_type
+        end,
+    }
+    
+    args["new_element"]={
+        type="input",
+        order=3,
+        name="New element name",
+        disabled=function() return not eF.interface_new_element_type end,
+        set=function(self,name)
+                name=string.gsub(name, "%s+", "")
+                if not name or name=="" then return end
+                name=eF.find_valid_name_in_table(name,eF.para.elements)
+                eF:interface_create_new_element(eF.interface_new_element_type,name)
+                eF:interface_set_selected_group("elements",name)
+            end,
+        get=function(self) 
+                return "" 
+            end,
+    }   
+    
+     
 end
 
 local function find_first_valid_order(order,tbl)
@@ -79,35 +115,73 @@ function eF.interface_generate_element_groups()
     local order_max=0
     
     for k,v in pairs(args) do 
-        if not (k=="invisible" or k=="help_message") and (not para[k]) then wipe(args[k]); args[k]=nil end
+        if not (k=="invisible" or k=="help_message" or k=="new_element_type" or k=="new_element") and (not para[k]) then wipe(args[k]); args[k]=nil end
     end
     
     local orders_found={}
-    for k,v in pairs(para) do if v.interface_order then  orders_found[v.interface_order]=true end end
+    for k,v in pairs(para) do if v.interface_order and (not v.interfaceGroup) then orders_found[v.interface_order]=true end end
     
+    --set option tables for orphans and groups
+    local group_table={}
     for k,v in pairs(para) do
-        args[k]=args[k] or {}
-        local a=args[k]
-        a.name=k
-        a.type="group"
-        a.childGroups="tab"
-        local order=para[k].interface_order or nil
-        if order then 
-            a.order=order
-            if order>order_max then order_max=order+1 end
-        else 
-            order=find_first_valid_order(order_max,orders_found)
-            a.order=order
-            para[k].interface_order=order
-            order_max=order+1 
+        
+        if (para[k].interfaceGroup and para[para[k].interfaceGroup]) then --if it's in a group and the group exists
+            local group=para[k].interfaceGroup
+            if not group_table[group] then group_table[group]={} end
+            local tbl=group_table[group]
+            tbl[#tbl+1]=k
+            
+        else
+            para[k].interfaceGroup=nil --removes the group if group not found as well
+            args[k]=args[k] or {}
+            local a=args[k]
+            a.name=k
+            a.type="group"
+            a.childGroups=para[k].type=="group" and "tree" or "tab"
+            local order=para[k].interface_order or nil
+            if order then 
+                a.order=order
+                if order>order_max then order_max=order+1 end
+            else 
+                order=find_first_valid_order(order_max,orders_found)
+                a.order=order
+                para[k].interface_order=order
+                order_max=order+1 
+            end
+            a.args=eF.interface_elements_config_tables[para[k].type] or {}        
         end
-        a.args=eF.interface_elements_config_tables[para[k].type] or {}
+        
     end  
+    
+    --set option tables for elements in groups
+    for group,elements in pairs(group_table) do 
+        local group_args=args[group].args
+        local order_max,orders_found=0,{}
+        for i,v in ipairs(elements) do if para[v].interface_order then  orders_found[para[v].interface_order]=true end end
+
+        for i,k in ipairs(elements) do 
+            if args[k] then args[k]=nil end --remove elements that might have been orphans in the past but aren't any more
+            group_args[k]=group_args[k] or {}
+            local a=group_args[k]
+            a.name=k
+            a.type="group"
+            a.childGroups=para[k].type=="group" and "tree" or "tab"
+            local order=para[k].interface_order or nil
+            if order then 
+                a.order=order
+                if order>order_max then order_max=order+1 end
+            else 
+                order=find_first_valid_order(order_max,orders_found)
+                a.order=order
+                para[k].interface_order=order
+                order_max=order+1 
+            end
+            a.args=eF.interface_elements_config_tables[para[k].type] or {}        
+            
+            
+        end
+    end
+    
     wipe(orders_found)
 end
 eF.interface_elements_config_tables={}
---add layout options main frames
-do
-
- 
-end
