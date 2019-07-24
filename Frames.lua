@@ -24,7 +24,7 @@ end
 local frameFunctions=eF.frameFunctions or {}
 eF.frameFunctions=frameFunctions
 
-local refresh_events={"UNIT_FLAG","UNIT_HEALTH_FREQUENT","UNIT_AURA","UNIT_POWER_UPDATE"}
+local refresh_events={"UNIT_FLAG","UNIT_HEALTH_FREQUENT","UNIT_AURA","UNIT_POWER_UPDATE","UNIT_HEAL_ABSORB_AMOUNT_CHANGED"}
 function frameFunctions:updateUnit(name_changed)
   local unit=SecureButton_GetModifiedUnit(self)
   local unit_changed,flag1,flag2=self.id~=unit,self.current_layout_version~=eF.current_layout_version,eF.current_elements_version~=self.current_elements_version
@@ -269,13 +269,20 @@ function frameFunctions:unit_event(event)
     end
     
   elseif event=="UNIT_CONNECTION" or event=="UNIT_FLAGS" then
-    print(event)
     self:updateFlags()
   elseif event=="UNIT_NAME_UPDATE" then
      self:updateUnit(true)
      
   elseif event=="UNIT_POWER_UPDATE" then
-        --power handling TBA
+    local task=self.tasks.onPower
+    for i=1,#task,2 do
+        task[i](task[i+1],unit)
+    end
+  elseif event=="UNIT_HEAL_ABSORB_AMOUNT_CHANGED" then
+    local task=self.tasks.onHealAbsorb
+    for i=1,#task,2 do
+        task[i](task[i+1],unit)
+    end
   end
   
   
@@ -353,47 +360,6 @@ function frameFunctions:reset_tasks()
   if self.tasks then wipe(self.tasks) else self.tasks={}; setmetatable(self.tasks,{__index=metaFunction}) end
 end
 
-local inList=eF.isInList
-function frameFunctions:checkElementLoad(j,k)
-  if not self then return end 
-  local para,frame
-  if k then para=self[j][k].para; frame=self[j][k] else para=self[j].para; frame=self[j] end
-  
-  if para.loadAlways then
-    if not frame.loaded then
-      frame.loaded=true;
-      if frame.static then frame:enable() end
-    end
-    return true
-  elseif para.loadNever then 
-    if frame.loaded then
-      frame.loaded=false;
-      if frame.static then frame:disable() end
-    end
-    return false
-  end
-  
-  local b,info=true,eF.info
-  local playerRole,playerClass,instanceName,instanceID,encounterID=info.playerRole,info.playerClass,info.instanceName,info.instanceID,info.encounterID
-  local unitRole,unitClass=self.role,self.class
-  
-  if b and (not para.instanceLoadAlways) and not (inList(instanceID,para.loadInstanceList) or inList(instanceName,para.loadInstanceList)) then b=false end
-  if b and (not para.encounterLoadAlways) and not (inList(encounterID,para.loadEncounterList)) then b=false end
-  if b and (not para.unitRoleLoadAlways) and not inList(unitRole,para.loadUnitRoleList) then b=false end
-  if b and (not para.unitClassLoadAlways) and not inList(unitClass,para.loadUnitClassList) then b=false end
-  if b and (not para.playerRoleLoadAlways) and not inList(playerRole,para.loadPlayerRoleList) then b=false end
-  if b and (not para.playerClassLoadAlways) and not inList(playerClass,para.loadPlayerClassList) then b=false end
-
-  
-  if not b and frame.loaded then frame.loaded=false; frame:disable() end
-  if b and not frame.loaded then 
-    if frame.static then frame:enable() end
-    frame.loaded=true
-  end
-  
-  return b
-
-end
 
 local pairs=pairs
 function frameFunctions:loadElement(j,k)
@@ -520,6 +486,7 @@ local element_load_functions={
 local function element_update_load_table(frame,self,index)
     local index=index or nil
     local para=self.para.load
+    print(self.para.type,index)
     if not para then self.load_table.loadAlways=false; self.load_table.loadNever=true; return end --this will trigger when an element gets deleted
     if index then 
         self.load_table[index]=element_load_functions[index](frame,para[index])
@@ -578,7 +545,7 @@ end
 
 function frameFunctions:check_element_load(k)
     local l=self.elements[k].load_table
-    if l.loadAlways then return true 
+    if l.loadAlways then return true
     elseif l.loadNever then return false end
     return  l[1] and l[2] and l[3] and l[4] and l[5] and l[6] 
 end

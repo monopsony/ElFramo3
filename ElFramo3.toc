@@ -39,3 +39,7 @@ Interface\Elements\elements_list_texts.lua
 Interface\Elements\elements_borders.lua
 Interface\Elements\elements_borders_tracking.lua
 Interface\Elements\elements_borders_display.lua
+
+Interface\Elements\elements_bars.lua
+Interface\Elements\elements_bars_tracking.lua
+Interface\Elements\elements_bars_display.lua

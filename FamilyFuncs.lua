@@ -181,15 +181,11 @@ function taskFuncs:iconUpdateText2TypeS()
 end
 iconUpdateText2TypeS=taskFuncs.iconUpdateText2TypeS
 
-function taskFuncs:statusBarPowerUpdate()
-  local unit=self.id
-  if not UnitExists(unit) then return end
+function taskFuncs:statusBarPowerUpdate(unit)
   self:SetValue(UnitPower(unit)/UnitPowerMax(unit))
 end
 
-function taskFuncs:statusBarHAbsorbUpdate()
-  local unit=self.id
-  if not UnitExists(unit) then return end
+function taskFuncs:statusBarHAbsorbUpdate(unit)
   self:SetValue(UnitGetTotalHealAbsorbs(unit)/UnitHealthMax(unit))
 end
 

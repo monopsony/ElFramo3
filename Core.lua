@@ -1,327 +1,3 @@
---default paras 
-if false then
-eF.para={throttle=0.1, --currently not actually applying, it's set to 0.1
-         familyButtonsIndexList={},
-         groupParas=true,
-         version=1,
-         units={
-                 height=50,
-                 width=70,
-                 bg=true,
-                 bgR=nil,
-                 bgG=nil,
-                 bgB=nil,
-                 --spacing=10,
-                 --grow1="down",
-                 --grow2="right",
-                 healthGrow="up",
-                 textLim=4,
-                 textFont="Fonts\\FRIZQT__.ttf",
-                 textExtra="OUTLINE",
-                 textPos="CENTER",
-                 textSize=13,
-                 textA=0.7,
-                 textColorByClass=true,
-                 textR=1,
-                 textG=1,
-                 textB=1,
-                 hpTexture=nil, --would put path in here, e.g. "Interface\\TargetingFrame\\UI-StatusBar"
-                 --hpTexture="Interface\\TargetingFrame\\UI-StatusBar", if no texture given, uses SetColorTexture instead
-                 hpR=0.2,
-                 hpG=0.4,
-                 hpB=0.6,
-                 hpA=1,
-                 nA=1, --normal alpha
-                 checkOOR=true, --true if dim when oor
-                 oorA=0.45, --alpha to be set to if out of range
-                 hpGrad=true,
-                 hpGradOrientation="VERTICAL",
-                 hpGrad1R=0.5,
-                 hpGrad1G=0.5,
-                 hpGrad1B=0.5,
-                 hpGrad1A=1,
-                 hpGrad2R=0.8,
-                 hpGrad2G=0.8,
-                 hpGrad2B=0.8,
-                 hpGrad2A=5,
-                 borderSize=2,
-                 borderR=0,
-                 borderG=0,
-                 borderB=0,
-                 borderA=0.7,
-                 spacing=5,
-                 grow1="down",
-                 grow2="right",   
-                 byClassColor=true,
-                 byGroup=false,
-                 maxInLine=5,
-                 showSolo=true,
-                 }, 
-         unitsGroup={
-                 height=50,
-                 width=70,
-                 bg=true,
-                 bgR=nil,
-                 bgG=nil,
-                 bgB=nil,
-                 --spacing=10,
-                 --grow1="down",
-                 --grow2="right",
-                 healthGrow="up",
-                 textLim=4,
-                 textFont="Fonts\\FRIZQT__.ttf",
-                 textExtra="OUTLINE",
-                 textPos="CENTER",
-                 textSize=13,
-                 textA=0.7,
-                 textColorByClass=true,
-                 textR=1,
-                 textG=1,
-                 textB=1,
-                 hpTexture=nil, --would put path in here, e.g. "Interface\\TargetingFrame\\UI-StatusBar"
-                 --hpTexture="Interface\\TargetingFrame\\UI-StatusBar", if no texture given, uses SetColorTexture instead
-                 hpR=0.2,
-                 hpG=0.4,
-                 hpB=0.6,
-                 hpA=1,
-                 nA=1, --normal alpha
-                 checkOOR=true, --true if dim when oor
-                 oorA=0.45, --alpha to be set to if out of range
-                 hpGrad=true,
-                 hpGradOrientation="VERTICAL",
-                 hpGrad1R=0.5,
-                 hpGrad1G=0.5,
-                 hpGrad1B=0.5,
-                 hpGrad1A=1,
-                 hpGrad2R=0.8,
-                 hpGrad2G=0.8,
-                 hpGrad2B=0.8,
-                 hpGrad2A=1,
-                 borderSize=1,
-                 borderR=0.35,
-                 borderG=0.35,
-                 borderB=0.35,
-                 borderA=1,
-                 spacing=5,
-                 grow1="down",
-                 grow2="right",   
-                 byClassColor=true,
-                 byGroup=true,
-                 maxInLine=5,
-                 showSolo=true,
-                 },                    
-         colors={
-                 debuff={Disease={0.6,0.4,0},Poison={0,0.6,0},Curse={0.6,0,0.1},Magic={0.2,0.6,1}},
-                }, --end of colors
-         families={[1]={displayName="void",
-                       smart=false,
-                       count=0,  
-                       [1]={
-                          ["extra1checkOn"] = "None",
-                          ["trackType"] = "Buffs",
-                          ["xPos"] = 0,
-                          ["ownOnly"] = true,
-                          ["unitRoleLoadAlways"] = true,
-                          ["trackBy"] = "Name",
-                          ["anchor"] = "BOTTOMRIGHT",
-                          ["textType"] = "Time left",
-                          ["instanceLoadAlways"] = true,
-                          ["textAnchor"] = "CENTER",
-                          ["encounterLoadAlways"] = true,
-                          ["smartIcon"] = true,
-                          ["height"] = 20,
-                          ["textureR"] = 1,
-                          ["textureB"] = 1,
-                          ["playerClassLoadAlways"] = false,
-                          ["textExtra"] = "OUTLINE",
-                          ["anchorTo"] = "BOTTOMRIGHT",
-                          ["textR"] = 0.811764705882353,
-                          ["cdReverse"] = true,
-                          ["playerRoleLoadAlways"] = true,
-                          ["unitClassLoadAlways"] = true,
-                          ["hasTexture"] = true,
-                          ["textA"] = 1,
-                          ["cdWheel"] = true,
-                          ["textureG"] = 1,
-                          ["textXOS"] = 0,
-                          ["textG"] = 0.850980392156863,
-                          ["textDecimals"] = 0,
-                          ["loadPlayerClassList"] = {
-                            "Druid", -- [1]
-                          },
-                          ["textFont"] = "Fonts\\FRIZQT__.ttf",
-                          ["type"] = "icon",
-                          ["extra1string"] = "",
-                          ["loadAlways"] = false,
-                          ["textAnchorTo"] = "CENTER",
-                          ["displayName"] = "New Icon",
-                          ["width"] = 20,
-                          ["hasText"] = true,
-                          ["textB"] = 0.337254901960784,
-                          ["hasBorder"] = false,
-                          ["arg1"] = "Lifebloom",
-                          ["textSize"] = 14,
-                          ["yPos"] = 0,
-                          ["textYOS"] = 0,
-                          ["displayLevel"]=1,
-                          ["loadPlayerRoleList"] = {
-                            "HEALER", -- [1]
-                          },
-                        }
-                       }, --end of ...families[1]                        
-                  }--end of all  
-         }  --end of default para
-end 
-  
-if false then
-local a=[[
-            ["rejuv"]={
-                type="icon",
-                width=15,
-                height=15,
-                anchor="TOPRIGHT",
-                anchorTo="TOPRIGHT",
-                ownOnly=true,
-                xPos=0,
-                yPos=0,
-                hasTexture=true,
-                smartIcon=true,
-                textureR=1,
-                textureG=1,
-                textureB=1,
-                textureA=1,
-                hasBorder=false,
-                cdWheel=true,
-                cdReverse=true,
-                hasText=true,
-                textFont="Friz Quadrata TT",
-                textSize=20,
-                textR=1,
-                textG=1,
-                textB=1,
-                textA=1,
-                textAnchor="CENTER",
-                textAnchorTo="CENTER",
-                textXOS=0,
-                textYOS=0,
-                textDecimals=0,
-                textType="Time left",
-                hasText2=false,
-                trackType="Buffs",
-                adoptFunc="Name",
-                arg1="Rejuvenation",               
-            },
-            ["germ"]={
-                type="icon",
-                width=15,
-                height=15,
-                anchor="RIGHT",
-                anchorTo="RIGHT",
-                ownOnly=true,
-                xPos=0,
-                yPos=0,
-                hasTexture=true,
-                smartIcon=true,
-                textureR=1,
-                textureG=1,
-                textureB=1,
-                textureA=1,
-                hasBorder=false,
-                cdWheel=true,
-                cdReverse=true,
-                hasText=true,
-                textFont="Friz Quadrata TT",
-                textSize=20,
-                textR=1,
-                textG=1,
-                textB=1,
-                textA=1,
-                textAnchor="CENTER",
-                textAnchorTo="CENTER",
-                textXOS=0,
-                textYOS=0,
-                textDecimals=0,
-                textType="Time left",
-                hasText2=false,
-                trackType="Buffs",
-                adoptFunc="Name",
-                arg1="Rejuvenation (Germination)",               
-            },
-            ["wild"]={
-                type="icon",
-                width=15,
-                height=15,
-                anchor="BOTTOM",
-                anchorTo="BOTTOM",
-                ownOnly=true,
-                xPos=0,
-                yPos=0,
-                hasTexture=true,
-                smartIcon=true,
-                textureR=1,
-                textureG=1,
-                textureB=1,
-                textureA=1,
-                hasBorder=false,
-                cdWheel=true,
-                cdReverse=true,
-                hasText=true,
-                textFont="Friz Quadrata TT",
-                textSize=20,
-                textR=1,
-                textG=1,
-                textB=1,
-                textA=1,
-                textAnchor="CENTER",
-                textAnchorTo="CENTER",
-                textXOS=0,
-                textYOS=0,
-                textDecimals=0,
-                textType="Time left",
-                hasText2=false,
-                trackType="Buffs",
-                adoptFunc="Name",
-                arg1="Wild Growth",               
-            },
-            ["lifebloom"]={
-                type="icon",
-                width=15,
-                height=15,
-                anchor="BOTTOMRIGHT",
-                anchorTo="BOTTOMRIGHT",
-                ownOnly=true,
-                xPos=0,
-                yPos=0,
-                hasTexture=true,
-                smartIcon=true,
-                textureR=1,
-                textureG=1,
-                textureB=1,
-                textureA=1,
-                hasBorder=false,
-                cdWheel=true,
-                cdReverse=true,
-                hasText=true,
-                textFont="Friz Quadrata TT",
-                textSize=20,
-                textR=1,
-                textG=1,
-                textB=1,
-                textA=1,
-                textAnchor="CENTER",
-                textAnchorTo="CENTER",
-                textXOS=0,
-                textYOS=0,
-                textDecimals=0,
-                textType="Time left",
-                hasText2=false,
-                trackType="Buffs",
-                adoptFunc="Name",
-                arg1="Lifebloom",               
-            },
-]]
-end
-  
 local defaults={
     profile={
         layouts={
@@ -790,6 +466,44 @@ local defaults={
                           },
                 },
             },
+            ["bartest"]={
+                type="bar",
+                anchorTo="BOTTOMLEFT",
+                xPos=5,
+                yPos=0,
+                lMax=50,
+                lFix=10,
+                textureFile=nil,
+                flatTexture=true,
+                textureR=0,
+                textureG=0,
+                textureB=1,
+                texutreA=1,
+                trackType="Power",
+                grow="up",
+                load={
+                    loadAlways=true,
+                    loadNever=false,
+                    [1]={
+                           loadAlways=true,
+                          },
+                    [2]={
+                           loadAlways=true,
+                          },
+                    [3]={
+                           loadAlways=true,
+                          },
+                    [4]={
+                           loadAlways=true,
+                          },
+                    [5]={
+                           loadAlways=true,
+                          },
+                    [6]={
+                           loadAlways=true,
+                          },
+                },
+            },
      },  --end of families
     },  --end of profile
 }--end of defaults
@@ -897,25 +611,17 @@ function elFramo:OnInitialize()
     eF.info.instanceID=instanceID
     
     --load group stuff
-    --eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE") (doing it above anyways)
+    --eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE") --(doing it above anyways)
     
     --element metas
     eF:update_element_meta()
     
     
     --load layouts and frames
-    --toad: REMOVE COMMENTS, FIX
     eF:register_all_headers_inits()
     eF:applyLayoutParas()
-    --eF:updateActiveLayout()
-    --eF:setHeaderPositions()
-    
 
     
-    
-    --eF.intSetInitValues() --toad init values interface
-
-    self:UnregisterEvent("PLAYER_ENTERING_WORLD")
     eF.loadingFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
     
    

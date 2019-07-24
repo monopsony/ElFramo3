@@ -708,14 +708,14 @@ function frameFunctions:apply_element_paras(name)
   
   --TBA DO BAR
   if para.type=="bar" then
-    if not frame[j][k] then frame[j][k]=CreateFrame("StatusBar",("%sElement%s%s"):format(frame:GetName(),j,k),frame,"TextStatusBar") end
-    local el=frame[j][k]
+    if not frame.elements[name] then frame.elements[name]=CreateFrame("StatusBar",("%sElement%s"):format(frame:GetName(),name),frame,"TextStatusBar") end --check whether element even exists already
+    local el=frame.elements[name] 
     el:SetFrameLevel(frame.hp:GetFrameLevel()+1+(para.displayLevel or 0))
     el.para=para
     el.enable=taskFuncs.frameEnable
     el.disable=taskFuncs.frameDisable
     el.onUpdateFunction=taskFuncs.frameOnUpdateFunction
-    el.tasks=eF.tasks[j][k]
+    el.tasks=eF.tasks[name]
     
     --positional
     el:ClearAllPoints()
@@ -746,21 +746,24 @@ function frameFunctions:apply_element_paras(name)
     end
     
     --color/display
-    local r,g,b,a=para.textureR or 1,para.textureG or 1,para.textureB or 1, para.textureA or 1
-    el:SetStatusBarTexture(r,g,b,a)
+    if para.flatTexture then 
+        local r,g,b,a=para.textureR or 1,para.textureG or 1,para.textureB or 1, para.textureA or 1
+        el:SetStatusBarTexture(r,g,b,a)       
+    else
+    
+    end
     el:SetMinMaxValues(0,1)
     
     --static&needed info
-    if para.trackType=="power" then
+    if para.trackType=="Power" then
       el.static=true
-      el:Show()
-      el.id=frame.id
-    elseif para.trackType=="heal absorb" then
+      el:enable()
+    elseif para.trackType=="Heal absorb" then
       el.static=true
-      el:Show()
-      el.id=frame.id
+      el:enable()
     else
       el.static=false
+      el:disable()
     end
     
     
@@ -1053,26 +1056,23 @@ function eF:update_element_meta(name)
   
   --TBA bar handling
   if para.type=="bar" then
-    if para.trackType=="power" then
+    if para.trackType=="Power" then
       tasks.onPower[#tasks.onPower+1]=taskFuncs.statusBarPowerUpdate
       tasks.onLoad[#tasks.onLoad+1]=taskFuncs.statusBarPowerUpdate
-    elseif para.trackType=="heal absorb" then
-      tasks.onPower[#tasks.onPower+1]=taskFuncs.statusBarHAbsorbUpdate    
+    elseif para.trackType=="Heal absorb" then
+      tasks.onHealAbsorb[#tasks.onHealAbsorb+1]=taskFuncs.statusBarHAbsorbUpdate    
       tasks.onLoad[#tasks.onLoad+1]=taskFuncs.statusBarHAbsorbUpdate    
     end 
   end
   
   --TBA bar handling
   if para.type=="border" then
-    print "yo"
     local tt=para.trackType
     if tt=="HELPFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then
       tasks.onAura[#tasks.onAura+1]=taskFuncs.applyAuraAdopt
-      print(para.adoptFunc)
       if para.adoptFunc=="Name" then
         work.auraAdopt=taskFuncs.iconAdoptAuraByName
       elseif para.adoptFunc=="Spell ID" then
-        print(" in here")
         work.auraAdopt=taskFuncs.iconAdoptAuraBySpellID
       end  
     end --end of if para.trackType=="Buffs" then
