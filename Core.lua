@@ -1,4 +1,5 @@
-local defaults={
+
+local test_profile={
     profile={
         layouts={
             ["Default"]={
@@ -535,6 +536,12 @@ local defaults={
     },  --end of profile
 }--end of defaults
 
+local defaults={
+    profile={
+        layouts={},
+        elements={},
+    },  --end of profile
+}--end of defaults
 elFramo=LibStub("AceAddon-3.0"):NewAddon("elFramo")
 
 local eF=elFramo    
