@@ -35,8 +35,10 @@ local function get_multiline_arg1()
     if sori then return sori end
 
     local para,s=eF.para.elements[name].arg1,""
-    for k,v in pairs(para) do 
-        if v then s=("%s%s,\n"):format(s,tostring(k)) end
+    if para then 
+        for k,v in pairs(para) do 
+            if v then s=("%s%s,\n"):format(s,tostring(k)) end
+        end
     end
     return s
 end
@@ -81,7 +83,11 @@ do
         order=2,
         values=adoptFuncs,
         set=function(self,value)
-            set_current_parameter("arg1",nil)
+            if value=="Name Whitelist" or value=="Name Blacklist" then 
+                set_current_parameter("arg1",{})
+            else 
+                set_current_parameter("arg1",nil)
+            end
             set_current_parameter("adoptFunc",value)
         end,
         get=function(self)
@@ -107,11 +113,12 @@ do
     
     args["arg1_name_blacklist"]={
         type="input",
-        order=4,
-        width=3,
+        order=3,
         hidden=function() return not (eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="Name Blacklist") end,
-        name="Name blacklist",
+        name="Name Blacklist",
         multiline=true,
+        width=3,
+        height=3,
         set=function(self,value)
             set_multiline_arg1(value)
         end,

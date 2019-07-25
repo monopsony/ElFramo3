@@ -39,41 +39,42 @@ local function generate_header_anchor(g1,g2)
 end
 
 local header_default_attributes={
-    templateType="Button",
-    template="SecureUnitButtonTemplate",
-    point="TOP",
-    xOffset=10,
-    yOffset=-10,
-    columnSpacing=10,
-    columnAnchorPoint="LEFT",
-    initialConfigFunction=[[
-    --RegisterUnitWatch(self);
-    self:SetAttribute("*type1","target");
-    self:SetHeight(34)
-    self:SetWidth(34)
-    local header=self:GetParent();
-    self:SetFrameLevel(header:GetFrameLevel()+11)
-    header:CallMethod("initialConfigFunction",self:GetName())
-    ]],
-    allowVehicleTarget=false,
-    toggleForVehicle=false,
-    unitsPerColumn=5,
-    groupingOrder="1,2,3,4,5,6,7,8",
-    --groupFilter=default_group_order,
-    groupBy="GROUP",
-    showPlayer=true, --in para now
-    --showSolo=true,
-    --showRaid=true,
-    --showParty=true,
-    maxColumns=8,
-    strictFiltering=false,
+                    templateType="Button",
+                    template="SecureUnitButtonTemplate",
+                    point="TOP",
+                    xOffset=10,
+                    yOffset=-10,
+                    columnSpacing=10,
+                    columnAnchorPoint="LEFT",
+                    initialConfigFunction=[[
+                    --RegisterUnitWatch(self);
+                    self:SetAttribute("*type1","target");
+                    self:SetHeight(34)
+                    self:SetWidth(34)
+                    local header=self:GetParent();
+                    self:SetFrameLevel(header:GetFrameLevel()+11)
+                    header:CallMethod("initialConfigFunction",self:GetName())
+                    ]],
+                    allowVehicleTarget=false,
+                    toggleForVehicle=false,
+                    unitsPerColumn=5,
+                    groupingOrder="1,2,3,4,5,6,7,8",
+                    groupFilter=default_group_order,
+                    groupBy="GROUP", --TBA PUT BACL
+                    groupBy=nil,
+                    showPlayer=true, --in para now
+                    --showSolo=true,
+                    --showRaid=true,
+                    --showParty=true,
+                    maxColumns=8,
+                    strictFiltering=false,
 }
 
 local header_default_parameters={
-    displayName="UNKNOWN",
+    by_group=false,
+    displayName="Default",
     xPos=1000,
     yPos=500,
-    by_group=false,
     grow1="down",
     grow2="right",
     grow=7,
@@ -95,18 +96,18 @@ local header_default_parameters={
     hpGradOrientation="VERTICAL",
     hpGrad1R=0.5,
     hpGrad1G=0.5,
-    hpGrad1B=0.5, 
-    hpGrad1A=0.5,
+    hpGrad1B=0.5,  
     hpGrad2R=0.8,
     hpGrad2G=0.8,
     hpGrad2B=0.8, 
-    hpGrad2A=0.8, 
     oorA=0.45,
     height=50,
     width=70,
-    textFont = "Friz Quadrata TT",
+    textFont ="Friz Quadrata TT",
     textExtra="OUTLINE",
     textR=1,
+    textG=1,
+    textB=1,
     textPos="CENTER",
     textA=1,
     borderR=0,
@@ -118,8 +119,55 @@ local header_default_parameters={
     textColorByClass=true,
     bg=true,
     textLim=4,
-    borderA=0.7,  
+    borderA=0.7,   
     hasNamelist=false,
+    flagFrames={
+        dead={
+            textFont ="Friz Quadrata TT",
+            textSize=13,
+            textR=1,
+            textPos="CENTER",
+            textR=1,
+            textG=1,
+            textB=1,       
+            textExtra="OUTLINE",
+            frameR=.5,
+            frameG=.5,
+            frameB=.5,
+            frameA=.2,
+            text="DEAD",
+        },
+        offline={
+            textFont ="Friz Quadrata TT",
+            textSize=13,
+            textR=1,
+            textPos="CENTER",
+            textR=1,
+            textG=1,
+            textB=1,       
+            textExtra="OUTLINE",
+            frameR=.5,
+            frameG=.5,
+            frameB=.5,
+            frameA=.2,
+            text="Offline",
+        },
+        mc={
+            textFont ="Friz Quadrata TT",
+            textSize=13,
+            textR=1,
+            textPos="CENTER",
+            textR=1,
+            textG=1,
+            textB=1,       
+            textExtra="OUTLINE",
+            frameR=.5,
+            frameG=.5,
+            frameB=.5,
+            frameA=.2,
+            text="MC",
+        },
+    },
 }
 
 local function initialConfigFunction(self,name)

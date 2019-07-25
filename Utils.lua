@@ -207,3 +207,10 @@ function eF.list_all_active_unit_frames(layout)
     end
     return a
 end
+
+function eF.get_key_for_value(t,value)
+  for k,v in pairs(t) do
+    if v==value then return k end
+  end
+  return nil
+end

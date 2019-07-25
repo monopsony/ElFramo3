@@ -613,7 +613,11 @@ end
 local wipe=table.wipe
 local doIn=C_Timer.NewTimer
 function elFramo:OnInitialize()
-    self.db=LibStub("AceDB-3.0"):New("elFramoDB",defaults)
+    self.db=LibStub("AceDB-3.0"):New("elFramoDB",defaults,true)  --true sets the default profile to a profile called "Default"
+                                                                 --see https://www.wowace.com/projects/ace3/pages/api/ace-db-3-0
+    self.db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
+    self.db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
+    self.db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
     
     --PROFILE CHECKING HERE
     
@@ -658,6 +662,11 @@ function elFramo:OnInitialize()
     eF.loadingFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
     
    
+end
+
+function elFramo:RefreshConfig()
+    --TBA proper handling
+    ReloadUI()
 end
 
 --self.db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")

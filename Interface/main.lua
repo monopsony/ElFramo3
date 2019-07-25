@@ -47,7 +47,7 @@ function eF:open_options_frame()
     --if not initialised then eF.interface_generate_element_groups(); initialised=true end
     AceConfigDialog:Open("elFramo")
 end
-eF:RegisterChatCommand("ef",eF.open_options_frame)
+eF:RegisterChatCommand("ef3",eF.open_options_frame)
 
 function eF:close_options_frame()
     --if not initialised then eF.interface_generate_element_groups(); initialised=true end

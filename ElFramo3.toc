@@ -22,6 +22,8 @@ Interface\Layouts\layouts_frame_options.lua
 Interface\Layouts\layouts_flags_options.lua
 Interface\Layouts\layouts_range_options.lua
 
+Interface\Profiles\profiles.lua
+
 
 Interface\Elements\elements_main.lua
 Interface\Elements\elements_load.lua
