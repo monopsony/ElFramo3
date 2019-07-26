@@ -96,8 +96,7 @@ local post_combat_functions={
         for k,v in pairs(eF.registered_layouts) do 
             v:updateFilters()
         end
-    end,
-      
+    end,    
 }
 
 
@@ -132,6 +131,7 @@ function eF.loadingFrame:handleEvent(event,ID)
     end
     
   elseif event=="PLAYER_ENTERING_WORLD" then
+    if not eF.elFramo_initialised then eF.info.instanceName=nil; eF.info.instanceID=nil; end
     local instanceName,_,_,_,_,_,_,instanceID=GetInstanceInfo()
     if (instanceName~=eF.info.instanceName) or (instanceID~=eF.info.instanceID) then
       eF.info.instanceName=instanceName

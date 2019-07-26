@@ -1,5 +1,5 @@
 local eF=elFramo
-local args=eF.interface_elements_config_tables["bar"].display.args
+local args=eF.interface_elements_config_tables["bar"].display_prot.args
 --eF.current_elements_version
 local LSM=LibStub:GetLibrary("LibSharedMedia-3.0")
 
@@ -26,14 +26,14 @@ local growth={up="Up",down="Down",right="Right",left="Left"}
 
 --display
 do
-    args["layout_header"]={
+    args["layout_header_prot"]={
         order=1,
         name="Layout",
         type="header",
         hidden=true,
     }   
     
-    args["textureFile"]={
+    args["textureFile_prot"]={
         name="Texture - NYI",
         type="select",
         style="dropdown",
@@ -49,7 +49,7 @@ do
         end,
     }
     
-    args["flatTexture"]={
+    args["flatTexture_prot"]={
         name="Flat Texture",
         type="toggle",
         order=9,
@@ -63,7 +63,7 @@ do
         end,
     }
     
-    args["fixedLength"]={
+    args["fixedLength_prot"]={
         order=10,
         type="range",
         name="Fixed length",
@@ -82,7 +82,7 @@ do
         end,
     }
     
-    args["maxLength"]={
+    args["maxLength_prot"]={
         order=11,
         type="range",
         name="Max growth length",
@@ -101,7 +101,7 @@ do
         end,
     }
 
-    args["anchorTo"]={
+    args["anchorTo_prot"]={
         name="Anchor to",
         type="select",
         style="dropdown",
@@ -115,7 +115,7 @@ do
         end,
     }
 
-    args["grow"]={
+    args["grow_prot"]={
         name="Grow",
         type="select",
         style="dropdown",
@@ -129,7 +129,7 @@ do
         end,
     }
 
-    args["xPos"]={
+    args["xPos_prot"]={
         order=14,
         type="range",
         name="X Offset",
@@ -148,7 +148,7 @@ do
         end,
     }
 
-    args["yPos"]={
+    args["yPos_prot"]={
         order=15,
         type="range",
         name="Y Offset",
@@ -167,7 +167,7 @@ do
         end,
     }
 
-    args["color"]={
+    args["color_prot"]={
         order=16,
         type="color",
         name="Color",

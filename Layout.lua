@@ -60,7 +60,7 @@ local header_default_attributes={
                     unitsPerColumn=5,
                     groupingOrder="1,2,3,4,5,6,7,8",
                     groupFilter=default_group_order,
-                    groupBy="GROUP", --TBA PUT BACL
+                    groupBy="GROUP",
                     groupBy=nil,
                     showPlayer=true, --in para now
                     --showSolo=true,
@@ -275,7 +275,7 @@ end
 local by_group_methods={}
 function by_group_methods:SetAttribute(k,v)
     if not self.by_group then return end
-    --if k=="maxColumns" or k=="groupFilter" then return end --TBA REMOVE COMMENTED
+    if k=="maxColumns" or k=="groupFilter" then return end 
     for i=1,#self do
         self[i]:SetAttribute(k,v)
     end
@@ -480,6 +480,7 @@ function eF:apply_layout_para_index(index)
     elseif para.grow1=="right" then att.xOffset=para.spacing or 0; att.yOffset=0 
     elseif para.grow1=="left" then att.xOffset=-para.spacing or 0; att.yOffset=0 
     end
+    att.columnSpacing=para.spacing
     
     --apply attributes
     for k,v in pairs(att) do 

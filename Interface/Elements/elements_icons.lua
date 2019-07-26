@@ -53,8 +53,10 @@ eF.interface_element_defaults.icon={
                 adoptFunc="Name",
                 arg1="",  
                 load={
+                    loadAlways=true,
+                    loadNever=false,
                     [1]={
-                           loadAlways=false,
+                           loadAlways=true,
                           },
                     [2]={
                            loadAlways=true,
@@ -76,7 +78,7 @@ eF.interface_element_defaults.icon={
 
 do
 
-    args["invisible"]={
+    args["invisible_prot"]={
         type="description",
         order=0,
         name="invisible",
@@ -87,7 +89,7 @@ do
         --thanks to rivers for the suggestion
     }
 
-    args["rename"]={
+    args["rename_prot"]={
         type="input",
         order=1,
         name="Rename to",
@@ -99,16 +101,15 @@ do
                 name=eF.find_valid_name_in_table(name,eF.para.elements)
                 eF:interface_create_new_element("icon",name,old)
                 eF:interface_remove_element_by_name(old)
-                eF:interface_set_selected_group("elements",name)
             end,
         get=function(self) 
                 return "" 
             end,
     }   
   
-    args["remove"]={
+    args["remove_prot"]={
         type="execute",
-        order=2,
+        order=5,
         width="half",
         confirm=function() 
             if not eF.optionsTable.currently_selected_element_key then return false end
@@ -124,7 +125,7 @@ do
             end,
     }
     
-    args["duplicate"]={
+    args["duplicate_prot"]={
         type="execute",
         order=3,
         width="half",
@@ -135,16 +136,15 @@ do
                 if not old then return end
                 local name=eF.find_valid_name_in_table(old,eF.para.elements)
                 eF:interface_create_new_element("icon",name,old)
-                eF:interface_set_selected_group("elements",name)
             end,
     }
     
     local AceConfigDialog=LibStub("AceConfigDialog-3.0")
-    args["grouping"]={
+    args["grouping_prot"]={
         name="Group",
         type="select",
         style="dropdown",
-        order=3,
+        order=2,
         values=function()
             local a={None="None"}
             local para=elFramo.para.elements
@@ -174,28 +174,39 @@ do
         end,
     }
 
-    args["tracking"]={
+    args["export_prot"]={
+        type="execute",
+        order=4,
+        width="half",
+        confirm=false,
+        name="Export",
+        func=function(self)
+            eF.open_import_export_window("export",eF.optionsTable.currently_selected_element_key,"element")
+        end,
+    }   
+    
+    args["tracking_prot"]={
         name="Tracking",
         order=10,
         type="group",
         args={},
     }
     
-    args["display"]={
+    args["display_prot"]={
         name="Display",
         order=11,
         type="group",
         args={},
     }
        
-    args["texts"]={
+    args["texts_prot"]={
         name="Texts",
         order=12,
         type="group",
         args={},
     }
     
-    args["load"]={
+    args["load_prot"]={
         name="Load",
         order=13,
         type="group",

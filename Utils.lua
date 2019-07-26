@@ -15,6 +15,12 @@ eF.fonts={"FRIZQT__","ARIALN","skurri","MORPHEUS"}
 eF.OOCActions={layoutUpdate=false,groupUpdate=false}
 eF.info={}
 eF.info.playerClass=UnitClass("player")
+eF.interface_list_delimiters=";,\n"
+
+function eF.interface_list_help_tooltip(s)
+   return ("List of %s separated by either ',' ';' or new lines. Care for whitespaces and capitalisation."):format(s)
+end
+
 eF.characterframes={
                     "Interface\\CHARACTERFRAME\\TemporaryPortrait-Vehicle-Organic",
                     "Interface\\CHARACTERFRAME\\TEMPORARYPORTRAIT-PET",
@@ -124,9 +130,19 @@ local function contained_in_keys_of(tbl,val)
     if tbl[val] then return true else return false end
 end
 
+function eF.is_protected_key(name)
+    if type(name)~="string" then return false end
+    return (name:sub(-5,-1)=="_prot") or (name=="None")
+end
 
+local is_protected_key=eF.is_protected_key
 function eF.find_valid_name_in_table(name,tbl)
     local name,i=name,1
+    
+    --handle not a string and _prot
+    if type(name)~="string" then return eF.find_valid_name_in_table("NOT_A_STRING",tbl) end
+    if is_protected_key(name) then return eF.find_valid_name_in_table(name.."_1",tbl) end
+    
     while contained_in_keys_of(tbl,name) and i<200 do
         local n=tonumber(string.sub(name,#name,#name))       
         if n then
@@ -214,3 +230,37 @@ function eF.get_key_for_value(t,value)
   end
   return nil
 end
+
+local LibDeflate=LibStub("LibDeflate")
+local Ser=LibStub("AceSerializer-3.0")
+function eF.serialize_and_deflate(input,reverse)
+    if reverse then 
+        if type(input)~="string" then return nil end
+        local a=LibDeflate:DecompressDeflate(input)
+        if not a then return nil,nil end
+        local success,b=Ser:Deserialize(a)
+        if not success then return nil,nil end
+        return b,true
+    else
+        local a=input
+        if type(input)=="table" then
+            a=Ser:Serialize(input)
+        end
+        if type(a)~="string" then return nil end
+        return LibDeflate:CompressDeflate(a),true
+    end
+end
+
+function eF.encode_for_print(s,reverse)
+    if not s or type(s)~="string" then return end
+    return reverse and LibDeflate:DecodeForPrint(s) or LibDeflate:EncodeForPrint(s)
+end
+
+function eF.isWhiteSpaces(text)
+    local s=string.gsub(text," ","")
+    return s==""
+end
+
+
+
+

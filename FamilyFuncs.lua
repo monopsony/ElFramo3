@@ -16,17 +16,17 @@ function taskFuncs:frameEnable()
   self.filled=true
 end
 
---count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId
-local function is_aura_new(self,count,expirationTime,spellId)
+--count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellID
+local function is_aura_new(self,count,expirationTime,spellID)
     return not ((count==self.count) and (expirationTime==self.expirationTime) and (spellID==self.spellID))
 end
 
 function taskFuncs:applyAuraAdopt(unit)
     local filter=self.para.trackType or nil
     for i=1,40 do 
-        local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,filter)
+        local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellID,_,isBoss=UnitAura(unit,i,filter)
         if not name then break end
-        local bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss) 
+        local bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellID,isBoss) 
             
         if bool then
             if is_aura_new(self,count,expirationTime,spellID) then
@@ -39,7 +39,7 @@ function taskFuncs:applyAuraAdopt(unit)
                 self.expirationTime=expirationTime
                 self.unitCaster=unitCaster
                 self.canSteal=canSteal
-                self.spellId=spellId
+                self.spellID=spellID
                 self.isBoss=isBoss
                 self.isPermanent=self.expirationTime==0
             else         
@@ -59,9 +59,9 @@ function taskFuncs:applyListAuraAdopt(unit)
     local filter=self.para.trackType or nil
     local active=0
     for i=1,40 do 
-        local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellId,_,isBoss=UnitAura(unit,i,filter)
+        local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellID,_,isBoss=UnitAura(unit,i,filter)
         if not name then break end
-        local bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss) 
+        local bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellID,isBoss) 
 
         if bool then
             active=active+1
@@ -76,7 +76,7 @@ function taskFuncs:applyListAuraAdopt(unit)
                 frame.expirationTime=expirationTime
                 frame.unitCaster=unitCaster
                 frame.canSteal=canSteal
-                frame.spellId=spellId
+                frame.spellID=spellID
                 frame.isBoss=isBoss
                 frame.isPermanent=frame.expirationTime==0
             else         
@@ -104,15 +104,19 @@ function taskFuncs:iconAdoptAuraByName(name)
    return name==self.para.arg1
 end
 
-function taskFuncs:iconAdoptAuraByNameWhitelist(name)
+function taskFuncs:iconAdoptAuraByNameWhitelist(name,_,_,_,dur)
+   if self.para.ignorePermanents and dur==0 then return false end
+   if self.para.iDA and dur>self.para.iDA then return false end
    return self.para.arg1[name] 
 end
 
-function taskFuncs:iconAdoptAuraByNameBlacklist(name)
+function taskFuncs:iconAdoptAuraByNameBlacklist(name,_,_,_,dur)
+   if self.para.ignorePermanents and dur==0 then return false end
+   if self.para.iDA and dur>self.para.iDA then return false end
    return not self.para.arg1[name]
 end
 
-function taskFuncs:iconAdoptAuraBySpellID(_,_,_,_,_,_,_,_,spellID)
+function taskFuncs:iconAdoptAuraByspellID(_,_,_,_,_,_,_,_,spellID)
   return spellID==self.para.arg1 
 end
 
@@ -219,9 +223,9 @@ function taskFuncs:familyApplyAuraAdopt(...)
 end
 
 local isInList=eF.isInList
-function taskFuncs:blacklistAdoptAura(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss)
+function taskFuncs:blacklistAdoptAura(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellID,isBoss)
   if isInList(name,self.para.arg1) then return false end
-  local sid=tostring(spellId)
+  local sid=tostring(spellID)
   if isInList(sid,self.para.arg1) then return false end
   if self.para.ignorePermanents and duration==0 then return false end
   if self.para.ownOnly and not (unitCaster=="player") then return false end
@@ -231,9 +235,9 @@ function taskFuncs:blacklistAdoptAura(name,icon,count,debuffType,duration,expira
   return true
 end
 
-function taskFuncs:whitelistAdoptAura(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss)
+function taskFuncs:whitelistAdoptAura(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellID,isBoss)
   if not isInList(name,self.para.arg1) then 
-    local sid=tostring(spellId)
+    local sid=tostring(spellID)
     if not isInList(sid,self.para.arg1) then return false end
   end
   
@@ -279,7 +283,7 @@ function taskFuncs:familyUpdateCasts()
     
   for i=1,n do
     local l=self.castList[i]
-    self[i]:adoptCast(l.name,l.icon,l.duration,l.expirationTime,l.unitCaster,l.spellId,l.castID)
+    self[i]:adoptCast(l.name,l.icon,l.duration,l.expirationTime,l.unitCaster,l.spellID,l.castID)
   end
     
 end
@@ -314,47 +318,6 @@ function taskFuncs:familyUpdateCDWheels()
   end
 end
 
-function taskFuncs:unconditionalAuraAdopt(...)
-  if self.filled then return end
-
-  local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss=...
-  self.name=name
-  self.icon=icon
-  self.count=count
-  self.debuffType=debuffType
-  self.duration=duration
-  self.expirationTime=expirationTime
-  self.unitCaster=unitCaster
-  self.canSteal=canSteal
-  self.spellId=spellId
-  self.isBoss=isBoss
-  self.filled=true
-  self:enable()
-  return true
-  
-end
-
---TBA check that whole cast garbage and MAKE IT WORK YOU DUMB CUNT
-function taskFuncs:unconditionalCastAdopt(...)
-  if self.filled then return end
-
-  local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellId,isBoss=...
-  self.name=name
-  self.icon=icon
-  self.count=count
-  self.debuffType=debuffType
-  self.duration=duration
-  self.expirationTime=expirationTime
-  self.unitCaster=unitCaster
-  self.canSteal=canSteal
-  self.spellId=spellId
-  self.isBoss=isBoss
-  self.filled=true
-  self:enable()
-  return true
-  
-end
-
 function taskFuncs:frameOnUpdateFunction(elapsed)
   self.elapsed=self.elapsed+elapsed
   if self.elapsed<self.throttle then return end
@@ -365,6 +328,5 @@ function taskFuncs:frameOnUpdateFunction(elapsed)
   end
 end
 
---familyUpdateTextTypeT
 
 

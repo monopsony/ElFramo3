@@ -15,14 +15,19 @@ function eF:interface_create_new_element(typ,name,duplicate)
     if not name then return end
     local para=eF.para.elements
     local name=eF.find_valid_name_in_table(name,para)
+    
     if duplicate and para[duplicate] then
         para[name]=deepcopy(para[duplicate])
+    elseif type(duplicate)=="table" then 
+        para[name]=deepcopy(duplicate)
+        para[name].name_key=nil
     else
         if not typ then return end
         para[name]=deepcopy(eF.interface_element_defaults[typ])
     end
     --eF:update_element_meta(name)
     eF:refresh_element(name)
+    eF:interface_select_element_by_key(name)
 end
 
 
@@ -41,7 +46,7 @@ end
 --add buttons
 do
     local last_opened=0
-    args["invisible"]={
+    args["invisible_prot"]={
         type="description",
         order=-1,
         name="invisible",
@@ -57,7 +62,7 @@ do
         --thanks to rivers for the suggestion
     }
 
-    args["help_message"]={
+    args["help_message_prot"]={
         type="description",
         fontSize="small",
         order=1,
@@ -65,7 +70,7 @@ do
     }
      
     
-    args["new_element_type"]={
+    args["new_element_type_prot"]={
         name="Type",
         type="select",
         style="dropdown",
@@ -79,7 +84,7 @@ do
         end,
     }
     
-    args["new_element"]={
+    args["new_element_prot"]={
         type="input",
         order=3,
         name="New element name",
@@ -96,6 +101,16 @@ do
             end,
     }   
     
+    args["import_element_prot"]={
+        type="execute",
+        order=4,
+        width="half",
+        confirm=false,
+        name="Import",
+        func=function(self)
+            eF.open_import_export_window("import",nil,"element")
+        end,
+    }
      
 end
 
@@ -108,6 +123,7 @@ local function find_first_valid_order(order,tbl)
 end
 
 local pairs=pairs
+local is_protected_key=eF.is_protected_key
 function eF.interface_generate_element_groups()
     local elements=elFramo.optionsTable.args.elements
     local args=elements.args
@@ -115,7 +131,7 @@ function eF.interface_generate_element_groups()
     local order_max=0
     
     for k,v in pairs(args) do 
-        if not (k=="invisible" or k=="help_message" or k=="new_element_type" or k=="new_element") and (not para[k]) then wipe(args[k]); args[k]=nil end
+        if (not is_protected_key(k)) and (not para[k]) then wipe(args[k]); args[k]=nil end
     end
     
     local orders_found={}
@@ -124,7 +140,6 @@ function eF.interface_generate_element_groups()
     --set option tables for orphans and groups
     local group_table={}
     for k,v in pairs(para) do
-        
         if (para[k].interfaceGroup and para[para[k].interfaceGroup]) then --if it's in a group and the group exists
             local group=para[k].interfaceGroup
             if not group_table[group] then group_table[group]={} end
@@ -148,16 +163,30 @@ function eF.interface_generate_element_groups()
                 para[k].interface_order=order
                 order_max=order+1 
             end
-            a.args=eF.interface_elements_config_tables[para[k].type] or {}        
+            if para[k].type=="group" then 
+                --groups cannot work by using literally the same table due to them having different args
+                --so need to do a copy to avoid pointer bullcrap ofc (all groups would end up being the same)
+                --to avoid garbage we perform a check to see if we even need to re-generate the table
+                 if (not a.args) or (not a.args.is_group_element) then
+                    a.args=deepcopy(eF.interface_elements_config_tables["group"])
+                 end
+                 --remove elements inside teh group that dont belong
+                 for key,_ in pairs(a.args) do 
+                    if not (is_protected_key(key) or (para[k].interfaceGroup==k)) then a.args[key]=nil end
+                 end
+            else
+                a.args=eF.interface_elements_config_tables[para[k].type] or {}
+            end
         end
         
     end  
-    
+        
+        
     --set option tables for elements in groups
-    for group,elements in pairs(group_table) do 
+    for group,elements in pairs(group_table) do
         local group_args=args[group].args
         local order_max,orders_found=0,{}
-        for i,v in ipairs(elements) do if para[v].interface_order then  orders_found[para[v].interface_order]=true end end
+        for i,v in ipairs(elements) do if para[v].interface_order then orders_found[para[v].interface_order]=true end end
 
         for i,k in ipairs(elements) do 
             if args[k] then args[k]=nil end --remove elements that might have been orphans in the past but aren't any more
@@ -177,8 +206,6 @@ function eF.interface_generate_element_groups()
                 order_max=order+1 
             end
             a.args=eF.interface_elements_config_tables[para[k].type] or {}        
-            
-            
         end
     end
     

@@ -1,5 +1,5 @@
 local eF=elFramo
-local args=eF.interface_elements_config_tables["bar"].tracking.args
+local args=eF.interface_elements_config_tables["bar"].tracking_prot.args
 --eF.current_elements_version
 local LSM=LibStub:GetLibrary("LibSharedMedia-3.0")
 
@@ -23,7 +23,7 @@ end
 
 do
     local trackTypes={["Heal absorb"]="Heal absorb",["Power"]="Power"}
-    args["trackType"]={
+    args["trackType_prot"]={
         name="Track",
         type="select",
         style="dropdown",

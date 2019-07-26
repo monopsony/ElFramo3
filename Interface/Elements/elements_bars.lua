@@ -17,6 +17,7 @@ eF.interface_element_defaults.bar={
     textureB=1,
     texutreA=1,
     trackType="Power",
+    flatTexture=true,
     load={
         loadAlways=true,
         loadNever=false,
@@ -43,7 +44,7 @@ eF.interface_element_defaults.bar={
 
 do
 
-    args["invisible"]={
+    args["invisible_prot"]={
         type="description",
         order=0,
         name="invisible",
@@ -54,7 +55,7 @@ do
         --thanks to rivers for the suggestion
     }
 
-    args["rename"]={
+    args["rename_prot"]={
         type="input",
         order=1,
         name="Rename to",
@@ -73,9 +74,20 @@ do
             end,
     }   
   
-    args["remove"]={
+    args["export_prot"]={
         type="execute",
-        order=2,
+        order=4,
+        width="half",
+        confirm=false,
+        name="Export",
+        func=function(self)
+            eF.open_import_export_window("export",eF.optionsTable.currently_selected_element_key,"element")
+        end,
+    }   
+  
+    args["remove_prot"]={
+        type="execute",
+        order=5,
         width="half",
         confirm=function() 
             if not eF.optionsTable.currently_selected_element_key then return false end
@@ -91,7 +103,7 @@ do
             end,
     }
 
-    args["duplicate"]={
+    args["duplicate_prot"]={
         type="execute",
         order=3,
         width="half",
@@ -107,11 +119,11 @@ do
     }
 
     local AceConfigDialog=LibStub("AceConfigDialog-3.0")
-    args["grouping"]={
+    args["grouping_prot"]={
         name="Group",
         type="select",
         style="dropdown",
-        order=3,
+        order=2,
         values=function()
             local a={None="None"}
             local para=elFramo.para.elements
@@ -130,7 +142,7 @@ do
             if value=="None" then
                 AceConfigDialog:SelectGroup("elFramo","elements",name)
             else
-                AceConfigDialog:SelectGroup("elFramo","elements",value,name)
+                AceConfigDialog:SelectGroup("elxFramo","elements",value,name)
             end
         end,
         get=function(self)
@@ -141,21 +153,21 @@ do
         end,
     }
 
-    args["tracking"]={
+    args["tracking_prot"]={
         name="Tracking",
         order=10,
         type="group",
         args={},
     }
     
-    args["display"]={
+    args["display_prot"]={
         name="Display",
         order=11,
         type="group",
         args={},
     }
        
-    args["load"]={
+    args["load_prot"]={
         name="Load",
         order=13,
         type="group",

@@ -1,5 +1,5 @@
 local eF=elFramo
-local args=eF.interface_elements_config_tables["border"].display.args
+local args=eF.interface_elements_config_tables["border"].display_prot.args
 --eF.current_elements_version
 local LSM=LibStub:GetLibrary("LibSharedMedia-3.0")
 
@@ -22,14 +22,14 @@ end
 
 --display
 do
-    args["layout_header"]={
+    args["layout_header_prot"]={
         order=1,
         name="Layout",
         type="header",
     }
     
     
-    args["edgeFile"]={
+    args["edgeFile_prot"]={
         name="Border",
         type="select",
         style="dropdown",
@@ -48,7 +48,7 @@ do
         end,
     }
     
-    args["flatBorder"]={
+    args["flatBorder_prot"]={
         name="Flat Colour",
         type="toggle",
         order=9,
@@ -61,7 +61,7 @@ do
         end,
     }
     
-    args["borderSize"]={
+    args["borderSize_prot"]={
         order=10,
         type="range",
         name="Width",
@@ -81,7 +81,7 @@ do
     }
     
 
-    args["xOS"]={
+    args["xOS_prot"]={
         order=11,
         type="range",
         name="X Offset",
@@ -100,7 +100,7 @@ do
         end,
     }
 
-    args["yOS"]={
+    args["yOS_prot"]={
         order=11,
         type="range",
         name="Y Offset",
@@ -119,7 +119,7 @@ do
         end,
     }
 
-    args["color"]={
+    args["color_prot"]={
         order=5,
         type="color",
         name="Color",

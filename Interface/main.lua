@@ -63,4 +63,13 @@ function eF:reload_elements_options_frame()
     eF:interface_set_selected_group()
 end
 
+function eF:interface_select_element_by_key(key)
+    if not key and (type(key)=="string") then return end
+    local para=elFramo.para.elements[key]
+    if para.interfaceGroup then 
+        self:interface_set_selected_group("elements",para.interfaceGroup,key)
+    else
+        self:interface_set_selected_group("elements",key)
+    end
+end
 

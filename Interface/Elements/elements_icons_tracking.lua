@@ -1,5 +1,5 @@
 local eF=elFramo
-local args=eF.interface_elements_config_tables["icon"].tracking.args
+local args=eF.interface_elements_config_tables["icon"].tracking_prot.args
 --eF.current_elements_version
 local LSM=LibStub:GetLibrary("LibSharedMedia-3.0")
 
@@ -23,7 +23,7 @@ end
 
 do
     local trackTypes={["PLAYER HELPFUL"]="Player Buffs",["PLAYER HARMFUL"]="Player Debuffs",["HELPFUL"]="Any Buffs",["HARMFUL"]="Any Debuffs"}
-    args["trackType"]={
+    args["trackType_prot"]={
         name="Track",
         type="select",
         style="dropdown",
@@ -39,7 +39,7 @@ do
     }
 
     local adoptFuncs={["Name"]="Name",["Spell ID"]="Spell ID",["Custom"]="Custom"}
-    args["adoptFunc"]={
+    args["adoptFunc_prot"]={
         name="Adopt by",
         type="select",
         style="dropdown",
@@ -54,7 +54,7 @@ do
         end, 
     }
 
-    args["arg1_name"]={
+    args["arg1_name_prot"]={
         type="input",
         order=3,
         hidden=function() return not (eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="Name") end,
@@ -67,7 +67,7 @@ do
         end,
     }
     
-    args["arg1_spellID"]={
+    args["arg1_spellID_prot"]={
         type="input",
         order=3,
         hidden=function() return not (eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="Spell ID") end,

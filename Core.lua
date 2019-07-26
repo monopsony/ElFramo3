@@ -25,7 +25,7 @@ local test_profile={
                     unitsPerColumn=5,
                     groupingOrder="1,2,3,4,5,6,7,8",
                     groupFilter=default_group_order,
-                    groupBy="GROUP", --TBA PUT BACL
+                    groupBy="GROUP", 
                     groupBy=nil,
                     showPlayer=true, --in para now
                     --showSolo=true,
@@ -613,6 +613,7 @@ end
 local wipe=table.wipe
 local doIn=C_Timer.NewTimer
 function elFramo:OnInitialize()
+
     self.db=LibStub("AceDB-3.0"):New("elFramoDB",defaults,true)  --true sets the default profile to a profile called "Default"
                                                                  --see https://www.wowace.com/projects/ace3/pages/api/ace-db-3-0
     self.db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
@@ -658,7 +659,7 @@ function elFramo:OnInitialize()
     eF:register_all_headers_inits()
     eF:applyLayoutParas()
 
-    
+    eF.elFramo_initialised=true
     eF.loadingFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
     
    

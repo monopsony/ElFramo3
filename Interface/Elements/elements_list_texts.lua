@@ -1,5 +1,5 @@
 local eF=elFramo
-local args=eF.interface_elements_config_tables["list"].texts.args
+local args=eF.interface_elements_config_tables["list"].texts_prot.args
 --eF.current_elements_version
 local LSM=LibStub:GetLibrary("LibSharedMedia-3.0")
 
@@ -27,13 +27,13 @@ local anchors={CENTER="CENTER",RIGHT="RIGHT",TOPRIGHT="TOPRIGHT",TOP="TOP",TOPLE
 --text 1
 do
 
-    args["text_header"]={
+    args["text_header_prot"]={
         order=1,
         name="Text 1",
         type="header",  
     }
     
-    args["hasText"]={
+    args["hasText_prot"]={
         name="Has text 1",
         type="toggle",
         order=2,
@@ -46,7 +46,7 @@ do
         end,
     }  
     
-    args["textType"]={
+    args["textType_prot"]={
         order=3,
         name="Track",
         type="select",
@@ -63,7 +63,7 @@ do
         end,
     }
       
-    args["textFont"]={
+    args["textFont_prot"]={
         name="Font",
         type="select",
         style="dropdown",
@@ -81,7 +81,7 @@ do
         end,
     }
       
-    args["textColor"]={
+    args["textColor_prot"]={
         order=5,
         type="color",
         name="Color",
@@ -107,7 +107,7 @@ do
         end
     } 
     
-    args["decimals"]={
+    args["decimals_prot"]={
         order=6,
         type="range",
         name="Decimal places",
@@ -126,7 +126,7 @@ do
         end,
     }
          
-    args["textSize"]={
+    args["textSize_prot"]={
         order=7,
         type="range",
         name="Size",
@@ -145,7 +145,7 @@ do
         end,
     }
     
-    args["textAnchor"]={
+    args["textAnchor_prot"]={
         name="Anchor",
         type="select",
         style="dropdown",
@@ -162,7 +162,7 @@ do
         end,
     }
 
-    args["textAnchorTo"]={
+    args["textAnchorTo_prot"]={
         name="Anchor to",
         type="select",
         style="dropdown",
@@ -179,7 +179,7 @@ do
         end,
     }
 
-    args["XOffset"]={
+    args["XOffset_prot"]={
         order=10,
         type="range",
         name="X Offset",
@@ -198,7 +198,7 @@ do
         end,
     }
  
-    args["YOffset"]={
+    args["YOffset_prot"]={
         order=11,
         type="range",
         name="Y Offset",
@@ -222,13 +222,13 @@ end
 --text2 2
 do
 
-    args["text2_header"]={
+    args["text2_header_prot"]={
         order=31,
         name="Text 2",
         type="header",  
     }
     
-    args["hastext2"]={
+    args["hastext2_prot"]={
         name="Has text 2",
         type="toggle",
         order=32,
@@ -241,7 +241,7 @@ do
         end,
     }  
     
-    args["text2Type"]={
+    args["text2Type_prot"]={
         order=33,
         name="Track",
         type="select",
@@ -258,7 +258,7 @@ do
         end,
     }
       
-    args["text2Font"]={
+    args["text2Font_prot"]={
         name="Font",
         type="select",
         style="dropdown",
@@ -276,7 +276,7 @@ do
         end,
     }
       
-    args["text2Color"]={
+    args["text2Color_prot"]={
         order=35,
         type="color",
         name="Color",
@@ -302,7 +302,7 @@ do
         end
     } 
     
-    args["text2Decimals"]={
+    args["text2Decimals_prot"]={
         order=36,
         type="range",
         name="Decimal places",
@@ -321,7 +321,7 @@ do
         end,
     }
          
-    args["text2Size"]={
+    args["text2Size_prot"]={
         order=37,
         type="range",
         name="Size",
@@ -340,7 +340,7 @@ do
         end,
     }
     
-    args["text2Anchor"]={
+    args["text2Anchor_prot"]={
         name="Anchor",
         type="select",
         style="dropdown",
@@ -357,7 +357,7 @@ do
         end,
     }
 
-    args["text2AnchorTo"]={
+    args["text2AnchorTo_prot"]={
         name="Anchor to",
         type="select",
         style="dropdown",
@@ -374,7 +374,7 @@ do
         end,
     }
 
-    args["text2XOffset"]={
+    args["text2XOffset_prot"]={
         order=40,
         type="range",
         name="X Offset",
@@ -393,7 +393,7 @@ do
         end,
     }
  
-    args["text2YOffset"]={
+    args["text2YOffset_prot"]={
         order=41,
         type="range",
         name="Y Offset",
@@ -413,271 +413,6 @@ do
     }
         
 end
-
-if false then 
-
---Layout
-do
-    args["layout_header"]={
-        order=1,
-        name="Layout",
-        type="header",
-    }
-    
-    
-    args["width"]={
-        order=2,
-        type="range",
-        name="Width",
-        softMin=4,
-        softMax=100,
-        isPercent=false,
-        step=2,
-        set=function(self,value)
-            set_current_parameter("width",value)
-        end,
-        get=function(self)
-            return get_current_parameter("width")
-        end,
-    }
-    
-    args["height"]={
-        order=3,
-        type="range",
-        name="Height",
-        softMin=4,
-        softMax=100,
-        isPercent=false,
-        step=2,
-        set=function(self,value)
-            set_current_parameter("height",value)
-        end,
-        get=function(self)
-            return get_current_parameter("height")
-        end,
-    }
-  
-    args["XOffset"]={
-        order=4,
-        type="range",
-        name="X Offset",
-        softMin=-50,
-        softMax=50,
-        isPercent=false,
-        step=1,
-        set=function(self,value)
-            set_current_parameter("xPos",value)
-        end,
-        get=function(self)
-            return get_current_parameter("xPos")
-        end,
-    }
- 
-    args["YOffset"]={
-        order=5,
-        type="range",
-        name="Y Offset",
-        softMin=-50,
-        softMax=50,
-        isPercent=false,
-        step=1,
-        set=function(self,value)
-            set_current_parameter("yPos",value)
-        end,
-        get=function(self)
-            return get_current_parameter("yPos")
-        end,
-    }
-
-    local anchors={CENTER="CENTER",RIGHT="RIGHT",TOPRIGHT="TOPRIGHT",TOP="TOP",TOPLEFT="TOPLEFT",LEFT="LEFT",BOTTOMLEFT="BOTTOMLEFT",BOTTOM="BOTTOM",BOTTOMRIGHT="BOTTOMRIGHT"} 
-    args["anchor"]={
-        name="Anchor",
-        type="select",
-        style="dropdown",
-        order=6,
-        values=anchors,
-        set=function(self,value)
-            set_current_parameter("anchor",value)
-        end,
-        get=function(self)
-            return get_current_parameter("anchor")
-        end,
-    }
-
-
-    args["anchorTo"]={
-        name="Anchor to",
-        type="select",
-        style="dropdown",
-        order=7,
-        values=anchors,
-        set=function(self,value)
-            set_current_parameter("anchorTo",value)
-        end,
-        get=function(self)
-            return get_current_parameter("anchorTo")
-        end,
-    }
-
-    
-    
-
-end
-
---icon
-do
-    args["icon_header"]={
-        order=20,
-        name="Icon",
-        type="header",
-    }
-    
-    args["hasTexture"]={
-        name="Has icon",
-        type="toggle",
-        order=21,
-        set=function(self,key) 
-            set_current_parameter("hasTexture",key)
-        end,
-        
-        get=function(self) 
-            return get_current_parameter("hasTexture")
-        end,
-    }  
-    
-    args["smartIcon"]={
-        name="Smart icon",
-        type="toggle",
-        order=22,
-        disabled=function() 
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or eF.para.elements[eF.optionsTable.currently_selected_element_key].solidTexture 
-        end,
-        set=function(self,key) 
-            set_current_parameter("smartIcon",key)
-        end,       
-        get=function(self) 
-            return get_current_parameter("smartIcon")
-        end,
-    }
-    
-    args["solidTexture"]={
-        name="Solid Colour",
-        type="toggle",
-        order=23,
-        disabled=function() 
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon 
-         end,
-        set=function(self,key) 
-            set_current_parameter("solidTexture",key)
-        end,
-        
-        get=function(self) 
-            return get_current_parameter("solidTexture")
-        end,
-    }
-    
-    args["texture"]={
-        type="input",
-        order=24,
-        name="Texture",
-        disabled=function() 
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or eF.para.elements[eF.optionsTable.currently_selected_element_key].solidTexture or eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon 
-        end,
-        set=function(self,value)
-                value=string.gsub(value, "%s+", "")
-                if not value or value=="" then return end
-                set_current_parameter("texture",value)
-            end,
-        get=function(self) 
-                return get_current_parameter("texture")
-            end,
-    }  
-
-    args["icon_color"]={
-        order=25,
-        type="color",
-        name="Color",
-        hasAlpha=true,
-        disabled=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or (eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon)
-        end,
-        set=function(self,R,G,B,A)
-            local name=eF.optionsTable.currently_selected_element_key or nil
-            if not name then return end
-            local para=eF.para.elements[name]
-            para.textureR=R
-            para.textureG=G
-            para.textureB=B
-            set_current_parameter("textureA",A)
-        end,
-        get=function(self)
-            local name=eF.optionsTable.currently_selected_element_key or nil
-            if not name then return end
-            local para=eF.para.elements[name]
-            R,G,B,A=para.textureR,para.textureG,para.textureB,para.textureA
-            return R,G,B,A
-        end
-    } 
-
-end
-
---icon
-do
-    args["CDWheel_header"]={
-        order=40,
-        name="Cooldown wheel",
-        type="header",
-    }
-    
-    args["cdWheel"]={
-        name="CD wheel",
-        type="toggle",
-        order=41,
-        set=function(self,key) 
-            set_current_parameter("cdWheel",key)
-        end,
-        
-        get=function(self) 
-            return get_current_parameter("cdWheel")
-        end,
-    }  
-    
-    args["cdReverse"]={
-        name="Reverse spin",
-        type="toggle",
-        order=42,
-        disabled=function() return not eF.para.elements[eF.optionsTable.currently_selected_element_key].cdWheel end,
-        set=function(self,key) 
-            set_current_parameter("cdReverse",key)
-        end,
-        
-        get=function(self) 
-            return get_current_parameter("cdReverse")
-        end,
-    }  
-    
-end
-
---icon
-do
-    args["border_headers"]={
-        order=60,
-        name="Border",
-        type="header",
-    }
-    
-    args["border_NYI"]={
-        order=61,
-        name="NYI",
-        type="description",  
-    }
-end
-
-end
-
-
-
-
 
 
 

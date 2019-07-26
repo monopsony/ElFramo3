@@ -47,13 +47,10 @@ function frameFunctions:updateUnit(name_changed)
         end
     end
     
-    --TBA REMOVE SHIT, CENTrALIZEd
     if playerFrame and (not self.playerFrame) then
         self:setInRange()
-        --self:SetScript("OnUpdate",nil)
     elseif (not playerFrame) then
         self.elapsed=1
-        --self:SetScript("OnUpdate",self.OnUpdate)
     end
     self.playerFrame=playerFrame
   end
@@ -254,7 +251,6 @@ function frameFunctions:updateBackground()
 end
 
 function frameFunctions:unit_event(event)
-  --if true then return end  --TBA REMOVE, BENCHMARKING
   local unit=self.id or nil
   if not unit then return end
   
@@ -304,7 +300,7 @@ function frameFunctions:checkOOR()
   local unit=self.id
   local oor
   if self.playerFrame then oor=false else oor=not UnitInRange(unit) end  --TBA POTENTIALLY MAKE THIS BETTER
-  --local para=self.header.partyHeader and eF.para.unitsGroup or eF.para.units
+
   if oor and not self.oor then
     self:setOOR()
   elseif not oor and self.oor then
@@ -341,13 +337,9 @@ function frameFunctions:updateBorders()
   
 end
 
---TBA REMOVE
-GLOBAL_EF3_UPDATES=GLOBAL_EF3_UPDATES or {}
-GLOBAL_EF3_UPDATES["HP"]=0
 function frameFunctions:updateHealth()
   local unit=self.id
   self.hp:SetValue(UnitHealth(unit)/UnitHealthMax(unit))
-  GLOBAL_EF3_UPDATES["HP"]=GLOBAL_EF3_UPDATES["HP"]+1
 end
 
 local function metaFunction(t,k)
@@ -360,88 +352,6 @@ function frameFunctions:reset_tasks()
   if self.tasks then wipe(self.tasks) else self.tasks={}; setmetatable(self.tasks,{__index=metaFunction}) end
 end
 
-
-local pairs=pairs
-function frameFunctions:loadElement(j,k)
-  --this one is UNCONDITIONAL: needs to be checked first (cf checkElementLoad)
-  local tasks=self.tasks
-  local meta,frame,workFuncs,para
-  if not k then meta=eF.tasks[j]; frame=self[j]; workFuncs=eF.workFuncs[j]; para=eF.para.families[j]
-  else meta=eF.tasks[j][k]; frame=self[j][k]; workFuncs=eF.workFuncs[j][k]; para=eF.para.families[j][k] end
-  if not meta then return end 
-
-  --task funcs
-  for event,list in pairs(meta) do 
-    for i=1,#list do 
-      tasks[event][#tasks[event]+1]={list[i],frame} --applies function list[i] on element self[j][k] when event happens
-    end      
-  end --end of pairs( meta tasks j,k)
-
-  --work funcs
-  if workFuncs then
-    for funcName,func in pairs(workFuncs) do
-      frame[funcName]=func
-    end
-  end 
-
-  --OnUpdate orphan
-  --TBA testing if OnUpdate causing shit
-  if k then
-    if eF.tasks[j][k].onUpdate and #eF.tasks[j][k].onUpdate>0 and false then
-      frame.throttle=math.min((0.1^math.floor(para.textDecimals or 1))*0.15,0.1)
-      frame.elapsed=100
-      frame:SetScript("OnUpdate",frame.onUpdateFunction)
-    else
-      frame:SetScript("OnUpdate",nil)
-    end
-  end
-  
-  --OnUpdate family
-  if not k then 
-    if eF.tasks[j].onUpdate and #eF.tasks[j].onUpdate>0 and false then
-      local throttle=math.min((0.1^math.floor(para.textDecimals or 1))*0.15,0.1)
-      for k=1,para.count do
-        frame[k].throttle=throttle
-        frame[k].elapsed=100
-        frame[k]:SetScript("OnUpdate",frame[k].onUpdateFunction) --gets applied to each orphan instead for efficiency reasons
-      end
-    else
-     for k=1,para.count do
-        frame[k]:SetScript("OnUpdate",nil) 
-      end
-    end
-  end
-  
-  --apply onLoads
-  local c=tasks.onLoad
-  for j=1,#c do
-    local v=c[j]
-    v[1](v[2])
-  end 
-  
-end 
-
-function frameFunctions:unloadElement(j,k)
-  local frame,para
-  if not k then frame=self[j] else frame=self[j][k] end
-  frame:disable()
-end
-
-function frameFunctions:loadAllElements()
-  if not self.header.active then return end
-  local parafam=eF.para.families
-  self:resetTasks()
-  
-  for j=1,#parafam do
-    if parafam[j].smart then if self:checkElementLoad(j) then self:loadElement(j) else self:unloadElement(j) end
-    else
-      for k=1,#parafam[j] do 
-        if self:checkElementLoad(j,k) then self:loadElement(j,k) else self:unloadElement(j,k) end
-      end
-    end   
-  end
-
-end
 
 --load
 --1: player class
@@ -474,7 +384,7 @@ local element_load_functions={
 
     [5]=function(frame,para)
         if para.loadAlways then return true end
-        return para[info.instanceID] or para[info.instanceName]
+        return para[eF.info.instanceID] or para[eF.info.instanceName]
     end,
 
     [6]=function(frame,para)
@@ -486,7 +396,6 @@ local element_load_functions={
 local function element_update_load_table(frame,self,index)
     local index=index or nil
     local para=self.para.load
-    print(self.para.type,index)
     if not para then self.load_table.loadAlways=false; self.load_table.loadNever=true; return end --this will trigger when an element gets deleted
     if index then 
         self.load_table[index]=element_load_functions[index](frame,para[index])
@@ -514,6 +423,7 @@ function frameFunctions:apply_load_conditions()
         if bool~=v.loaded then
             flag=true
             v.loaded=bool
+            if v.static and bool then v:Show() end
         end
     end  
     return flag
@@ -552,7 +462,6 @@ end
 
 local fu=eF.familyUtils
 function eF:unit_added(event,name)
-  print("unit added",event,name)
   local frame=_G[name]
   
   frame.header=frame:GetParent()

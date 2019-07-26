@@ -114,7 +114,6 @@ function frameFunctions:apply_element_paras(name)
     end
     
     
-    --TBA font handling
     --text1 handling
     if not el.text then el.text=el:CreateFontString(nil,"OVERLAY") end
     if para.hasText then
@@ -156,7 +155,6 @@ function frameFunctions:apply_element_paras(name)
   
   end --end of if para.type=="icon" then
   
-  --TBA DO BAR
   if para.type=="bar" then
     if not frame.elements[name] then frame.elements[name]=CreateFrame("StatusBar",("%sElement%s"):format(frame:GetName(),name),frame,"TextStatusBar") end --check whether element even exists already
     local el=frame.elements[name] 
@@ -219,7 +217,6 @@ function frameFunctions:apply_element_paras(name)
     
   end
   
-  --TBA DO BORDER
   if para.type=="border" then
     if not frame.elements[name] then frame.elements[name]=CreateFrame("Frame",("%sElement%s"):format(frame:GetName(),name),frame) end --check whether element even exists already
     local el=frame.elements[name] 
@@ -269,7 +266,7 @@ function frameFunctions:apply_element_paras(name)
     end
     
     --static handling
-    if para.trackType=="Static" then  --TBA STATIC HANDLING
+    if para.trackType=="Static" then  
       el:enable()
       el.static=true
       el.expirationTime=0
@@ -290,7 +287,6 @@ function frameFunctions:apply_element_paras(name)
     list.active=0
     list.enable=taskFuncs.frameEnable
     list.disable=taskFuncs.frameDisable
-    --TBA disable/enable/onUpdate funcs
     list.tasks=eF.tasks[name]
     local N=para.count
     list.count=N
@@ -368,7 +364,6 @@ function frameFunctions:apply_element_paras(name)
         end
     
     
-        --TBA font handling
         --text1 handling
         if not el.text then el.text=el:CreateFontString(nil,"OVERLAY") end
         if para.hasText then
@@ -505,7 +500,6 @@ function eF:update_element_meta(name)
     
   end --end of if para.type=="icon" then
   
-  --TBA bar handling
   if para.type=="bar" then
     if para.trackType=="Power" then
       tasks.onPower[#tasks.onPower+1]=taskFuncs.statusBarPowerUpdate
@@ -516,7 +510,6 @@ function eF:update_element_meta(name)
     end 
   end
   
-  --TBA bar handling
   if para.type=="border" then
     local tt=para.trackType
     if tt=="HELPFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then

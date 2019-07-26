@@ -24,6 +24,7 @@ Interface\Layouts\layouts_range_options.lua
 
 Interface\Profiles\profiles.lua
 
+Interface\Elements\elements_import.lua
 
 Interface\Elements\elements_main.lua
 Interface\Elements\elements_load.lua
@@ -45,3 +46,5 @@ Interface\Elements\elements_borders_display.lua
 Interface\Elements\elements_bars.lua
 Interface\Elements\elements_bars_tracking.lua
 Interface\Elements\elements_bars_display.lua
+
+Interface\Elements\elements_groups.lua
