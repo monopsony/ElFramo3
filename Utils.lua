@@ -86,6 +86,10 @@ eF.toDecimal={
     [5]=function(n)
         return ("%.5f"):format(n)
     end,
+    
+    [6]=function(n)
+        return ("%.6f"):format(n)
+    end,
 }
 
 
