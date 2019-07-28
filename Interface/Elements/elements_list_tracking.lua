@@ -163,11 +163,27 @@ do
         isPercent=false,
         step=1,
         set=function(self,value)
-            print(value,tonumber(value))
             set_current_parameter("iDA",tonumber(value))
         end,
         get=function(self)
             return get_current_parameter("iDA")
+        end,
+    }
+    
+    args["count_prot"]={
+        order=7,
+        name="Max. number of icons",
+        type="range",
+        min=1,
+        softMax=10,
+        hidden=name_black_white_list,
+        isPercent=false,
+        step=1,
+        set=function(self,value)
+            set_current_parameter("count",tonumber(value))
+        end,
+        get=function(self)
+            return get_current_parameter("count")
         end,
     }
     

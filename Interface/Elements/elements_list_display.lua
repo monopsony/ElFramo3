@@ -125,7 +125,40 @@ do
         end,
     }
 
-    
+    local growth={right="Right",up="Up",left="Left",down="Down"}
+
+    args["grow_prot"]={
+        name="Grows",
+        type="select",
+        style="dropdown",
+        order=8,
+        values=growth,
+        set=function(self,value)
+            set_current_parameter("grow",value)
+        end,
+        get=function(self)
+            return get_current_parameter("grow")
+        end,
+    }
+
+  
+    args["spacing_prot"]={
+        order=9,
+        type="range",
+        name="Spacing",
+        softMin=0,
+        softMax=15,
+        isPercent=false,
+        step=1,
+        set=function(self,value)
+            set_current_parameter("spacing",value)
+        end,
+        get=function(self)
+            return get_current_parameter("spacing")
+        end,
+    }
+
+
     
 
 end

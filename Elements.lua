@@ -309,8 +309,9 @@ function frameFunctions:apply_element_paras(name)
         el:ClearAllPoints()
         if i==1 then  el:SetPoint(para.anchor,frame,para.anchorTo,para.xPos,para.yPos)            
         else
-            local a1,a2,xOS,yOS=growToAnchor[para.grow],growAnchorTo[para.grow],0,0
-            if para.grow=="left" or para.grow=="right" then xOS=para.spacing else yOS=para.spacing end
+            local a1,a2=growToAnchor[para.grow],growAnchorTo[para.grow]
+            local xOS=(para.grow=="right" and para.spacing) or (para.grow=="left" and -para.spacing) or 0
+            local yOS=(para.grow=="up" and para.spacing) or (para.grow=="down" and -para.spacing) or 0
             el:SetPoint(a1,list[i-1],a2,xOS,yOS) 
         end
 
@@ -394,6 +395,11 @@ function frameFunctions:apply_element_paras(name)
           el.text2:Hide()
         end
     end 
+    
+    --hide elements if perhaps coutn was lowered
+    for i=N+1,#list do 
+        list[i]:disable()
+    end
 
     if #list.tasks.onUpdate>0 then
         local throttle=((para.throttleValue~=-1) and para.throttleValue) or math.min((0.1^math.floor(math.max(para.textDecimals or 0,para.text2Decimals or 0) or 1))*0.2,0.2)
