@@ -55,7 +55,6 @@ function frameFunctions:updateUnit(name_changed)
     self.playerFrame=playerFrame
   end
   
-  
   --paras
   if unit_changed or flag1 or flag2 or name_changed then   
     if not unit then self.id=nil; return end 
@@ -122,6 +121,15 @@ end
 function frameFunctions:updateSize()
   local unit=self.id
   local para=self.header.para
+  
+  if InCombatLockdown() then 
+    self.flagged_post_combat_size_update=true
+    eF.post_combat.updateFrameSizes=true
+    return
+  end
+  
+  if self.flagged_post_combat_size_update then self.flagged_post_combat_size_update=false end
+  
   self:SetWidth(para.width)
   self:SetHeight(para.height)
 end
@@ -424,7 +432,6 @@ function frameFunctions:apply_load_conditions()
         if bool~=v.loaded then
             flag=true
             v.loaded=bool
-            if v.static and bool then v:Show() end
         end
     end  
     return flag
@@ -435,6 +442,7 @@ function frameFunctions:reload_loaded_elements()
     self:reset_tasks()
     for k,v in pairs(el) do 
         if v.loaded then
+            if v.static and not v.filled then v:enable() end
             for event,tbl in pairs(tasks[k]) do            
                 for i=1,#tbl do 
                     local n=#self.tasks[event]

@@ -49,10 +49,12 @@ local header_default_attributes={
                     initialConfigFunction=[[
                     --RegisterUnitWatch(self);
                     self:SetAttribute("*type1","target");
-                    self:SetHeight(34)
-                    self:SetWidth(34)
+                    --self:SetHeight(34)
+                    --self:SetWidth(34)
+                    print("IM HERE")
                     local header=self:GetParent();
                     self:SetFrameLevel(header:GetFrameLevel()+11)
+                    print(header:GetAttribute("initial-width"))
                     header:CallMethod("initialConfigFunction",self:GetName())
                     ]],
                     allowVehicleTarget=false,
@@ -467,6 +469,8 @@ function eF:apply_layout_para_index(index)
     local anchor,anchor2=growToAnchor[para.grow1],growToAnchor[para.grow2]   
     header.att.point=anchor
     header.att.columnAnchorPoint=anchor2
+    header.att["initial-width"]=para.width
+    header.att["initial-height"]=para.height
 
     --set order defaults
     if header.att.groupBy=="CLASS" then att.groupingOrder=default_class_order

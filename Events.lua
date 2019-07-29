@@ -41,7 +41,7 @@ local ipairs=ipairs
 function eF.layoutEventHandler:handleEvent(event,...)
 
   local all_frames=eF.list_all_active_unit_frames()
-
+  
   --check player role
   local check_visibility_flag=false 
   local spec=GetSpecialization()
@@ -97,6 +97,11 @@ local post_combat_functions={
             v:updateFilters()
         end
     end,    
+    ["updateFrameSizes"]=function()
+        for k,v in pairs(eF.list_all_active_unit_frames()) do 
+            if v.flagged_post_combat_size_update then v:updateSize() end
+        end
+    end
 }
 
 
