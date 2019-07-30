@@ -55,10 +55,10 @@ function frameFunctions:apply_element_paras(name)
     
     --static handling
     if para.trackType=="Static" then  --TBA STATIC HANDLING
-      el:enable()
       el.static=true
       el.expirationTime=0
       el.duration=0
+      el:disable()
     else
       el.static=false
       el:disable()
@@ -205,10 +205,10 @@ function frameFunctions:apply_element_paras(name)
     --static&needed info
     if para.trackType=="Power" then
       el.static=true
-      el:enable()
+      el:disable()
     elseif para.trackType=="Heal absorb" then
       el.static=true
-      el:enable()
+      el:disable()
     else
       el.static=false
       el:disable()
@@ -267,7 +267,7 @@ function frameFunctions:apply_element_paras(name)
     
     --static handling
     if para.trackType=="Static" then  
-      el:enable()
+      el:disable()
       el.static=true
       el.expirationTime=0
       el.duration=0
