@@ -265,7 +265,7 @@ function frameFunctions:unit_event(event)
   
   if event=="UNIT_MAXHEALTH" or event=="UNIT_HEALTH_FREQUENT" then
     self:updateHealth()
-    --it's not health ... https://i.imgur.com/KkGBLji.png
+    if self.dead then self:updateFlags() end
   elseif event=="UNIT_AURA" then
     local task=self.tasks.onAura
     for i=1,#task,2 do
@@ -304,6 +304,7 @@ function frameFunctions:updateFlags()
   
 end
 
+local UnitInRange=UnitInRange
 function frameFunctions:checkOOR()
   local unit=self.id
   if not unit then return end
@@ -346,6 +347,7 @@ function frameFunctions:updateBorders()
   
 end
 
+local UnitHealth,UnitHealthMax=UnitHealth,UnitHealthMax
 function frameFunctions:updateHealth()
   local unit=self.id
   self.hp:SetValue(UnitHealth(unit)/UnitHealthMax(unit))
@@ -449,7 +451,6 @@ function frameFunctions:reload_loaded_elements()
                     self.tasks[event][n+1]=tbl[i]
                     self.tasks[event][n+2]=v
                 end
-                
             end
         elseif v.filled or v.static then 
             v:disable()

@@ -40,6 +40,7 @@ local function get_multiline_arg1()
     return s
 end
 
+local isWhiteSpaces=eF.isWhiteSpaces
 local function set_multiline_arg1(text) 
     local name=eF.optionsTable.currently_selected_element_key or nil
     if not name then return "N/A" end
