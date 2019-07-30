@@ -429,7 +429,7 @@ function frameFunctions:apply_load_conditions()
     local el,flag=self.elements,false
     for k,v in pairs(el) do 
         local bool=self:check_element_load(k)
-        if bool~=v.loaded then
+        if bool~=v.loaded or (v.static and (v.filled~=bool)) then
             flag=true
             v.loaded=bool
         end
@@ -451,7 +451,7 @@ function frameFunctions:reload_loaded_elements()
                 end
                 
             end
-        elseif v.filled or v.static then
+        elseif v.filled then -- or v.static TBA
             v:disable()
         end
     end
