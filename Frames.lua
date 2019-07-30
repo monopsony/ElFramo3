@@ -451,7 +451,7 @@ function frameFunctions:reload_loaded_elements()
                 end
                 
             end
-        elseif v.filled then
+        elseif v.filled or v.static then
             v:disable()
         end
     end
