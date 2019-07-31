@@ -568,6 +568,21 @@ function eF:update_element_meta(name)
 
   end --end of if para.type=="list" then
   
+  if para.extras then
+    local ex=para.extras
+    for k,v in pairs(ex) do
+        if v[2]=="Custom" then 
+            --add custom shit, generate function etc
+        else
+            if taskFuncs[v[2]] then
+                local t=tasks[v[1]]
+                t[#t+1]=taskFuncs[v[2]]
+            end
+        end
+        
+    end
+    
+  end
   
 end
 

@@ -86,7 +86,9 @@ do
         order=0,
         name="invisible",
         hidden=function(self)
-            eF.optionsTable.currently_selected_element_key=self[#self-1]
+            local new=self[#self-1]
+            if eF.optionsTable.currently_selected_element_key~=new then eF.interface_elements_extras_chosen_key=nil end
+            eF.optionsTable.currently_selected_element_key=new
             return true
         end,
         --thanks to rivers for the suggestion
@@ -217,6 +219,13 @@ do
         order=13,
         type="group",
         args=eF.interface_elements_load_config_table,
+    }
+
+    args["extras_prot"]={
+        name="Functions",
+        order=14,
+        type="group",
+        args=eF.interface_elements_extras_config_table,
     }
 
 end

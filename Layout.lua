@@ -51,10 +51,8 @@ local header_default_attributes={
                     self:SetAttribute("*type1","target");
                     --self:SetHeight(34)
                     --self:SetWidth(34)
-                    print("IM HERE")
                     local header=self:GetParent();
                     self:SetFrameLevel(header:GetFrameLevel()+11)
-                    print(header:GetAttribute("initial-width"))
                     header:CallMethod("initialConfigFunction",self:GetName())
                     ]],
                     allowVehicleTarget=false,

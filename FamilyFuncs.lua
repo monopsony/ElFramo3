@@ -3,6 +3,7 @@ local eF=elFramo
 eF.taskFuncs=eF.taskFuncs or {}
 local taskFuncs=eF.taskFuncs
 local iconApplySmartIcon,iconUpdateCDWheel,iconUpdateTextTypeT,iconUpdateText2TypeT,iconUpdateTextTypeS,iconUpdateText2TypeS
+local updateBorderColorDebuffType
 
 ----------------------------------ICONS--------------------------------------------------
 
@@ -185,6 +186,22 @@ function taskFuncs:iconUpdateText2TypeS()
 end
 iconUpdateText2TypeS=taskFuncs.iconUpdateText2TypeS
 
+local defaultColors=eF.defaultColors
+local unpack=unpack
+function taskFuncs:updateBorderColorDebuffType()
+  print("updateBorderColorDebuffType")
+  if self.isListElement then
+    for i=1,self.active do updateBorderColorDebuffType(self[i]) end
+    return
+  end
+  if not self.filled then return end
+  if not self.debuffType then return end
+  local r,g,b=unpack(defaultColors[self.debuffType])
+  if r then self.border:Show(); self.border:SetVertexColor(r,g,b)
+  else self.border:Hide() end 
+end
+updateBorderColorDebuffType=taskFuncs.updateBorderColorDebuffType
+
 function taskFuncs:statusBarPowerUpdate(unit)
   self:SetValue(UnitPower(unit)/UnitPowerMax(unit))
 end
@@ -198,16 +215,6 @@ function taskFuncs:familyDisableAll()
   self.filled=false
   for k=1,self.active do self[k]:disable() end
   self.active=0
-end
-
-local defaultColors=eF.defaultColors
-local unpack=unpack
-function taskFuncs:updateBorderColorDebuffType()
-  if not self.filled then return end
-  if not self.debuffType then return end
-  local r,g,b=unpack(defaultColors[self.debuffType])
-  if r then self.border:Show(); self.border:SetVertexColor(r,g,b)
-  else self.border:Hide() end 
 end
 
 function taskFuncs:familyApplyAuraAdopt(...)
@@ -327,6 +334,7 @@ function taskFuncs:frameOnUpdateFunction(elapsed)
     lst[i](self)
   end
 end
+
 
 
 

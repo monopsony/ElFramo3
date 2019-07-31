@@ -28,6 +28,7 @@ Interface\Elements\elements_import.lua
 
 Interface\Elements\elements_main.lua
 Interface\Elements\elements_load.lua
+Interface\Elements\elements_extras.lua
 
 Interface\Elements\elements_icons.lua
 Interface\Elements\elements_icons_tracking.lua

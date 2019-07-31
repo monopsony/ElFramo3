@@ -136,7 +136,7 @@ end
 
 function eF.is_protected_key(name)
     if type(name)~="string" then return false end
-    return (name:sub(-5,-1)=="_prot") or (name=="None")
+    return (name:sub(-5,-1)=="_prot") or (name=="None") or (name=="Custom")
 end
 
 local is_protected_key=eF.is_protected_key
