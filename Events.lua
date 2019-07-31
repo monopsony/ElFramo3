@@ -146,6 +146,7 @@ function eF.loadingFrame:handleEvent(event,ID)
       end
       flag=true
     end
+    eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE")
   elseif event=="ACTIVE_TALENT_GROUP_CHANGED" then
     local spec=GetSpecialization()
     local role=select(5,GetSpecializationInfo(spec))

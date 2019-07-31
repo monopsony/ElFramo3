@@ -189,15 +189,14 @@ iconUpdateText2TypeS=taskFuncs.iconUpdateText2TypeS
 local defaultColors=eF.defaultColors
 local unpack=unpack
 function taskFuncs:updateBorderColorDebuffType()
-  print("updateBorderColorDebuffType")
   if self.isListElement then
     for i=1,self.active do updateBorderColorDebuffType(self[i]) end
     return
   end
   if not self.filled then return end
-  if not self.debuffType then return end
-  local r,g,b=unpack(defaultColors[self.debuffType])
-  if r then self.border:Show(); self.border:SetVertexColor(r,g,b)
+  if  self.debuffType then
+      local r,g,b=unpack(defaultColors[self.debuffType])
+      if r then self.border:Show(); self.border:SetVertexColor(r,g,b) else self.border:Hide() end
   else self.border:Hide() end 
 end
 updateBorderColorDebuffType=taskFuncs.updateBorderColorDebuffType

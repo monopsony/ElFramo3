@@ -272,7 +272,7 @@ function frameFunctions:unit_event(event)
         task[i](task[i+1],unit)
     end
     
-  elseif event=="UNIT_CONNECTION" or event=="UNIT_FLAGS" then
+  elseif event=="UNIT_CONNECTION" or event=="UNIT_FLAGS" or event=="INCOMING_RESURRECT_CHANGED" or event=="UNIT_PHASE" then
     self:updateFlags()
   elseif event=="UNIT_NAME_UPDATE" then
      self:updateUnit(true)
@@ -444,7 +444,7 @@ function frameFunctions:reload_loaded_elements()
     self:reset_tasks()
     for k,v in pairs(el) do 
         if v.loaded then
-            if v.static and not v.filled then v:enable() end
+            if v.static then v:enable() end
             for event,tbl in pairs(tasks[k]) do            
                 for i=1,#tbl do 
                     local n=#self.tasks[event]
