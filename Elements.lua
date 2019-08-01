@@ -473,7 +473,9 @@ function eF:update_element_meta(name)
       if para.adoptFunc=="Name" then
         work.auraAdopt=taskFuncs.iconAdoptAuraByName
       elseif para.adoptFunc=="Spell ID" then
-        work.auraAdopt=taskFuncs.iconAdoptAuraBySpellID
+        print("YOYO")
+        work.auraAdopt=taskFuncs.iconAdoptAuraBySpellID  --iconAdoptAuraByspellID
+        print(taskFuncs.iconAdoptAuraBySpellID)
       end  
     end --end of if para.trackType=="Buffs" then
     

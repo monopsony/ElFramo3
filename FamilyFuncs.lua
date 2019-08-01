@@ -117,7 +117,7 @@ function taskFuncs:iconAdoptAuraByNameBlacklist(name,_,_,_,dur)
    return not self.para.arg1[name]
 end
 
-function taskFuncs:iconAdoptAuraByspellID(_,_,_,_,_,_,_,_,spellID)
+function taskFuncs:iconAdoptAuraBySpellID(_,_,_,_,_,_,_,_,spellID)
   return spellID==self.para.arg1 
 end
 
