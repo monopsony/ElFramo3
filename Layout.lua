@@ -224,6 +224,12 @@ function layout_methods:setVisible(bool)
 end
 
 function layout_methods:checkVisibility()
+    
+    if InCombatLockdown() then
+        eF.post_combat["layoutVisibility"]=true
+        return
+    end
+
     local bool=false
     local showRaid,showParty,showSolo,classes,roles=self.para.showRaid,self.para.showParty,self.para.showSolo,self.para.show_classes,self.para.show_roles
     local inRaid,inGroup=eF.raid,eF.grouped

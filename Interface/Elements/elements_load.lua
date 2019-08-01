@@ -283,7 +283,6 @@ do
         hidden=function() return hidden_function(5) end,
         multiline=true,
         set=function(self,value)
-            print(value)
             set_multiline_parameter(5,value)
         end,
         get=function(self) 

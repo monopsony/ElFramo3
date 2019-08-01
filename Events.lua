@@ -99,7 +99,10 @@ local post_combat_functions={
         for k,v in pairs(eF.list_all_active_unit_frames()) do 
             if v.flagged_post_combat_size_update then v:updateSize() end
         end
-    end
+    end,
+    ["layoutVisibility"]=function()
+        eF:check_registered_layouts_visibility()
+    end,
 }
 
 
