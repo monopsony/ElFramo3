@@ -130,7 +130,7 @@ do
             local para=eF.para.elements[name]
             para.borderR=R
             para.borderG=G
-            para.borderA=B
+            para.borderB=B
             set_current_parameter("borderA",A)
         end,
         get=function(self)
