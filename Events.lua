@@ -39,7 +39,6 @@ if not eF.layoutEventHandler then eF.layoutEventHandler=CreateFrame("Frame","ElF
 eF.layoutEventHandler:RegisterEvent("GROUP_ROSTER_UPDATE")
 local ipairs=ipairs
 function eF.layoutEventHandler:handleEvent(event,...)
-
   local all_frames=eF.list_all_active_unit_frames()
   
   --check player role
@@ -54,14 +53,13 @@ function eF.layoutEventHandler:handleEvent(event,...)
   end
 
   --check roles AND NAME
-  
   for _,frame in ipairs(all_frames) do
     local unit=frame.id
     local role=UnitGroupRolesAssigned(unit)
     local name=UnitName(unit)
     --local class,CLASS=UnitClass(unit)
     if (name~=frame.name) then frame:updateUnit(true) end
-    if (role~=frame.role) then frame:update_load_tables(4) end
+    if (role~=frame.role) then frame.role=role; frame:update_load_tables(4) end
   end
 
   --check raid or not
@@ -147,6 +145,7 @@ function eF.loadingFrame:handleEvent(event,ID)
       flag=true
     end
     eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE")
+    
   elseif event=="ACTIVE_TALENT_GROUP_CHANGED" then
     local spec=GetSpecialization()
     local role=select(5,GetSpecializationInfo(spec))

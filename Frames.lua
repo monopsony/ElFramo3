@@ -91,6 +91,7 @@ function frameFunctions:updateUnit(name_changed)
             self:update_load_tables(3)
             self:update_load_tables(4)
         end
+        self:updateFlags()
     end
     self:apply_and_reload_loads()
     self.current_layout_version=eF.current_layout_version
@@ -459,8 +460,8 @@ function frameFunctions:reload_loaded_elements()
 end
 
 function frameFunctions:apply_and_reload_loads(force)
-    local bool=self:apply_load_conditions()
-    if bool or force then self:reload_loaded_elements() end
+    local bool=self:apply_load_conditions() or force
+    if bool then self:reload_loaded_elements() end
 end
 
 function frameFunctions:check_element_load(k)
@@ -505,8 +506,7 @@ function eF:unit_added(event,name)
   
   frame:update_load_tables()
   frame:apply_and_reload_loads()
-  
-  
+    
   eF.visible_unit_frames=eF.list_all_active_unit_frames()
 end
 eF:RegisterMessage("UNIT_ADDED","unit_added")
