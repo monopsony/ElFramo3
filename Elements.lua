@@ -46,6 +46,7 @@ function frameFunctions:apply_element_paras(name)
     el.disable=taskFuncs.frameDisable
     el.onUpdateFunction=taskFuncs.frameOnUpdateFunction
     el.tasks=eF.tasks[name]
+    el.auraInfo=el.auraInfo or {}
        
     --dimensions and position
     el:SetWidth(para.width)
@@ -164,6 +165,7 @@ function frameFunctions:apply_element_paras(name)
     el.disable=taskFuncs.frameDisable
     el.onUpdateFunction=taskFuncs.frameOnUpdateFunction
     el.tasks=eF.tasks[name]
+    el.auraInfo=el.auraInfo or {}
     
     --positional
     el:ClearAllPoints()
@@ -226,7 +228,8 @@ function frameFunctions:apply_element_paras(name)
     el.disable=taskFuncs.frameDisable
     el.onUpdateFunction=taskFuncs.frameOnUpdateFunction
     el.tasks=eF.tasks[name]
-        
+    el.auraInfo=el.auraInfo or {}
+    
     el:ClearAllPoints()
     el:SetPoint("TOPRIGHT",frame,"TOPRIGHT",para.xOS or 0,para.yOS or 0)
     el:SetPoint("BOTTOMLEFT",frame,"BOTTOMLEFT",-(para.xOS or 0),-(para.yOS or 0))
@@ -290,7 +293,8 @@ function frameFunctions:apply_element_paras(name)
     list.tasks=eF.tasks[name]
     local N=para.count
     list.count=N
-
+    local just=para.justify or ""
+    
     --list elements creation
     for i=1,N do 
         if not list[i] then list[i]=CreateFrame("Frame",("%sList%sElement%s"):format(frame:GetName(),name,tostring(i)),list) end
@@ -302,7 +306,8 @@ function frameFunctions:apply_element_paras(name)
         el.disable=taskFuncs.frameDisable
         el.onUpdateFunction=taskFuncs.frameOnUpdateFunction
         el.tasks=eF.tasks[name]
-       
+        el.auraInfo=el.auraInfo or {}
+        
         --dimensions and position
         el:SetWidth(para.width)
         el:SetHeight(para.height)
@@ -312,7 +317,11 @@ function frameFunctions:apply_element_paras(name)
             local a1,a2=growToAnchor[para.grow],growAnchorTo[para.grow]
             local xOS=(para.grow=="right" and para.spacing) or (para.grow=="left" and -para.spacing) or 0
             local yOS=(para.grow=="up" and para.spacing) or (para.grow=="down" and -para.spacing) or 0
-            el:SetPoint(a1,list[i-1],a2,xOS,yOS) 
+            if (para.grow=="right") or (para.grow=="left") then
+                el:SetPoint(just..a1,list[i-1],just..a2,xOS,yOS) 
+            else
+                el:SetPoint(a1..just,list[i-1],a2..just,xOS,yOS) 
+            end
         end
 
         --texture handling
@@ -412,6 +421,8 @@ function frameFunctions:apply_element_paras(name)
     list:disable()
   end
 
+  
+
   --apply work funcs
   local el=frame.elements[name]
   if not el.load_table then el.load_table={} end
@@ -473,19 +484,17 @@ function eF:update_element_meta(name)
       if para.adoptFunc=="Name" then
         work.auraAdopt=taskFuncs.iconAdoptAuraByName
       elseif para.adoptFunc=="Spell ID" then
-        print("YOYO")
         work.auraAdopt=taskFuncs.iconAdoptAuraBySpellID  --iconAdoptAuraByspellID
-        print(taskFuncs.iconAdoptAuraBySpellID)
       end  
     end --end of if para.trackType=="Buffs" then
     
 
     if para.hasTexture and para.smartIcon then
-      tasks.onAura[#tasks.onAura+1]=taskFuncs.iconApplySmartIcon
+      tasks.postAura[#tasks.postAura+1]=taskFuncs.iconApplySmartIcon
     end
     
     if para.cdWheel then
-      tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateCDWheel
+      tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateCDWheel
     end
     
     if para.hasText then
@@ -493,7 +502,7 @@ function eF:update_element_meta(name)
         tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateTextTypeT 
         work.textDecimalFunc=eF.toDecimal[para.textDecimals]
       end
-      if para.textType=="Stacks" then tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateTextTypeS end
+      if para.textType=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateTextTypeS end
     end
     
     if para.hasText2 then
@@ -501,7 +510,7 @@ function eF:update_element_meta(name)
         tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateText2TypeT 
         work.text2DecimalFunc=eF.toDecimal[para.text2Decimals]
       end
-      if para.text2Type=="Stacks" then tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateText2TypeS end
+      if para.text2Type=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateText2TypeS end
     end
     
   
@@ -545,11 +554,11 @@ function eF:update_element_meta(name)
     
     
     if para.hasTexture and para.smartIcon then
-      tasks.onAura[#tasks.onAura+1]=taskFuncs.iconApplySmartIcon
+      tasks.postAura[#tasks.postAura+1]=taskFuncs.iconApplySmartIcon
     end
     
     if para.cdWheel then
-      tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateCDWheel
+      tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateCDWheel
     end
     
     if para.hasText then
@@ -557,7 +566,7 @@ function eF:update_element_meta(name)
         tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateTextTypeT 
         work.textDecimalFunc=eF.toDecimal[para.textDecimals]
       end
-      if para.textType=="Stacks" then tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateTextTypeS end
+      if para.textType=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateTextTypeS end
     end
     
     if para.hasText2 then
@@ -565,7 +574,7 @@ function eF:update_element_meta(name)
         tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateText2TypeT 
         work.text2DecimalFunc=eF.toDecimal[para.text2Decimals]
       end
-      if para.text2Type=="Stacks" then tasks.onAura[#tasks.onAura+1]=taskFuncs.iconUpdateText2TypeS end
+      if para.text2Type=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateText2TypeS end
     end
 
   end --end of if para.type=="list" then

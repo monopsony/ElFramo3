@@ -663,7 +663,6 @@ function elFramo:OnInitialize()
 
     eF.elFramo_initialised=true
     eF.loadingFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-    
    
 end
 

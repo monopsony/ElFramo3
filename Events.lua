@@ -41,16 +41,16 @@ local ipairs=ipairs
 function eF.layoutEventHandler:handleEvent(event,...)
   local all_frames=eF.list_all_active_unit_frames()
   
-  --check player role
-  local check_visibility_flag=false 
-  local spec=GetSpecialization()
-  local role=select(5,GetSpecializationInfo(spec))
-  if eF.info.playerRole~=role then 
-    check_visibility_flag=true; eF.info.playerRole=role 
-    for i_,frame in ipairs(all_frames) do 
-        frame:update_load_tables(2)
-    end
-  end
+  --check player role --ACTIVE_TALENT_GROUP_CHANGED should handle that already
+  --local check_visibility_flag=false 
+  --local spec=GetSpecialization()
+  --local role=select(5,GetSpecializationInfo(spec))
+  --if eF.info.playerRole~=role then 
+  --  check_visibility_flag=true; eF.info.playerRole=role 
+  --  for i_,frame in ipairs(all_frames) do 
+  --      frame:update_load_tables(2)
+  --  end
+  --end
 
   --check roles AND NAME
   for _,frame in ipairs(all_frames) do
@@ -137,6 +137,7 @@ function eF.loadingFrame:handleEvent(event,ID)
     end
     
   elseif event=="PLAYER_ENTERING_WORLD" then
+    self:handleEvent("ACTIVE_TALENT_GROUP_CHANGED")
     if not eF.elFramo_initialised then eF.info.instanceName=nil; eF.info.instanceID=nil; end
     local instanceName,_,_,_,_,_,_,instanceID=GetInstanceInfo()
     if (instanceName~=eF.info.instanceName) or (instanceID~=eF.info.instanceID) then
@@ -151,7 +152,12 @@ function eF.loadingFrame:handleEvent(event,ID)
     
   elseif event=="ACTIVE_TALENT_GROUP_CHANGED" then
     local spec=GetSpecialization()
-    local role=select(5,GetSpecializationInfo(spec))
+    local specID,specName,_,_,role=GetSpecializationInfo(spec)
+    if eF.info.specName~=specName then 
+        eF.info.specName=specName
+        eF.info.specID=specID
+        eF.isDispellable=eF.isDispellableTable[eF.info.playerClass][specName]
+    end
     if role~=eF.info.playerRole then 
       eF.info.playerRole=role
       for _,v in ipairs(all_frames) do 

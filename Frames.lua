@@ -268,7 +268,15 @@ function frameFunctions:unit_event(event)
     self:updateHealth()
     if self.dead then self:updateFlags() end
   elseif event=="UNIT_AURA" then
+  
+    --onAura
     local task=self.tasks.onAura
+    for i=1,#task,2 do
+        task[i](task[i+1],unit)
+    end
+    
+    --postAura
+    local task=self.tasks.postAura
     for i=1,#task,2 do
         task[i](task[i+1],unit)
     end

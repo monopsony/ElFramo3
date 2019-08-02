@@ -16,6 +16,75 @@ eF.OOCActions={layoutUpdate=false,groupUpdate=false}
 eF.info={}
 eF.info.playerClass=UnitClass("player")
 eF.interface_list_delimiters=";,\n"
+eF.isDispellable={}
+eF.isDispellableTable={
+    ["Druid"]={
+        ["Balance"]={Curse=true,Poison=true},
+        ["Feral"]={Curse=true,Poison=true},
+        ["Restoration"]={Curse=true,Poison=true,Magic=true},
+    },
+    
+    ["Priest"]={
+        ["Holy"]={Disease=true,Magic=true},
+        ["Discipline"]={Disease=true,Magic=true},
+        ["Shadow"]={Disease=true,Magic=true},
+    },
+        
+        
+    ["Death Knight"]={
+        ["Blood"]={},
+        ["Unholy"]={},
+        ["Frost"]={},
+    }, 
+        
+    ["Rogue"]={
+        ["Assassination"]={},
+        ["Subtlety"]={},
+        ["Outlaw"]={},
+    }, 
+    
+    ["Warrior"]={
+        ["Arms"]={},
+        ["Fury"]={},
+        ["Protection"]={},
+    }, 
+    
+    ["Mage"]={
+        ["Blood"]={Curse=true},
+        ["Unholy"]={Curse=true},
+        ["Frost"]={Curse=true},
+    }, 
+    
+    ["Shaman"]={
+        ["Restoration"]={Curse=true,Magic=true,},
+        ["Elemental"]={Curse=true},
+        ["Enhancement"]={Curse=true},
+    }, 
+    
+    ["Hunter"]={
+        ["Marksmanship"]={},
+        ["Beast Master"]={},
+        ["Survival"]={},
+    }, 
+    
+    ["Demon Hunter"]={
+        ["Havoc"]={},
+        ["Vengeance"]={},
+    }, 
+    
+    ["Monk"]={
+        ["Windwalker"]={Disease=true,Poison=true},
+        ["Brewmaster"]={Disease=true,Poison=true},
+        ["Mistweaver"]={Disease=true,Poison=true,Magic=true},
+    },
+    
+    ["Warlock"]={
+        ["Demonology"]={Magic=true},
+        ["Affliction"]={Magic=true},
+        ["Destruction"]={Magic=true},
+    }, 
+    
+}
 
 function eF.interface_list_help_tooltip(s)
    return ("List of %s separated by either ',' ';' or new lines. Care for whitespaces and capitalisation."):format(s)

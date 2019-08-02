@@ -134,16 +134,37 @@ do
         order=8,
         values=growth,
         set=function(self,value)
+            set_current_parameter("justify","")
             set_current_parameter("grow",value)
         end,
         get=function(self)
             return get_current_parameter("grow")
         end,
     }
+    
+    local j1={LEFT="Left",[""]="Center",RIGHT="Right"}
+    local j2={TOP="Top",[""]="Center",BOTTOM="Bottom"}
+    local function justify_choices()
+        local grow=get_current_parameter("grow")
+        return ((grow=="up" or grow=="down") and j1) or j2
+    end
 
+    args["justify_prot"]={
+        name="Justify",
+        type="select",
+        style="dropdown",
+        order=8,
+        values=justify_choices,
+        set=function(self,value)
+            set_current_parameter("justify",value)
+        end,
+        get=function(self)
+            return get_current_parameter("justify")
+        end,
+    }
   
     args["spacing_prot"]={
-        order=9,
+        order=10,
         type="range",
         name="Spacing",
         softMin=0,

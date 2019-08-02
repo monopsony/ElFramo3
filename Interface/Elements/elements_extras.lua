@@ -18,7 +18,6 @@ local function get_current_parameter(key)
     return eF.para.elements[ele].extras[name][key]
 end
 
-
 local function set_current_parameter(key,value)
     if not key then return end
     local ele=eF.optionsTable.currently_selected_element_key or nil
@@ -30,6 +29,30 @@ local function set_current_parameter(key,value)
     eF.current_elements_version=eF.current_elements_version+1
     eF:fully_reload_element(ele)
 end
+
+
+local function get_normal_parameter(key)
+    if not key then return end
+    local ele=eF.optionsTable.currently_selected_element_key or nil
+    if not ele then return "N/A" end
+    local name=eF.interface_elements_extras_chosen_key or nil
+    if not name then return "N/A" end
+    
+    return eF.para.elements[ele][key]
+end
+
+local function set_normal_parameter(key,value)
+    if not key then return end
+    local ele=eF.optionsTable.currently_selected_element_key or nil
+    if not ele then return "N/A" end
+    local name=eF.interface_elements_extras_chosen_key or nil
+    if not name then return "N/A" end
+    eF.para.elements[ele][key]=value
+    
+    eF.current_elements_version=eF.current_elements_version+1
+    eF:fully_reload_element(ele)
+end
+
 
 local function hidden_function(index)
     local name=eF.optionsTable.currently_selected_element_key or nil
@@ -48,20 +71,19 @@ local function no_key_chosen()
 end
 
 
-local function_events={OnPower="Power update",onAura="Aura update"}
+local function_events={OnPower="Power update",onAura="Aura update",postAura="Post aura update"}
 
+local default_functions={
+    ["icon"]={updateBorderColorDebuffType="Border color by aura type",Custom="Custom"},
 
+    ["list"]={updateBorderColorDebuffType="Border color by aura type",Custom="Custom",changeDispellableDebuffSize="Change size of dispellable auras",orderByDispellable="Sort dispellable auras first"},
+
+    ["border"]={Custom="Custom"},
+    
+    ["bar"]={Custom="Custom"},
+}
 
 do
-    local default_functions={
-        ["icon"]={updateBorderColorDebuffType="Border color by aura type",Custom="Custom"},
-
-        ["list"]={updateBorderColorDebuffType="Border color by aura type",Custom="Custom"},
-
-        ["border"]={Custom="Custom"},
-        
-        ["bar"]={Custom="Custom"},
-    }
     
     local function generate_functions_dropdown()
         local ele=eF.optionsTable.currently_selected_element_key or nil
@@ -152,6 +174,7 @@ do
         name="Trigger on",
         type="select",
         style="dropdown",
+        desc=("Decides when the selected function should be called. Note: use %sAura update|r for setting aura infos (searching/adopting auras, aura positioning in lists etc) and %sPost aura aupdate|r for visuals (update CD wheel, apply smart icon texture etc"):format(highlight_colour,highlight_colour),
         hidden=no_key_chosen,
         order=11,
         values=function_events,
@@ -192,3 +215,62 @@ do
     }
     
 end
+
+--changeDispellableDebuffSize
+do
+    local function hidden_function()
+        return not (get_current_parameter(2)=="changeDispellableDebuffSize")
+    end
+    
+    args["dispellableHeight_prot"]={
+        order=21,
+        type="range",
+        name="Height",
+        softMin=0,
+        softMax=50,
+        isPercent=false,
+        hidden=hidden_function,
+        step=1,
+        set=function(self,value)
+            set_normal_parameter("dispellableHeight",value) 
+        end,
+        get=function(self)
+            return get_normal_parameter("dispellableHeight") or get_normal_parameter("height")
+        end,
+    }
+    
+    args["dispellableWidth_prot"]={
+        order=22,
+        type="range",
+        name="Width",
+        softMin=0,
+        softMax=50,
+        isPercent=false,
+        hidden=hidden_function,
+        step=1,
+        set=function(self,value)
+            set_normal_parameter("dispellableWidth",value)
+        end,
+        get=function(self)
+            return get_normal_parameter("dispellableWidth") or get_normal_parameter("width")
+        end,
+    }
+    
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
