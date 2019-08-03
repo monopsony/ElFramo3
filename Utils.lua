@@ -30,7 +30,6 @@ eF.isDispellableTable={
         ["Shadow"]={Disease=true,Magic=true},
     },
         
-        
     ["Death Knight"]={
         ["Blood"]={},
         ["Unholy"]={},
@@ -277,7 +276,6 @@ function eF.list_all_active_unit_frames(layout)
                     if v[i] and v[i].id then a[#a+1]=v[i] end
                 end
             end
-            
         end              
     else
         local v=eF.registered_layouts[layout]

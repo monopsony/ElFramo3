@@ -53,6 +53,9 @@ function frameFunctions:updateUnit(name_changed)
         self.elapsed=1
     end
     self.playerFrame=playerFrame
+    
+    eF.visible_unit_frames=eF.list_all_active_unit_frames()
+    
   end
   
   --paras

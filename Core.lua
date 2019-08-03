@@ -667,7 +667,6 @@ function elFramo:OnInitialize()
 end
 
 function elFramo:RefreshConfig()
-    --TBA proper handling
     ReloadUI()
 end
 
