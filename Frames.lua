@@ -273,6 +273,7 @@ function frameFunctions:unit_event(event)
   
   if event=="UNIT_MAXHEALTH" or event=="UNIT_HEALTH_FREQUENT" then
     self:updateHealth()
+  elseif event=="UNIT_HEALTH" then
     if self.dead then self:updateFlags() end
   elseif event=="UNIT_AURA" then
   

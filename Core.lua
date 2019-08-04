@@ -561,6 +561,7 @@ eF.unitEvents={
 "INCOMING_RESURRECT_CHANGED",
 "UNIT_PHASE",
 "UNIT_NAME_UPDATE",
+"UNIT_HEALTH",
 }
 
 eF.inRaid=false 
