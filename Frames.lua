@@ -65,6 +65,10 @@ function frameFunctions:updateUnit(name_changed)
     
     local class,CLASS=UnitClass(unit)
     local role=UnitGroupRolesAssigned(unit)
+    
+    if (class~=self.class) then self.class=class; self:update_load_tables(3) end
+    if (role~=self.role) then self.role=role; self:update_load_tables(4) end
+    
     self.class=class
     self.CLASS=CLASS
     self.role=role

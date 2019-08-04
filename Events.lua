@@ -58,6 +58,7 @@ function eF.layoutEventHandler:handleEvent(event,...)
     local role=UnitGroupRolesAssigned(unit)
     local name=UnitName(unit)
     --local class,CLASS=UnitClass(unit)
+    if (class~=frame.class) then frame.class=class; frame:update_load_tables(3) end
     if (name~=frame.name) then frame:updateUnit(true) end
     if (role~=frame.role) then frame.role=role; frame:update_load_tables(4) end
   end
