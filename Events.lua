@@ -141,6 +141,7 @@ function eF.loadingFrame:handleEvent(event,ID)
     self:handleEvent("ACTIVE_TALENT_GROUP_CHANGED")
     if not eF.elFramo_initialised then eF.info.instanceName=nil; eF.info.instanceID=nil; end
     local instanceName,_,_,_,_,_,_,instanceID=GetInstanceInfo()
+    instanceID=tostring(instanceID)
     if (instanceName~=eF.info.instanceName) or (instanceID~=eF.info.instanceID) then
       eF.info.instanceName=instanceName
       eF.info.instanceID=instanceID
