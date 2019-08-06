@@ -53,7 +53,7 @@ for k,v in ipairs(flag_frames) do
         end
     }
     
-  args["font_size"]={
+   args["font_size"]={
         order=22,
         type="range",
         name="Font size",
@@ -108,7 +108,7 @@ for k,v in ipairs(flag_frames) do
     args["text_XOS"]={
         order=27,
         type="range",
-        name="X Offset NYI",
+        name="X Offset",
         softMax=20,
         softMin=-20,
         isPercent=false,
@@ -118,6 +118,7 @@ for k,v in ipairs(flag_frames) do
             set_current_parameter(flag,"textXOS",value)
         end,
         get=function(self)
+            local flag=self[3]
             return get_current_parameter(flag,"textXOS")
         end,
     }
@@ -125,7 +126,7 @@ for k,v in ipairs(flag_frames) do
     args["text_YOS"]={
         order=28,
         type="range",
-        name="Y Offset NYI",
+        name="Y Offset",
         softMax=20,
         softMin=-20,
         isPercent=false,
@@ -135,6 +136,7 @@ for k,v in ipairs(flag_frames) do
             set_current_parameter(flag,"textYOS",value)
         end,
         get=function(self)
+            local flag=self[3]
             return get_current_parameter(flag,"textYOS")
         end,
     }

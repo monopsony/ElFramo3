@@ -30,6 +30,12 @@ eF.isDispellableTable={
         ["Shadow"]={Disease=true,Magic=true},
     },
         
+    ["Paladin"]={
+        ["Holy"]={Disease=true,Poison=true,Magic=true},
+        ["Protection"]={Disease=true,Poison=true},
+        ["Retribution"]={Disease=true,Poison=true},
+    },
+        
     ["Death Knight"]={
         ["Blood"]={},
         ["Unholy"]={},

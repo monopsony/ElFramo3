@@ -55,7 +55,7 @@ function frameFunctions:updateUnit(name_changed)
     self.playerFrame=playerFrame
     
     eF.visible_unit_frames=eF.list_all_active_unit_frames()
-    
+
   end
   
   --paras
@@ -90,8 +90,8 @@ function frameFunctions:updateUnit(name_changed)
     end
     
     if flag2 then self:apply_element_paras() end
-
-    if unit_changed then 
+    
+    if unit_changed then
         if not previous_unit then 
             self:update_load_tables()
         else
@@ -99,7 +99,8 @@ function frameFunctions:updateUnit(name_changed)
             self:update_load_tables(4)
         end
         self:updateFlags()
-    end
+        end
+    
     self:apply_and_reload_loads()
     self.current_layout_version=eF.current_layout_version
     self.current_elements_version=eF.current_elements_version
@@ -230,7 +231,7 @@ function frameFunctions:updateFlagFrames()
     local font=(LSM:IsValid("font",p.textFont) and LSM:Fetch("font",p.textFont)) or ""
     if not f.text then f.text=f:CreateFontString(nil,"OVERLAY") end
     f.text:ClearAllPoints()
-    f.text:SetPoint(p.textPos,f,p.textPos)
+    f.text:SetPoint(p.textPos,f,p.textPos,p.textXOS or 0,p.textYOS or 0)
     f.text:SetFont(font,p.textSize,p.textExtra)
     f.text:SetTextColor(p.textR,p.textG,p.textB,p.textA)
     f.text:SetText(p.text)
@@ -238,6 +239,7 @@ function frameFunctions:updateFlagFrames()
     f:Hide()
     end   
   
+  if unit then self:updateFlags() end
 end
 
 local GetClassColor=GetClassColor
