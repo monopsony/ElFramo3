@@ -275,8 +275,8 @@ function frameFunctions:unit_event(event)
   
   if event=="UNIT_MAXHEALTH" or event=="UNIT_HEALTH_FREQUENT" then
     self:updateHealth()
-  elseif event=="UNIT_HEALTH" then
     if self.dead then self:updateFlags() end
+    
   elseif event=="UNIT_AURA" then
   
     --onAura
@@ -315,6 +315,7 @@ function frameFunctions:updateFlags()
   local id=self.id
   local dead,connected,charmed=UnitIsDeadOrGhost(id),UnitIsConnected(id),UnitIsCharmed(id)
   
+  self.dead=dead
   self.offlineFrame:Hide();self.deadFrame:Hide();self.mcFrame:Hide()
   if not connected then self.offlineFrame:Show()
   elseif dead then self.deadFrame:Show()
