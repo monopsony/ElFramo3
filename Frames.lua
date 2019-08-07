@@ -54,6 +54,10 @@ function frameFunctions:updateUnit(name_changed)
     end
     self.playerFrame=playerFrame
     
+    if self.playerFrame and (not playerFrame) then
+        self.playerFrame=false
+    end
+    
     eF.visible_unit_frames=eF.list_all_active_unit_frames()
 
   end
