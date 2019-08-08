@@ -272,6 +272,7 @@ function frameFunctions:updateBackground()
   else bg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Background") end
 end
 
+local UnitIsDeadOrGhost=UnitIsDeadOrGhost
 function frameFunctions:unit_event(event)
   local unit=self.id or nil
   if not unit then return end
@@ -279,7 +280,7 @@ function frameFunctions:unit_event(event)
   
   if event=="UNIT_MAXHEALTH" or event=="UNIT_HEALTH_FREQUENT" then
     self:updateHealth()
-    if self.dead then self:updateFlags() end
+    if (UnitIsDeadOrGhost(unit)~=self.dead) then self:updateFlags() end
     
   elseif event=="UNIT_AURA" then
   
