@@ -22,7 +22,18 @@ end
 
 
 do
-    local trackTypes={["PLAYER HELPFUL"]="Player Buffs",["PLAYER HARMFUL"]="Player Debuffs",["HELPFUL"]="Any Buffs",["HARMFUL"]="Any Debuffs",["Static"]="Static"}
+    local trackTypes={
+        ["PLAYER HELPFUL"]="Player Buffs",
+        ["PLAYER HARMFUL"]="Player Debuffs",
+        ["HELPFUL"]="Any Buffs",
+        ["HARMFUL"]="Any Debuffs",
+        ["Threat_any"]="Any threat",
+        --["Threat_boss"]="Boss threat",
+        --["Threat_nameplate"]="Nameplate threat",
+        --["Threat_unitID"]="Specific unit threat",
+        ["Static"]="Static",
+        }
+        
     args["trackType_prot"]={
         name="Track",
         type="select",
@@ -90,6 +101,66 @@ do
     }
     
     
+    local function threat_hide()
+        local name=eF.optionsTable.currently_selected_element_key or nil
+        if not name then return "N/A" end
+        local trackType=eF.para.elements[name].trackType
+        return not (trackType=="Threat_any" or trackType=="Threat_boss" or trackType=="Threat_nameplate" or trackType=="Threat_unitID")        
+    end
+
+    local adoptFuncs={["threat_status"]="Threat level"}
+    args["adoptFunc_prot"]={
+        name="Show if",
+        type="select",
+        style="dropdown",
+        order=2,
+        hidden=threat_hide,
+        values=adoptFuncs,
+        set=function(self,value)
+            set_current_parameter("adoptFunc",value)
+            set_current_parameter("arg1",nil)
+        end,
+        get=function(self)
+            return get_current_parameter("adoptFunc")
+        end, 
+    }
+
+    local threat_levels={
+        [0]="Not tanking, low threat",
+        [1]="Not tanking, high threat",
+        [2]="Tanking, not highest threat",
+        [3]="Tanking, highest threat",
+    }
+    
+    args["arg1_threat_status_prot"]={
+        name="Threat level",
+        type="select",
+        style="dropdown",
+        order=4,
+        width=1.5,
+        hidden=function() return threat_hide() or (not (eF.para.elements[eF.optionsTable.currently_selected_element_key].adoptFunc=="threat_status")) end,
+        values=threat_levels,
+        set=function(self,value)
+            set_current_parameter("arg1",value)
+        end,
+        get=function(self)
+            return get_current_parameter("arg1")
+        end, 
+    }
+
+    args["arg1_threat_unitid_prot"]={
+        type="input",
+        order=3,
+        hidden=function() return threat_hide() or (not (eF.para.elements[eF.optionsTable.currently_selected_element_key].trackType=="Threat_unitID")) end,
+        name="Unit ID",
+        set=function(self,value)
+            set_current_parameter("arg1",value)
+            end,
+        get=function(self) 
+            return get_current_parameter("arg1")
+        end,
+    }
+
 end
 
 

@@ -24,6 +24,7 @@ local function is_aura_new(self,count,expirationTime,spellID)
     return not ((count==aI.count) and (expirationTime==aI.expirationTime) and (spellID==aI.spellID))
 end
 
+local UnitAura=UnitAura
 function taskFuncs:applyAuraAdopt(unit)
     local filter=self.para.trackType or nil
     for i=1,40 do 
@@ -56,6 +57,23 @@ function taskFuncs:applyAuraAdopt(unit)
     end
     
     if self.filled then self:disable() end
+end
+
+local UnitThreatSituation=UnitThreatSituation
+function taskFuncs:applyAnyThreatAdopt(unit)
+    
+    local bool=self:threatAdopt(UnitThreatSituation(unit))
+    
+    if bool and not self.filled then 
+        self:enable()
+    elseif self.filled and not bool then
+        self:disable()
+    end
+    
+end
+
+function taskFuncs:adoptThreatByStatus(status)
+    return status==self.para.arg1
 end
 
 function taskFuncs:applyListAuraAdopt(unit)

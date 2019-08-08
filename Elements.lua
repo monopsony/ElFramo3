@@ -536,8 +536,17 @@ function eF:update_element_meta(name)
       elseif para.adoptFunc=="Spell ID" then
         work.auraAdopt=taskFuncs.iconAdoptAuraBySpellID
       end  
-    end --end of if para.trackType=="Buffs" then
+    end --end of if para.trackType aura then
+    
+    if tt=="Threat_any"  then 
+      tasks.onThreat[#tasks.onThreat+1]=taskFuncs.applyAnyThreatAdopt
+      if para.adoptFunc=="threat_status" then
+        work.threatAdopt=taskFuncs.adoptThreatByStatus
+      end
+    end --end of if para.trackType threat
+    
   end 
+  
 
   if para.type=="list" then
     --tasks.onAura[#tasks.onAura+1]=taskFuncs.frameDisable

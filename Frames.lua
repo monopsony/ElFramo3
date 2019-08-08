@@ -296,6 +296,14 @@ function frameFunctions:unit_event(event)
         task[i](task[i+1],unit)
     end
     
+  elseif event=="UNIT_THREAT_SITUATION_UPDATE" then
+    
+    --onThreat
+    local task=self.tasks.onThreat
+    for i=1,#task,2 do
+        task[i](task[i+1],unit)
+    end
+    
   elseif event=="UNIT_CONNECTION" or event=="UNIT_FLAGS" or event=="INCOMING_RESURRECT_CHANGED" or event=="UNIT_PHASE" then
     self:updateFlags()
   elseif event=="UNIT_NAME_UPDATE" then
