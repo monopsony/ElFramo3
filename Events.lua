@@ -209,7 +209,7 @@ local function remove_cast_timer(castID,sourceGUID,castEnd)
     local castID=castID or "None"
     if recorded_casts[castID] then return end
     
-    local dur=castEnd-GetTime()+.5
+    local dur=(castEnd or (GetTime()+3))-GetTime()+.5
     local sourceGUID,castID=sourceGUID,castID
     doAfter(dur,function()
         if (not casts[sourceGUID]) or (not casts[sourceGUID][7]==castID) or (not targets[sourceGUID]) or (#targets[sourceGUID]==0) then return end
