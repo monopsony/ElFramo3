@@ -547,45 +547,83 @@ function eF:update_element_meta(name)
     
   end 
   
-
   if para.type=="list" then
     --tasks.onAura[#tasks.onAura+1]=taskFuncs.frameDisable
     local tt=para.trackType
+    
+    --auras
     if tt=="HELPFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then
       tasks.onAura[#tasks.onAura+1]=taskFuncs.applyListAuraAdopt
-      
-      if para.adoptFunc=="Name Whitelist" then
-        work.auraAdopt=taskFuncs.iconAdoptAuraByNameWhitelist
-      elseif para.adoptFunc=="Name Blacklist" then
-        work.auraAdopt=taskFuncs.iconAdoptAuraByNameBlacklist
-      end  
-    end --end of if para.trackType=="Buffs" then
-    
-    
-    if para.hasTexture and para.smartIcon then
-      tasks.postAura[#tasks.postAura+1]=taskFuncs.iconApplySmartIcon
-    end
-    
-    if para.cdWheel then
-      tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateCDWheel
-    end
-    
-    if para.hasText then
-      if para.textType=="Time left" then 
-        tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateTextTypeT 
-        work.textDecimalFunc=eF.toDecimal[para.textDecimals]
-      end
-      if para.textType=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateTextTypeS end
-    end
-    
-    if para.hasText2 then
-      if para.text2Type=="Time left" then 
-        tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateText2TypeT 
-        work.text2DecimalFunc=eF.toDecimal[para.text2Decimals]
-      end
-      if para.text2Type=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateText2TypeS end
-    end
+          
+        if para.adoptFunc=="Name Whitelist" then
+            work.auraAdopt=taskFuncs.iconAdoptAuraByNameWhitelist
+        elseif para.adoptFunc=="Name Blacklist" then
+            work.auraAdopt=taskFuncs.iconAdoptAuraByNameBlacklist
+        end  
 
+        
+        
+        if para.hasTexture and para.smartIcon then
+          tasks.postAura[#tasks.postAura+1]=taskFuncs.iconApplySmartIcon
+        end
+        
+        if para.cdWheel then
+          tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateCDWheel
+        end
+        
+        if para.hasText then
+          if para.textType=="Time left" then 
+            tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateTextTypeT 
+            work.textDecimalFunc=eF.toDecimal[para.textDecimals]
+          end
+          if para.textType=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateTextTypeS end
+        end
+        
+        if para.hasText2 then
+          if para.text2Type=="Time left" then 
+            tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateText2TypeT 
+            work.text2DecimalFunc=eF.toDecimal[para.text2Decimals]
+          end
+          if para.text2Type=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateText2TypeS end
+        end
+    end --end of if para.trackType auras
+    
+    --casts
+    if tt=="Casts" then 
+      tasks.onCast[#tasks.onAura+1]=taskFuncs.applyListCastAdopt
+      
+        if para.adoptFunc=="Name Whitelist" then
+            work.castAdopt=taskFuncs.iconAdoptAuraByNameWhitelist
+        elseif para.adoptFunc=="Name Blacklist" then
+            work.castAdopt=taskFuncs.iconAdoptAuraByNameBlacklist
+        end  
+      
+        if para.hasTexture and para.smartIcon then
+          tasks.postCast[#tasks.postCast+1]=taskFuncs.iconApplySmartIcon
+        end
+        
+        if para.cdWheel then
+          tasks.postCast[#tasks.postCast+1]=taskFuncs.iconUpdateCDWheel
+        end
+        
+        if para.hasText then
+          if para.textType=="Time left" then 
+            tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateTextTypeT 
+            work.textDecimalFunc=eF.toDecimal[para.textDecimals]
+          end
+          --if para.textType=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateTextTypeS end 
+        end
+        
+        if para.hasText2 then
+          if para.text2Type=="Time left" then 
+            tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateText2TypeT 
+            work.text2DecimalFunc=eF.toDecimal[para.text2Decimals]
+          end
+          --if para.text2Type=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateText2TypeS end
+        end
+
+    end --end of if para.trackType casts 
+    
   end --end of if para.type=="list" then
   
   if para.extras then

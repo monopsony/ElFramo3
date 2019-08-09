@@ -63,7 +63,7 @@ do
         if auraAdopt=="Name Whitelist" or auraAdopt=="Name Blacklist" then return false else return true end
     end
     
-    local trackTypes={["PLAYER HELPFUL"]="Player Buffs",["PLAYER HARMFUL"]="Player Debuffs",["HELPFUL"]="Any Buffs",["HARMFUL"]="Any Debuffs"}
+    local trackTypes={["PLAYER HELPFUL"]="Player Buffs",["PLAYER HARMFUL"]="Player Debuffs",["HELPFUL"]="Any Buffs",["HARMFUL"]="Any Debuffs",["Casts"]="Enemy Casts"}
     args["trackType_prot"]={
         name="Track",
         type="select",

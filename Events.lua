@@ -178,3 +178,118 @@ function eF.loadingFrame:handleEvent(event,ID)
 end
 eF.loadingFrame:SetScript("OnEvent",eF.loadingFrame.handleEvent)
 
+
+--------CAST TRACKER-----------
+local cast_events={
+    "UNIT_SPELLCAST_START",
+    "UNIT_SPELLCAST_DELAYED",
+    "UNIT_SPELLCAST_SUCCEEDED",
+    "UNIT_SPELLCAST_STOP",
+    "UNIT_SPELLCAST_INTERRUPTED",
+    "UNIT_SPELLCAST_FAILED",
+    "UNIT_SPELLCAST_FAILED_QUIET",
+    "UNIT_TARGET",
+}
+
+if not eF.caster_watcher_frame then eF.caster_watcher_frame=CreateFrame("Frame","ElFramoCastWatcher",UIParent) end
+
+for i,v in ipairs(cast_events) do
+    eF.caster_watcher_frame:RegisterEvent(v)
+end
+
+eF.casting_units_casts={}
+eF.casting_units_targets={}
+local wipe=table.wipe
+local UnitExists,UnitIsEnemy,UnitGUID,UnitCastingInfo,UnitIsUnit=UnitExists,UnitIsEnemy,UnitGUID,UnitCastingInfo,UnitIsUnit
+function eF.caster_watcher_frame:handleEvent(event,sourceUnit)
+    
+    if (not UnitExists(sourceUnit)) or (not UnitIsEnemy(sourceUnit,"player")) then return end
+    local sourceGUID=UnitGUID(sourceUnit)
+    if not sourceGUID then return end
+    local casts,targets=eF.casting_units_casts,eF.casting_units_targets
+        
+    if event=="UNIT_SPELLCAST_START" then
+        local spellName,_,icon,castStart,castEnd,_,_,_,spellID=UnitCastingInfo(sourceUnit)
+        local duration=0
+        if castStart and castEnd then 
+          castEnd=castEnd/1000
+          castStart=castStart/1000
+          duration=castEnd-castStart
+        end
+        
+        --TBA: does this need table recycling? (probably not)
+        casts[sourceGUID]={spellName,icon,duration,castEnd,spellID,sourceUnit}
+        
+        --find the sourceUnit's target
+        local target=sourceUnit.."target"
+        local frames=eF.visible_unit_frames
+        local affected_frames={}
+        for i=1,#frames do 
+            if UnitIsUnit(target,frames[i].id or "") then 
+                affected_frames[#affected_frames+1]=frames[i]
+            end
+        end
+        
+        targets[sourceGUID]=affected_frames
+        
+        for i=1,#affected_frames do
+            affected_frames[i]:unit_event("UNIT_CAST")
+        end
+        
+    -- end of "UNIT_SPELLCAST_START"
+    elseif event=="UNIT_TARGET" then 
+    
+        if not casts[sourceGUID] then return end
+        local old_affected_frames=targets[sourceGUID]
+        self:handleEvent("UNIT_SPELLCAST_START")
+        
+        if not old_affected_frames then return end
+        for i=1,#old_affected_frames do
+            old_affected_frames[i]:unit_event("UNIT_CAST")
+        end   
+        
+    -- end of "UNIT_TARGET"
+    elseif event== "UNIT_SPELLCAST_STOP"
+    or event=="UNIT_SPELLCAST_INTERRUPTED"
+    or event=="UNIT_SPELLCAST_FAILED"
+    or event=="UNIT_SPELLCAST_FAILED_QUIET"
+    or event=="UNIT_SPELLCAST_SUCCEEDED" then
+        
+        if not casts[sourceGUID] then return end
+        local old_affected_frames=targets[sourceGUID]
+        casts[sourceGUID]=nil
+        
+        if not old_affected_frames then return end
+        for i=1,#old_affected_frames do
+            old_affected_frames[i]:unit_event("UNIT_CAST")
+        end   
+        
+    end
+    
+end
+eF.caster_watcher_frame:SetScript("OnEvent",eF.caster_watcher_frame.handleEvent)
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     

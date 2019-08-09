@@ -123,19 +123,81 @@ function taskFuncs:applyListAuraAdopt(unit)
     self.active=active
 end
 
+local UnitIsUnit=UnitIsUnit
+local function is_target_of(unit,k)
+    local targets=eF.casting_units_targets[k]
+    if not targets then return false end
+    for i=1,#targets do 
+        if UnitIsUnit(unit,targets[1].id or "") then return true end
+    end
+    return false
+end
+
+local pairs,unpack=pairs,unpack
+function taskFuncs:applyListCastAdopt(unit)
+    self.active=0
+    local filter=self.para.trackType or nil
+    local active,casts,targets=0,eF.casting_units_casts,eF.casting_units_targets
+    
+    for k,v in pairs(casts) do
+        if is_target_of(unit,k) then
+            local name,icon,duration,expirationTime,spellID,unitCaster=unpack(v)
+            local bool=self:castAdopt(name,icon,nil,nil,duration,expirationTime,unitCaster,nil,spellID,nil) 
+            if bool then
+                print "bool is true"
+                active=active+1
+                local frame=self[active]
+                local aI=frame.auraInfo
+                if is_aura_new(frame,count,expirationTime,spellID) then
+                    aI.new_aura=true
+                    aI.name=name
+                    aI.icon=icon
+                    --aI.count=nil
+                    --aI.debuffType=debuffType
+                    aI.duration=duration
+                    aI.expirationTime=expirationTime
+                    aI.unitCaster=unitCaster
+                    --aI.canSteal=canSteal
+                    aI.spellID=spellID
+                    --aI.isBoss=isBoss
+                    aI.isPermanent=aI.expirationTime==0
+                else         
+                    aI.new_aura=false
+                end
+                    
+                if active==self.count then break end
+            end--end of if bool
+            
+        end--end of if is_target_of(self,k)
+    end
+    
+    if active==0 and self.filled then self:disable() end
+    if active>0 then
+        if not self.filled then self:enable() end
+        for i=1,active do 
+            if not self[i].filled then self[i]:enable() end
+        end
+        for i=active+1,self.count do 
+            if self[i].filled then self[i]:disable() end
+        end
+    end
+    self.active=active
+end
+
+
 function taskFuncs:iconAdoptAuraByName(name)
    return name==self.para.arg1
 end
 
 function taskFuncs:iconAdoptAuraByNameWhitelist(name,_,_,_,dur)
    if self.para.ignorePermanents and dur==0 then return false end
-   if self.para.iDA and dur>self.para.iDA then return false end
+   if (self.para.iDA or 0>0) and dur>self.para.iDA then return false end
    return self.para.arg1[name] 
 end
 
 function taskFuncs:iconAdoptAuraByNameBlacklist(name,_,_,_,dur)
    if self.para.ignorePermanents and dur==0 then return false end
-   if self.para.iDA and dur>self.para.iDA then return false end
+   if (self.para.iDA or 0>0) and dur>self.para.iDA then return false end
    return not self.para.arg1[name]
 end
 
@@ -144,10 +206,12 @@ function taskFuncs:iconAdoptAuraBySpellID(_,_,_,_,_,_,_,_,spellID)
 end
 
 function taskFuncs:iconApplySmartIcon()
+  print "iconApplySmartIcon"
   if self.isListElement then
     for i=1,self.active do iconApplySmartIcon(self[i]) end
     return
   end
+  print(self.filled,self.auraInfo.new_aura,self.auraInfo.icon)
   if not (self.filled and self.auraInfo.new_aura) then return end
   self.texture:SetTexture(self.auraInfo.icon)
 end
@@ -159,6 +223,7 @@ function taskFuncs:changeDispellableDebuffSize()
     return
   end
   if not (self.filled and self.auraInfo.new_aura) then return end
+  if not self.auraInfo.debuffType then return end
   if eF.isDispellable[self.auraInfo.debuffType] then 
     self:SetSize(self.para.dispellableHeight or self.para.height,self.para.dispellableWidth or self.para.width)
   else
@@ -179,7 +244,7 @@ function taskFuncs:orderByDispellable()
    for i=1,self.active do 
      help_table1[i]=self[i].auraInfo
      local tbl=help_table1[i]
-     tbl.dispellable=eF.isDispellable[tbl.debuffType]
+     tbl.dispellable=(tbl.debuffType and eF.isDispellable[tbl.debuffType]) or false
      if (not bool) and tbl.dispellable then bool=true end
      tbl.index=i
    end
@@ -201,6 +266,7 @@ function taskFuncs:iconUpdateCDWheel()
     for i=1,self.active do iconUpdateCDWheel(self[i]) end
     return
   end
+  print "CD Wheel"
   local aI=self.auraInfo
   if not (self.filled and aI.new_aura) then return end
   local dur=aI.duration

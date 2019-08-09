@@ -303,6 +303,21 @@ function frameFunctions:unit_event(event)
     for i=1,#task,2 do
         task[i](task[i+1],unit)
     end
+  
+  elseif event=="UNIT_CAST" then
+    --onCast
+    local task=self.tasks.onCast
+    for i=1,#task,2 do 
+        task[i](task[i+1],unit)
+    end
+    
+    --postCast
+    local task=self.tasks.postCast
+    print "post cast"
+    for i=1,#task,2 do
+        print(i)
+        task[i](task[i+1],unit)
+    end
     
   elseif event=="UNIT_CONNECTION" or event=="UNIT_FLAGS" or event=="INCOMING_RESURRECT_CHANGED" or event=="UNIT_PHASE" then
     self:updateFlags()
