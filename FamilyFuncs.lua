@@ -144,7 +144,6 @@ function taskFuncs:applyListCastAdopt(unit)
             local name,icon,duration,expirationTime,spellID,unitCaster=unpack(v)
             local bool=self:castAdopt(name,icon,nil,nil,duration,expirationTime,unitCaster,nil,spellID,nil) 
             if bool then
-                print "bool is true"
                 active=active+1
                 local frame=self[active]
                 local aI=frame.auraInfo
@@ -206,12 +205,12 @@ function taskFuncs:iconAdoptAuraBySpellID(_,_,_,_,_,_,_,_,spellID)
 end
 
 function taskFuncs:iconApplySmartIcon()
-  print "iconApplySmartIcon"
+
   if self.isListElement then
     for i=1,self.active do iconApplySmartIcon(self[i]) end
     return
   end
-  print(self.filled,self.auraInfo.new_aura,self.auraInfo.icon)
+
   if not (self.filled and self.auraInfo.new_aura) then return end
   self.texture:SetTexture(self.auraInfo.icon)
 end
@@ -266,7 +265,7 @@ function taskFuncs:iconUpdateCDWheel()
     for i=1,self.active do iconUpdateCDWheel(self[i]) end
     return
   end
-  print "CD Wheel"
+
   local aI=self.auraInfo
   if not (self.filled and aI.new_aura) then return end
   local dur=aI.duration

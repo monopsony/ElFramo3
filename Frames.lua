@@ -313,9 +313,7 @@ function frameFunctions:unit_event(event)
     
     --postCast
     local task=self.tasks.postCast
-    print "post cast"
     for i=1,#task,2 do
-        print(i)
         task[i](task[i+1],unit)
     end
     
