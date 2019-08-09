@@ -241,7 +241,7 @@ function eF.caster_watcher_frame:handleEvent(event,sourceUnit)
         
         --TBA: does this need table recycling? (probably not)
         casts[sourceGUID]={spellName,icon,duration,castEnd,spellID,sourceUnit,castID}
-        
+                
         --find the sourceUnit's target
         local target=sourceUnit.."target"
         local frames=eF.visible_unit_frames
@@ -265,7 +265,7 @@ function eF.caster_watcher_frame:handleEvent(event,sourceUnit)
     
         if not casts[sourceGUID] then return end
         local old_affected_frames=targets[sourceGUID]
-        self:handleEvent("UNIT_SPELLCAST_START")
+        self:handleEvent("UNIT_SPELLCAST_START",sourceUnit)
         
         if not old_affected_frames then return end
         for i=1,#old_affected_frames do
