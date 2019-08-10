@@ -1,7 +1,9 @@
 local eF=elFramo
 eF.info={}
 eF.post_combat={}
-eF.recorded_casts={}
+eF.recorded_casts_start={}
+eF.recorded_casts_end={}
+
 local function deepcopy(orig)
     local orig_type = type(orig)
     local copy
@@ -28,7 +30,6 @@ function eF.onUpdateFrame:onUpdateFunction(elapsed)
     frame:checkOOR()
   end
 end
---TBA REMOVE
 eF.onUpdateFrame:SetScript("OnUpdate",eF.onUpdateFrame.onUpdateFunction)
 
 
@@ -136,7 +137,8 @@ function eF.loadingFrame:handleEvent(event,ID)
         if v and post_combat_functions[k] then post_combat_functions[k](); eF.post_combat[k]=false end
     end
     
-    wipe(eF.recorded_casts)
+    wipe(eF.recorded_casts_start)
+    wipe(eF.recorded_casts_end)
     
   elseif event=="PLAYER_ENTERING_WORLD" then
     self:handleEvent("ACTIVE_TALENT_GROUP_CHANGED")
@@ -204,15 +206,15 @@ eF.casting_units_casts={}
 eF.casting_units_targets={}
 local casts,targets=eF.casting_units_casts,eF.casting_units_targets
 
-local recorded_casts,doAfter=eF.recorded_casts,C_Timer.After
+local recorded_casts_end,recorded_casts_start,doAfter=eF.recorded_casts_end,eF.recorded_casts_start,C_Timer.After
 local function remove_cast_timer(castID,sourceGUID,castEnd)
     local castID=castID or "None"
-    if recorded_casts[castID] then return end
+    if recorded_casts_end[castID] then return end
     
     local dur=(castEnd or (GetTime()+3))-GetTime()+.5
-    local sourceGUID,castID=sourceGUID,castID
+    local sourceGUID,castID,casts=sourceGUID,castID,casts
     doAfter(dur,function()
-        if (not casts[sourceGUID]) or (not casts[sourceGUID][7]==castID) or (not targets[sourceGUID]) or (#targets[sourceGUID]==0) then return end
+        if (not casts[sourceGUID]) or not (casts[sourceGUID][7]==castID) or not (targets[sourceGUID]) or (#targets[sourceGUID]==0) then return end
         casts[sourceGUID]=nil
         local affected_frames=targets[sourceGUID] 
         for i=1,#affected_frames do
@@ -224,11 +226,14 @@ end
 
 local wipe=table.wipe
 local UnitExists,UnitIsEnemy,UnitGUID,UnitCastingInfo,UnitIsUnit=UnitExists,UnitIsEnemy,UnitGUID,UnitCastingInfo,UnitIsUnit
-function eF.caster_watcher_frame:handleEvent(event,sourceUnit)
+function eF.caster_watcher_frame:handleEvent(event,sourceUnit,castID)
     
+
     if (not UnitExists(sourceUnit)) or (not UnitIsEnemy(sourceUnit,"player")) then return end
+    --if not UnitExists(sourceUnit) then return end
     local sourceGUID=UnitGUID(sourceUnit)
     if not sourceGUID then return end
+        
         
     if event=="UNIT_SPELLCAST_START" then
         local spellName,_,icon,castStart,castEnd,_,castID,_,spellID=UnitCastingInfo(sourceUnit)
@@ -239,7 +244,8 @@ function eF.caster_watcher_frame:handleEvent(event,sourceUnit)
           duration=castEnd-castStart
         end
         
-        --TBA: does this need table recycling? (probably not)
+        
+        --does this whole thing need recycling... (probably not)
         casts[sourceGUID]={spellName,icon,duration,castEnd,spellID,sourceUnit,castID}
                 
         --find the sourceUnit's target
@@ -279,9 +285,14 @@ function eF.caster_watcher_frame:handleEvent(event,sourceUnit)
     or event=="UNIT_SPELLCAST_FAILED_QUIET"
     or event=="UNIT_SPELLCAST_SUCCEEDED" then
         
-        if not casts[sourceGUID] then return end
+        
+        if not casts[sourceGUID] then return end    
+        if castID~=casts[sourceGUID][7] then return end
+        
         local old_affected_frames=targets[sourceGUID]
         casts[sourceGUID]=nil
+        
+        if castID then recorded_casts_end[castID]=true; end
         
         if not old_affected_frames then return end
         for i=1,#old_affected_frames do
