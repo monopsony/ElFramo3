@@ -481,6 +481,9 @@ function frameFunctions:apply_load_conditions()
             flag=true
             v.loaded=bool
         end
+        if v.static and (bool~=v.filled) then 
+            flag=true  --check if static element is not properly loaded
+        end
     end  
     return flag
 end
