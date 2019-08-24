@@ -24,7 +24,7 @@ end
 local frameFunctions=eF.frameFunctions or {}
 eF.frameFunctions=frameFunctions
 
-local refresh_events={"UNIT_FLAG","UNIT_HEALTH_FREQUENT","UNIT_AURA","UNIT_POWER_UPDATE","UNIT_HEAL_ABSORB_AMOUNT_CHANGED"}
+local refresh_events={"UNIT_FLAGS","UNIT_HEALTH_FREQUENT","UNIT_AURA","UNIT_POWER_UPDATE","UNIT_HEAL_ABSORB_AMOUNT_CHANGED"}
 function frameFunctions:updateUnit(name_changed)
   local unit=SecureButton_GetModifiedUnit(self)
   local unit_changed,flag1,flag2=self.id~=unit,self.current_layout_version~=eF.current_layout_version,eF.current_elements_version~=self.current_elements_version
