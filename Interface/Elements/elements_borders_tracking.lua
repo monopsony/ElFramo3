@@ -53,7 +53,7 @@ do
         local name=eF.optionsTable.currently_selected_element_key or nil
         if not name then return "N/A" end
         local trackType=eF.para.elements[name].trackType
-        if trackType=="PLAYER HELPFUL" or trackType=="PLAYER HARMFUL" or trackType=="HELPFUL" or trackType=="HARMFUL" then return false else return true end 
+        if (trackType=="PLAYER HELPFUL") or (trackType=="PLAYER HARMFUL") or (trackType=="HELPFUL") or (trackType=="HARMFUL") then return false else return true end 
     end
 
     local adoptFuncs={["Name"]="Name",["Spell ID"]="Spell ID",["Custom"]="Custom"}
@@ -109,7 +109,7 @@ do
     end
 
     local adoptFuncs={["threat_status"]="Threat level"}
-    args["adoptFunc_prot"]={
+    args["adoptFunc_threat_prot"]={
         name="Show if",
         type="select",
         style="dropdown",
