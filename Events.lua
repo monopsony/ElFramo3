@@ -1,5 +1,5 @@
 local eF=elFramo
-eF.info={}
+--eF.info={}
 eF.post_combat={}
 eF.recorded_casts_start={}
 eF.recorded_casts_end={}
