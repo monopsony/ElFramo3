@@ -15,7 +15,7 @@ end
 
 function taskFuncs:frameEnable()
   self:Show()
-  self:setVisibility(1)
+  if self.setVisibility then self:setVisibility(1) end
   self.filled=true
 end
 
