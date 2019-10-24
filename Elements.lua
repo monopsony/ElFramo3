@@ -42,8 +42,10 @@ function frameFunctions:apply_element_paras(name)
     local el=frame.elements[name] 
     el:SetFrameLevel(frame.hp:GetFrameLevel()+1+(para.displayLevel or 0))
     el.para=para
+    if not el.para.auraExtras then el.para.auraExtras={} end 
     el.enable=taskFuncs.frameEnable
     el.disable=taskFuncs.frameDisable
+    el.setVisibility=taskFuncs.setVisibility
     el.onUpdateFunction=taskFuncs.frameOnUpdateFunction
     el.tasks=eF.tasks[name]
     el.auraInfo=el.auraInfo or {}
@@ -163,6 +165,7 @@ function frameFunctions:apply_element_paras(name)
     el.para=para
     el.enable=taskFuncs.frameEnable
     el.disable=taskFuncs.frameDisable
+    el.setVisibility=taskFuncs.setVisibility
     el.onUpdateFunction=taskFuncs.frameOnUpdateFunction
     el.tasks=eF.tasks[name]
     el.auraInfo=el.auraInfo or {}
@@ -226,9 +229,11 @@ function frameFunctions:apply_element_paras(name)
     el.para=para
     el.enable=taskFuncs.frameEnable
     el.disable=taskFuncs.frameDisable
+    el.setVisibility=taskFuncs.setVisibility
     el.onUpdateFunction=taskFuncs.frameOnUpdateFunction
     el.tasks=eF.tasks[name]
     el.auraInfo=el.auraInfo or {}
+    if not el.para.auraExtras then el.para.auraExtras={} end 
     
     el:ClearAllPoints()
     el:SetPoint("TOPRIGHT",frame,"TOPRIGHT",para.xOS or 0,para.yOS or 0)
@@ -480,13 +485,13 @@ function eF:update_element_meta(name)
     local tt=para.trackType
     if tt=="HELPFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then
       tasks.onAura[#tasks.onAura+1]=taskFuncs.applyAuraAdopt
-      
+      work.auraExtras=taskFuncs.auraExtras
       if para.adoptFunc=="Name" then
         work.auraAdopt=taskFuncs.iconAdoptAuraByName
       elseif para.adoptFunc=="Spell ID" then
         work.auraAdopt=taskFuncs.iconAdoptAuraBySpellID  --iconAdoptAuraByspellID
       end  
-    end --end of if para.trackType=="Buffs" then
+    end --end of if para.trackType Aura type then
     
 
     if para.hasTexture and para.smartIcon then
@@ -513,7 +518,10 @@ function eF:update_element_meta(name)
       if para.text2Type=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateText2TypeS end
     end
     
-  
+    if not para.auraExtras then para.auraExtras={} end
+    if para.auraExtras.trem_check then
+      tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateVisibilityTrem
+    end
     
   end --end of if para.type=="icon" then
   
@@ -531,6 +539,7 @@ function eF:update_element_meta(name)
     local tt=para.trackType
     if tt=="HELPFUL" or tt=="HARMFUL" or tt=="PLAYER HELPFUL" or tt=="PLAYER HARMFUL"  then
       tasks.onAura[#tasks.onAura+1]=taskFuncs.applyAuraAdopt
+      work.auraExtras=taskFuncs.auraExtras
       if para.adoptFunc=="Name" then
         work.auraAdopt=taskFuncs.iconAdoptAuraByName
       elseif para.adoptFunc=="Spell ID" then

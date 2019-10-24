@@ -232,8 +232,8 @@ do
         name="Has text 2",
         type="toggle",
         order=32,
-        set=function(self,key) 
-            set_current_parameter("hasText2",key)
+        set=function(self,value) 
+            set_current_parameter("hasText2",value)
         end,
         
         get=function(self) 

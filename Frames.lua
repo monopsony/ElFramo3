@@ -347,7 +347,6 @@ function frameFunctions:updateFlags()
   elseif dead then self.deadFrame:Show()
   elseif charmed then self.mcFrame:Show()
   end
-  
 end
 
 local UnitInRange=UnitInRange

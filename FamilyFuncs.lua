@@ -15,6 +15,7 @@ end
 
 function taskFuncs:frameEnable()
   self:Show()
+  self:setVisibility(1)
   self.filled=true
 end
 
@@ -24,6 +25,14 @@ local function is_aura_new(self,count,expirationTime,spellID)
     return not ((count==aI.count) and (expirationTime==aI.expirationTime) and (spellID==aI.spellID))
 end
 
+function taskFuncs:auraExtras(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellID,isBoss)
+    local ex=self.para.auraExtras
+    if ex.stacks_check then
+        if count<(ex.stacks_min or -1) or count>(ex.stacks_max or 10000) then return false end 
+    end
+    return true
+end
+
 local UnitAura=UnitAura
 function taskFuncs:applyAuraAdopt(unit)
     local filter=self.para.trackType or nil
@@ -31,8 +40,8 @@ function taskFuncs:applyAuraAdopt(unit)
         local name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,_,spellID,_,isBoss=UnitAura(unit,i,filter)
         if not name then break end
         local bool=self:auraAdopt(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellID,isBoss) 
-            
-        if bool then
+        local bool2=self:auraExtras(name,icon,count,debuffType,duration,expirationTime,unitCaster,canSteal,spellID,isBoss)
+        if bool and bool2 then
             local aI=self.auraInfo
             if is_aura_new(self,count,expirationTime,spellID) then
                 aI.new_aura=true
@@ -69,7 +78,15 @@ function taskFuncs:applyAnyThreatAdopt(unit)
     elseif self.filled and not bool then
         self:disable()
     end
-    
+end
+
+function taskFuncs:setVisibility(alpha)
+    alpha_visible=(self:GetAlpha()==1)
+    if alpha_visible and (alpha==0) or (alpha==false) then
+        self:SetAlpha(0)
+    elseif (not alpha_visible) and (alpha==1) or (alpha==true) then
+        self:SetAlpha(1)
+    end
 end
 
 function taskFuncs:adoptThreatByStatus(status)
@@ -183,9 +200,15 @@ function taskFuncs:applyListCastAdopt(unit)
     self.active=active
 end
 
-
 function taskFuncs:iconAdoptAuraByName(name)
    return name==self.para.arg1
+end
+
+function taskFuncs:iconUpdateVisibilityTrem()
+    if not self.auraInfo.expirationTime then self:setVisibility(0) end
+    local min,max=self.para.auraExtras.trem_min,self.para.auraExtras.trem_max
+    local trem=self.auraInfo.expirationTime-GetTime()
+    if (trem<(max or 0)) and (trem>(min or 0)) then self:setVisibility(1) else self:setVisibility(0) end 
 end
 
 function taskFuncs:iconAdoptAuraByNameWhitelist(name,_,_,_,dur)

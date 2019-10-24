@@ -54,8 +54,6 @@ local function set_multiline_arg1(text)
 end
 
 
-
-
 do
     
     local function name_black_white_list()
