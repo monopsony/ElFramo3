@@ -115,7 +115,6 @@ taskFuncs.msgAdopt={
 	
 	ends=function(self,msg)
 		arg=self.para.arg1  
-		print("y")
 		return (msg=="") or (msg:sub(-#arg)==arg)
 	end,
 

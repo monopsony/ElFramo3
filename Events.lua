@@ -318,7 +318,6 @@ function eF.chat_watcher_frame:handleEvent(event,msg,author,language)
 
 	if event=="CHAT_MSG_RAID_LEADER" then event="CHAT_MSG_RAID" end
 	for i,v in ipairs(frames) do 
-		print(msg,event)
 		v:unit_event("CHAT_MSG",msg,event)
 	end
 
