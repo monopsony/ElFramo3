@@ -96,7 +96,7 @@ function frameFunctions:updateUnit(name_changed)
 		local unit_name,unit_realm=UnitFullName(self.id)
 		self.name=unit_name
 		self.realm=unit_realm
-		self.full_name=unit_name.."-"..(unit_realm or eF.info.playerRealm)
+		self.full_name=(unit_name or "").."-"..(unit_realm or eF.info.playerRealm)
  
 		if flag1 then 
 			self:updateSize()

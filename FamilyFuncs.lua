@@ -117,8 +117,7 @@ taskFuncs.msgAdopt={
 		arg=self.para.arg1  
 		return (msg=="") or (msg:sub(-#arg)==arg)
 	end,
-
-	}
+}
 
 local UnitThreatSituation=UnitThreatSituation
 function taskFuncs:applyAnyThreatAdopt(unit)
