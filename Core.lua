@@ -635,9 +635,10 @@ function elFramo:OnInitialize()
     --LOAD DB
     update_WTF()
 
-    --load player class
+    --load player info
     eF.info.playerClass=UnitClass("player")
     eF.info.playerName=UnitName("player")
+    eF.info.playerRealm=GetRealmName()
 
     --load player role  --doesnt work at the very start for some reason?
     --local spec=GetSpecialization()

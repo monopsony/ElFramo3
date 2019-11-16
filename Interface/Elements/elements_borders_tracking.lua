@@ -28,6 +28,7 @@ do
         ["HELPFUL"]="Any Buffs",
         ["HARMFUL"]="Any Debuffs",
         ["Threat_any"]="Any threat",
+        ["CHAT_MSG"]="Chat message",
         --["Threat_boss"]="Boss threat",
         --["Threat_nameplate"]="Nameplate threat",
         --["Threat_unitID"]="Specific unit threat",
@@ -163,7 +164,88 @@ do
 
 end
 
+local function is_not_chat_msg()
+    local tt=get_current_parameter("trackType")
+    if (tt=="CHAT_MSG")
+    then return false else return true end 
+end
 
+--chat msg options
+do
+    local chat_types={
+        CHAT_MSG_RAID="Raid",
+        CHAT_MSG_SAY="Say",
+        CHAT_MSG_GUILD="Guild",
+        ANY="Any",
+        CHAT_MSG_WHISPER="Whisper",
+        CHAT_MSG_YELL="Yell"
+    }
+
+    args["chat_types_prot"]={
+        name="Chat type",
+        type="select",
+        style="dropdown",
+        hidden=is_not_chat_msg,
+        order=2,
+        values=chat_types,
+        set=function(self,value)   
+            set_current_parameter("chatType",value)        
+        end,
+        get=function(self)
+            return get_current_parameter("chatType")
+        end, 
+    }   
+
+    local chat_match_types={["contains"]="contains",["is"]="is exactly",["starts"]="starts with",["ends"]="ends with"}
+    args["chat_match_types_prot"]={
+        name="Message",
+        type="select",
+        style="dropdown",
+        hidden=is_not_chat_msg,
+        order=3,
+        values=chat_match_types,
+        set=function(self,value)   
+            set_current_parameter("chatMatch",value)        
+        end,
+        get=function(self)
+            return get_current_parameter("chatMatch")
+        end, 
+    }   
+
+
+    args["arg1_chat_prot"]={
+        type="input",
+        order=4,
+        hidden=is_not_chat_msg,
+        name="Pattern",
+        set=function(self,value)
+            set_current_parameter("arg1",value)
+            end,
+        get=function(self) 
+            return get_current_parameter("arg1")
+        end,
+    }
+
+    -- UNTRIGGER --
+
+    args["chatTimed_prot"]={
+        order=11,
+        type="range",
+        name="Timed:",
+        min=1,
+        softMax=30,
+        isPercent=false,
+        hidden=is_not_chat_msg,
+        step=1,
+        set=function(self,value)
+            set_current_parameter("chatTimed",value)
+        end,
+        get=function(self)
+            return get_current_parameter("chatTimed")
+        end,
+    }
+
+end
 
 
 

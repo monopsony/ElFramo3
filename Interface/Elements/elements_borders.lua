@@ -6,37 +6,37 @@ local args=eF.interface_elements_config_tables["border"]
 local LSM=LibStub:GetLibrary("LibSharedMedia-3.0")
 
 eF.interface_element_defaults.border={
-                type="border",
-                borderSize=2,
-                borderR=1,
-                borderG=1,
-                borderB=1,
-                borderA=1,
-                trackType="Static",
-                flatBorder=true, 
-                load={
-                    loadAlways=true,
-                    loadNever=false,
-                    [1]={
-                           loadAlways=true,
-                          },
-                    [2]={
-                           loadAlways=true,
-                          },
-                    [3]={
-                           loadAlways=true,
-                          },
-                    [4]={
-                           loadAlways=true,
-                          },
-                    [5]={
-                           loadAlways=true,
-                          },
-                    [6]={
-                           loadAlways=true,
-                          },
-                },
-    }
+    type="border",
+    borderSize=2,
+    borderR=1,
+    borderG=1,
+    borderB=1,
+    borderA=1,
+    trackType="Static",
+    flatBorder=true, 
+    load={
+        loadAlways=true,
+        loadNever=false,
+        [1]={
+               loadAlways=true,
+              },
+        [2]={
+               loadAlways=true,
+              },
+        [3]={
+               loadAlways=true,
+              },
+        [4]={
+               loadAlways=true,
+              },
+        [5]={
+               loadAlways=true,
+              },
+        [6]={
+               loadAlways=true,
+              },
+    },
+}
 
 do
 
@@ -172,6 +172,9 @@ do
         type="group",
         args=eF.interface_elements_load_config_table,
     }
+
+
+    
 
 end
 
