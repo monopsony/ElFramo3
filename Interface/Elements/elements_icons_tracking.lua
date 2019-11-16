@@ -341,6 +341,22 @@ do
             return get_current_parameter("chatTimed")
         end,
     }
+
+	args["match_duration_in_message_prot"]={
+		name="Smart duration",
+		desc="Uses the first occurence of a number as the duration (max 60 seconds). When no number is found, uses the default timer.",
+		type="toggle",
+		order=12,
+		hidden=is_not_chat_msg,
+		set=function(self,key) 
+			set_current_parameter("match_duration_in_message",key)
+		end,
+		
+		get=function(self) 
+			return get_current_parameter("match_duration_in_message")
+		end,
+	}  
+
 end
 
 

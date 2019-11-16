@@ -57,7 +57,7 @@ function frameFunctions:apply_element_paras(name)
 		el:SetPoint(para.anchor,frame,para.anchorTo,para.xPos,para.yPos)
 		
 		--static handling
-		if para.trackType=="Static" then  --TBA STATIC HANDLING
+		if para.trackType=="Static" then  
 			el.static=true
 			el.expirationTime=0
 			el.duration=0

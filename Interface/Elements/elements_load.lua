@@ -154,7 +154,6 @@ do
     args["showPlayerRolesAny_prot"]={
         name=highlight_colour.."Any",
         type="toggle",
-        desc="|cFFFF0000Warning:|r Player role only works when in a group at the moment. There are also some cases (e.g. island expeditions) where everyone's role is set to 'DPS' regardless. Will need to change player role independent of that and do it based on specialisation but for now it is what it is. TBA",
         order=11,
         set=function(self,value) 
             set_current_parameter(2,"loadAlways",value)

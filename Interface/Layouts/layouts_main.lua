@@ -10,7 +10,7 @@ function eF:add_new_layout_by_name(name)
     local name=eF.find_valid_name_in_table(name,eF.registered_layouts)
     eF:register_new_layout(name)
     args.layout_drop_down:set(name)
-    eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE")  --TBA SHOULD BE A BETTER WAY TO DO IT, IS MOSTLY THERE TO FIX OnUpdate of gone units
+    eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE") 
 end
 
 function eF:remove_layout_by_name(name)
@@ -20,7 +20,7 @@ function eF:remove_layout_by_name(name)
     wipe(eF.para.layouts[name])
     eF.para.layouts[name]=nil
     eF.optionsTable.currently_selected_layout=nil
-    eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE")  --TBA SHOULD BE A BETTER WAY TO DO IT, IS MOSTLY THERE TO FIX OnUpdate of gone units
+    eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE") 
 end
 
 function eF:copy_layout_by_name_to_new(name,new)
@@ -29,7 +29,7 @@ function eF:copy_layout_by_name_to_new(name,new)
     eF.para.layouts[new]=deepcopy(eF.para.layouts[name])
     
     eF:add_new_layout_by_name(new)   
-    eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE")   --TBA SHOULD BE A BETTER WAY TO DO IT, IS MOSTLY THERE TO FIX OnUpdate of gone units   
+    eF.layoutEventHandler:handleEvent("GROUP_ROSTER_UPDATE")    
 end
 
 --add layout creator/picker
@@ -186,6 +186,7 @@ do
                 args={},
             },
             summon={
+                hidden=true, --toad
                 type="group",
                 name="Summon NYI",
                 args={},
@@ -195,6 +196,7 @@ do
    
     args["range_options"]={
         type="group",
+        hidden=true, --toad
         name="Out of range",
         args={},
         order=5,

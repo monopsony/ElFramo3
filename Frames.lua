@@ -382,7 +382,7 @@ function frameFunctions:checkOOR()
 	local unit=self.id
 	if not unit then return end
 	local oor
-	if self.playerFrame then oor=false else oor=not UnitInRange(unit) end  --TBA POTENTIALLY MAKE THIS BETTER
+	if self.playerFrame then oor=false else oor=not UnitInRange(unit) end  
 
 	if oor and not self.oor then
 		self:setOOR()

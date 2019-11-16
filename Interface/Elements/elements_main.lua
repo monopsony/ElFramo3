@@ -66,7 +66,8 @@ do
         type="description",
         fontSize="small",
         order=1,
-        name="|cFFFFF569Note|r: TBA Mierihn is very gay."
+        name="|cFFFFF569Note|r: TBA Mierihn is very gay.",
+        hidden=true,
     }
      
     

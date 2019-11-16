@@ -81,8 +81,8 @@ function taskFuncs:applyMsgAdopt(msg,event)
 		aI.name=msg
 		aI.icon=0
 		aI.count=string.match(msg, "%d+") or 0
-		aI.duration=self.para.chatTimed
-		aI.expirationTime=t+self.para.chatTimed
+		aI.duration=(self.para.match_duration_in_message and (aI.count~=0) and min(aI.count,60)) or self.para.chatTimed
+		aI.expirationTime=t+aI.duration
 
 		if not self.filled then self:enable() end    
 		return

@@ -404,7 +404,7 @@ function eF:register_new_layout(key)
     local att,para=eF.para.layouts[index]["attributes"],eF.para.layouts[index]["parameters"]
     para.displayName=key
     
-    if not att or not para then print("NO ATT/PARA in register_new_layout") end --toad proper error management
+    if not att or not para then print("NO ATT/PARA in register_new_layout") end 
     local by_group=para.by_group
     
     if by_group then

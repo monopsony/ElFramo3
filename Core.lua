@@ -575,7 +575,9 @@ for i,v in ipairs(lib_embeds) do LibStub(v):Embed(eF) end
 local current_version=2
 local function update_WTF()
     --TOAD WTF HANDLING
+    --this function will be used when changes are made that a change in WTF files
     if true then return end 
+    
     local para=elFramoDB or nil
     
     if not para then 
