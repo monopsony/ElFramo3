@@ -5,7 +5,7 @@ ElFramo is a simple but powerful unit frame addon able to provide a clean unit f
 
 ## Features
 
-* An simple interface with many options
+* A simple interface with many options
 * Very lightweight (as long as you dont go crazy with silly custom settings)
 * Allows multiple layouts of unit frames active at the same time (niche but neat)
 * Can track single auras, or white/blacklists that expand automatically
