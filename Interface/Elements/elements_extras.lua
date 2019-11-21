@@ -106,6 +106,13 @@ do
         return a
     end
     
+    args["warning_message"]={
+        type="description",
+        fontSize="small",
+        order=1,
+        name="|cFFFF0000Warning:|r This tab is highly experimental and mostly non-functional at the moment. Can safely be ignored.",
+    }
+
     args["grouping_prot"]={
         name="Select",
         type="select",
@@ -119,7 +126,6 @@ do
             return eF.interface_elements_extras_chosen_key
         end,
     }
-    
     
     args["new_prot"]={
         type="input",

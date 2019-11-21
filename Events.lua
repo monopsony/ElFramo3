@@ -106,7 +106,6 @@ local post_combat_functions={
 	end,
 }
 
-
 if not eF.loadingFrame then eF.loadingFrame=CreateFrame("Frame","ElFramoLoadingFrame",UIParent) end
 eF.loadingFrame:RegisterEvent("ENCOUNTER_START")
 eF.loadingFrame:RegisterEvent("ENCOUNTER_END")
@@ -310,7 +309,6 @@ eF.caster_watcher_frame:SetScript("OnEvent",eF.caster_watcher_frame.handleEvent)
  local chat_events={"CHAT_MSG_RAID","CHAT_MSG_RAID_LEADER","CHAT_MSG_GUILD","CHAT_MSG_SAY","CHAT_MSG_GUILD","CHAT_MSG_WHISPER","CHAT_MSG_YELL"}
  if not eF.chat_watcher_frame then eF.chat_watcher_frame=CreateFrame("Frame","ElFramoChatWatcher",UIParent) end
  for i,v in ipairs(chat_events) do eF.chat_watcher_frame:RegisterEvent(v) end 
-
 function eF.chat_watcher_frame:handleEvent(event,msg,author,language)
 
 	local frames=eF.full_name_to_unit_frame[author]
@@ -323,5 +321,11 @@ function eF.chat_watcher_frame:handleEvent(event,msg,author,language)
 
 end
 eF.chat_watcher_frame:SetScript("OnEvent",eF.chat_watcher_frame.handleEvent)
+
+
+
+
+
+
 
 

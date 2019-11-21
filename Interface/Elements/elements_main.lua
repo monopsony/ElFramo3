@@ -55,7 +55,7 @@ do
             if t>last_opened then
                 eF.interface_generate_element_groups()
                 last_opened=t
-                eF:reload_elements_options_frame()
+                --eF:reload_elements_options_frame()
             end
             return true
         end,
@@ -112,7 +112,7 @@ do
             eF.open_import_export_window("import",nil,"element")
         end,
     }
-     
+    
 end
 
 local function find_first_valid_order(order,tbl)
