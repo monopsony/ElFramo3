@@ -125,9 +125,9 @@ function taskFuncs:applyAnyThreatAdopt(unit)
 		local bool=self:threatAdopt(UnitThreatSituation(unit))
 		
 		if bool and not self.filled then 
-				self:enable()
+			self:enable()
 		elseif self.filled and not bool then
-				self:disable()
+			self:disable()
 		end
 end
 
@@ -141,7 +141,7 @@ function taskFuncs:setVisibility(alpha)
 end
 
 function taskFuncs:adoptThreatByStatus(status)
-		return status==self.para.arg1
+	return status==self.para.arg1
 end
 
 function taskFuncs:applyListAuraAdopt(unit)

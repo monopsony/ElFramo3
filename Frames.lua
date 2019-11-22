@@ -41,16 +41,16 @@ end
 local frameFunctions=eF.frameFunctions or {}
 eF.frameFunctions=frameFunctions
 
-local refresh_events={"UNIT_FLAGS","UNIT_HEALTH_FREQUENT","UNIT_AURA","UNIT_POWER_UPDATE","UNIT_HEAL_ABSORB_AMOUNT_CHANGED"}
+local refresh_events={"UNIT_FLAGS","UNIT_CAST","UNIT_HEALTH_FREQUENT","UNIT_AURA","UNIT_POWER_UPDATE","UNIT_HEAL_ABSORB_AMOUNT_CHANGED","UNIT_THREAT_SITUATION_UPDATE"}
 eF.unit_refresh_events=refresh_events
 
 function eF:refresh_visible_unit_frames()
 	for i,v in ipairs(self.visible_unit_frames) do
+		v:apply_and_reload_loads(true)
 		for j=1,#refresh_events do 
 			v:unit_event(refresh_events[j])
 		end
 	end
-
 end
 
 function frameFunctions:updateUnit(name_changed)
@@ -339,13 +339,13 @@ function frameFunctions:unit_event(event,arg1,arg2,arg3)
 		--onCast
 		local task=self.tasks.onCast
 		for i=1,#task,2 do 
-				task[i](task[i+1],unit)
+			task[i](task[i+1],unit)
 		end
 		
 		--postCast
 		local task=self.tasks.postCast
 		for i=1,#task,2 do
-				task[i](task[i+1],unit)
+			task[i](task[i+1],unit)
 		end
 		
 	elseif event=="CHAT_MSG" then
@@ -611,5 +611,7 @@ function eF:fully_reload_element(key)
 						frame:unit_event(refresh_events[i])
 				end        
 		end
+
+		eF.interface_onUpdate_frame.time_since=eF.interface_onUpdate_frame.throttle-0.2
 end
 

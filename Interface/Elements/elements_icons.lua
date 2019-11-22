@@ -191,7 +191,7 @@ args["export_prot"]={
 args["toggle_test_prot"]={
     name="Test",
     type="toggle",
-    order=5,
+    order=6,
     desc='Enable testing for this element, periodically showing the visuals on your active layouts. Resets on closing the options menu.',
     set=function(self,key) 
         if not eF.optionsTable.currently_selected_element_key then return end 

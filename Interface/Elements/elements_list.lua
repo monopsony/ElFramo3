@@ -157,6 +157,24 @@ do
             end,
     }
     
+    args["toggle_test_prot"]={
+        name="Test",
+        type="toggle",
+        order=6,
+        desc='Enable testing for this element, periodically showing the visuals on your active layouts. Resets on closing the options menu.',
+        set=function(self,key) 
+            if not eF.optionsTable.currently_selected_element_key then return end 
+            eF.interface_onUpdate_frame.time_since=10
+            eF.interface_main_frame.element_tests[eF.optionsTable.currently_selected_element_key]=key
+            if not key then eF:refresh_visible_unit_frames() end
+        end,
+        
+        get=function(self) 
+            if not eF.optionsTable.currently_selected_element_key then return false end
+            return eF.interface_main_frame.element_tests[eF.optionsTable.currently_selected_element_key]
+        end,
+    }  
+    
     local AceConfigDialog=LibStub("AceConfigDialog-3.0")
     args["grouping_prot"]={
         name="Group",

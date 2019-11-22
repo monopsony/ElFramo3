@@ -160,7 +160,28 @@ function eF:test_element_by_ref(ele)
 		end --end of aura
 
 		--MSG
+		if (tt=="CHAT_MSG")  then 
+			ele.auraInfo=make_random_aura()
+			if not ele.filled then ele:enable() end
+			for i,v in ipairs(ele.tasks.onMsg) do if i>1 then v(ele,ele.id or "player") end end 
+
+		end --MSG
+	end
+
+	--border
+	if para.type=="border" then 
+		
+		--aura
 		local tt=para.trackType
+		if (tt=="PLAYER HELPFUL") or (tt=="PLAYER HARMFUL") or (tt=="HELPFUL") or (tt=="HARMFUL")  then 
+			ele.auraInfo=make_random_aura()
+			if not ele.filled then ele:enable() end
+			for i,v in ipairs(ele.tasks.onAura) do if i>1 then v(ele,ele.id or "player") end end --i>1 to avoid searching for auras again
+			for i,v in ipairs(ele.tasks.postAura) do v(ele,ele.id or "player") end
+
+		end --end of aura
+
+		--MSG
 		if (tt=="CHAT_MSG")  then 
 			ele.auraInfo=make_random_aura()
 			if not ele.filled then ele:enable() end
@@ -168,6 +189,54 @@ function eF:test_element_by_ref(ele)
 
 		end --MSG
 
+		if (tt=="Threat_any") then
+			ele:enable()
+			for i,v in ipairs(ele.tasks.onThreat) do if i>1 then v(ele,ele.id or "player") end end 
+		end
+
+		--Static
+		if (tt=="Static") then
+			ele:enable()
+		end
+	end
+
+	--bar
+	if para.type=="bar" then 
+		ele:enable()
+		ele:SetValue(math.random())
+	end
+
+	--list
+	if para.type=="list" then 
+		
+		--aura
+		local tt=para.trackType
+		if (tt=="PLAYER HELPFUL") or (tt=="PLAYER HARMFUL") or (tt=="HELPFUL") or (tt=="HARMFUL")  then
+			local n=ele.para.count
+			for i=1,n do 
+				ele[i].auraInfo=make_random_aura()
+				if not ele[i].filled then ele[i]:enable() end
+			end 
+			if not ele.filled then ele:enable() end
+			ele.active=n
+			for i,v in ipairs(ele.tasks.onAura) do if i>1 then v(ele,ele.id or "player") end end --i>1 to avoid searching for auras again
+			for i,v in ipairs(ele.tasks.postAura) do v(ele,ele.id or "player") end
+
+		end --end of aura
+
+		--MSG
+		if (tt=="Casts")  then 
+			local n=ele.para.count
+			for i=1,n do 
+				ele[i].auraInfo=make_random_aura()
+				if not ele[i].filled then ele[i]:enable() end
+			end 
+			if not ele.filled then ele:enable() end
+			ele.active=n
+			for i,v in ipairs(ele.tasks.onCast) do if i>1 then v(ele,ele.id or "player") end end --i>1 to avoid searching for Casts again
+			for i,v in ipairs(ele.tasks.postCast) do v(ele,ele.id or "player") end
+
+		end --MSG
 	end
 
 end
