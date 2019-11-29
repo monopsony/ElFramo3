@@ -30,6 +30,16 @@ function eF:interface_create_new_element(typ,name,duplicate)
     eF:interface_select_element_by_key(name)
 end
 
+function eF:interface_select_element_by_key(key)
+    if not key and (type(key)=="string") then return end
+    local para=elFramo.para.elements[key]
+    if para.interfaceGroup then 
+        self:interface_set_selected_group("elements",para.interfaceGroup,key)
+    else
+        self:interface_set_selected_group("elements",key)
+    end
+end
+
 
 function eF:interface_remove_element_by_name(name)
     if not (name and eF.para.elements[name]) then return end

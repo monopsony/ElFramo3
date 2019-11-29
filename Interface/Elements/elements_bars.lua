@@ -47,12 +47,12 @@ do
     args["invisible_prot"]={
         type="description",
         order=0,
-        name="invisible",
+        name="Type: Bar",
         hidden=function(self)
             local new=self[#self-1]
             if eF.optionsTable.currently_selected_element_key~=new then eF.interface_elements_extras_chosen_key=nil end
             eF.optionsTable.currently_selected_element_key=new
-            return true
+            return false
         end,
         --thanks to rivers for the suggestion
     }
@@ -160,9 +160,9 @@ do
             
             --move back to the element
             if value=="None" then
-                AceConfigDialog:SelectGroup("elFramo","elements",name)
+                eF:interface_set_selected_group("elements",name)
             else
-                AceConfigDialog:SelectGroup("elxFramo","elements",value,name)
+                eF:interface_set_selected_group("elements",value,name)
             end
         end,
         get=function(self)

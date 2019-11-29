@@ -36,10 +36,10 @@ do
     args["is_group_element_prot"]={
         type="description",
         order=0,
-        name="invisible",
+        name="Type: Group",
         hidden=function(self)
             eF.optionsTable.currently_selected_element_key=self[#self-1]
-            return true
+            return false
         end,
         --thanks to rivers for the suggestion
     }

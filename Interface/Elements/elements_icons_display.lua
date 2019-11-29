@@ -205,7 +205,7 @@ do
         name="Color",
         hasAlpha=true,
         disabled=function()
-            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture) or (eF.para.elements[eF.optionsTable.currently_selected_element_key].smartIcon)
+            return (not eF.para.elements[eF.optionsTable.currently_selected_element_key].hasTexture)
         end,
         set=function(self,R,G,B,A)
             local name=eF.optionsTable.currently_selected_element_key or nil

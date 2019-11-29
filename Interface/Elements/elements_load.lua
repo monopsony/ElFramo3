@@ -73,8 +73,6 @@ local function set_multiline_parameter(index,text)
 end
 
 
-
-
 --roles & classes
 do
         

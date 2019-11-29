@@ -45,9 +45,10 @@ local function SelectGroup(container, event, group)
 	 container:ReleaseChildren()
 	 last_selected_tab=group
 	 if group=="elements" then 
-		AceConfigDialog:Open("elFramo_"..group,container) --I dont remember why but it's needed at least for the first time it's clicked
+		AceConfigDialog:Open("elFramo_"..group,container) --I dont remember why but it's needed (except for the first time it's clicked)
 	 end
 	 AceConfigDialog:Open("elFramo_"..group,container)
+	container:SetTitle("")
 end
 
 eF.interface_main_frame=AceGUI:Create("Frame")
@@ -239,6 +240,11 @@ function eF:test_element_by_ref(ele)
 		end --MSG
 	end
 
+end
+
+function eF:interface_set_selected_group(tab,...)
+    --if (not tbl) or not (type(tbl)=="table") then return end
+    AceConfigDialog:SelectGroup('elFramo_'..tab,...)
 end
 
 

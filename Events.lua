@@ -56,7 +56,7 @@ function eF.layoutEventHandler:handleEvent(event,...)
 		local unit=frame.id
 		local role=UnitGroupRolesAssigned(unit)
 		local name=UnitName(unit)
-		--local class,CLASS=UnitClass(unit)
+		local class,CLASS=UnitClass(unit)
 		frame.playerFrame=UnitIsUnit(unit,"player")
 		if (class~=frame.class) then frame.class=class; frame:update_load_tables(3) end
 		if (name~=frame.name) then frame:updateUnit(true) end
@@ -306,9 +306,9 @@ eF.caster_watcher_frame:SetScript("OnEvent",eF.caster_watcher_frame.handleEvent)
 		 
 --------MSG TRACKER--------
 
- local chat_events={"CHAT_MSG_RAID","CHAT_MSG_RAID_LEADER","CHAT_MSG_GUILD","CHAT_MSG_SAY","CHAT_MSG_GUILD","CHAT_MSG_WHISPER","CHAT_MSG_YELL"}
- if not eF.chat_watcher_frame then eF.chat_watcher_frame=CreateFrame("Frame","ElFramoChatWatcher",UIParent) end
- for i,v in ipairs(chat_events) do eF.chat_watcher_frame:RegisterEvent(v) end 
+local chat_events={"CHAT_MSG_RAID","CHAT_MSG_RAID_LEADER","CHAT_MSG_GUILD","CHAT_MSG_SAY","CHAT_MSG_GUILD","CHAT_MSG_WHISPER","CHAT_MSG_YELL"}
+if not eF.chat_watcher_frame then eF.chat_watcher_frame=CreateFrame("Frame","ElFramoChatWatcher",UIParent) end
+for i,v in ipairs(chat_events) do eF.chat_watcher_frame:RegisterEvent(v) end 
 function eF.chat_watcher_frame:handleEvent(event,msg,author,language)
 
 	local frames=eF.full_name_to_unit_frame[author]
@@ -324,8 +324,16 @@ eF.chat_watcher_frame:SetScript("OnEvent",eF.chat_watcher_frame.handleEvent)
 
 
 
+--------READY CHECK TRACKER--------
+local rc_events={"READY_CHECK","READY_CHECK_CONFIRM","READY_CHECK_FINISHED"}
+if not eF.rc_watcher_frame then eF.rc_watcher_frame=CreateFrame("Frame","ElFramoReadyCheckWatcher",UIParent) end
+for i,v in ipairs(rc_events) do eF.rc_watcher_frame:RegisterEvent(v) end 
+function eF.rc_watcher_frame:handleEvent(event,...)
 
+	--print(event,...)
 
+end
+eF.rc_watcher_frame:SetScript("OnEvent",eF.rc_watcher_frame.handleEvent)
 
 
 

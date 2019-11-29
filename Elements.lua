@@ -76,7 +76,8 @@ function frameFunctions:apply_element_paras(name)
 			el.texture:SetAllPoints()
 			
 			if para.smartIcon then
-				--el.texture:SetColorTexture(r,g,b,a)
+				el.texture:SetVertexColor(r,g,b)
+				el.texture:SetAlpha(a)
 			elseif para.solidTexture then
 				el.texture:SetColorTexture(r,g,b,a)
 			elseif para.texture=="" or para.texture=="nil" then
@@ -84,6 +85,7 @@ function frameFunctions:apply_element_paras(name)
 			else
 				el.texture:SetTexture(para.texture)
 				el.texture:SetVertexColor(r,g,b)
+				el.texture:SetAlpha(a)
 			end
 			
 		else --end of if para.hasTexture
@@ -328,14 +330,14 @@ function frameFunctions:apply_element_paras(name)
 			el:ClearAllPoints()
 			if i==1 then  el:SetPoint(para.anchor,frame,para.anchorTo,para.xPos,para.yPos)            
 			else
-					local a1,a2=growToAnchor[para.grow],growAnchorTo[para.grow]
-					local xOS=(para.grow=="right" and para.spacing) or (para.grow=="left" and -para.spacing) or 0
-					local yOS=(para.grow=="up" and para.spacing) or (para.grow=="down" and -para.spacing) or 0
-					if (para.grow=="right") or (para.grow=="left") then
-							el:SetPoint(just..a1,list[i-1],just..a2,xOS,yOS) 
-					else
-							el:SetPoint(a1..just,list[i-1],a2..just,xOS,yOS) 
-					end
+				local a1,a2=growToAnchor[para.grow],growAnchorTo[para.grow]
+				local xOS=(para.grow=="right" and para.spacing) or (para.grow=="left" and -para.spacing) or 0
+				local yOS=(para.grow=="up" and para.spacing) or (para.grow=="down" and -para.spacing) or 0
+				if (para.grow=="right") or (para.grow=="left") then
+						el:SetPoint(just..a1,list[i-1],just..a2,xOS,yOS) 
+				else
+						el:SetPoint(a1..just,list[i-1],a2..just,xOS,yOS) 
+				end
 			end
 
 			--texture handling
@@ -347,7 +349,8 @@ function frameFunctions:apply_element_paras(name)
 				el.texture:SetAllPoints()
 		
 				if para.smartIcon then
-					--nothing needed here for now
+					el.texture:SetVertexColor(r,g,b)
+					el.texture:SetAlpha(a)
 				elseif para.solidTexture then
 					el.texture:SetColorTexture(r,g,b,a)
 				elseif para.texture=="" or para.texture=="nil" then
@@ -355,6 +358,7 @@ function frameFunctions:apply_element_paras(name)
 				else
 					el.texture:SetTexture(para.texture)
 					el.texture:SetVertexColor(r,g,b)
+					el.texture:SetAlpha(a)
 				end
 		
 			else --end of if para.hasTexture
