@@ -91,7 +91,7 @@ do
         width="half",
         confirm=function() 
             if not eF.optionsTable.currently_selected_layout then return false end
-            return string.format("Are you sure you want to delete the layout '%s'. This is not reversible.",eF.optionsTable.currently_selected_layout or "(nothing selected)") 
+            return string.format("Are you sure you want to delete the layout '%s'? This is not reversible.",eF.optionsTable.currently_selected_layout or "(nothing selected)") 
             end,
                     name="Delete",
         func=function(self)

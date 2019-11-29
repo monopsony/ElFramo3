@@ -36,7 +36,7 @@ for k,v in ipairs(flag_frames) do
         name="Frame color",
         hasAlpha=true,
         set=function(self,R,G,B,A)
-            local flag=self[3]
+            local flag=self[2]
             local name=eF.optionsTable.currently_selected_layout or nil
             if not name then return end       
             eF.para.layouts[name].parameters.flagFrames[flag]["frameR"]=R
@@ -46,7 +46,7 @@ for k,v in ipairs(flag_frames) do
         end,
         get=function(self)
             local name=eF.optionsTable.currently_selected_layout or nil
-            local flag=self[3]
+            local flag=self[2]
             if not name then return end
             R,G,B,A=get_current_parameter(flag,"frameR"),get_current_parameter(flag,"frameG"),get_current_parameter(flag,"frameB"),get_current_parameter(flag,"frameA")
             return R,G,B,A
@@ -62,11 +62,11 @@ for k,v in ipairs(flag_frames) do
         isPercent=false,
         step=1,
         set=function(self,value)
-            local flag=self[3]
+            local flag=self[2]
             set_current_parameter(flag,"textSize",value)
         end,
         get=function(self)
-            local flag=self[3]
+            local flag=self[2]
             return get_current_parameter(flag,"textSize")
         end,
     }
@@ -79,11 +79,11 @@ for k,v in ipairs(flag_frames) do
         order=23,
         values=LSM:HashTable("font"),
         set=function(self,value)
-            local flag=self[3]
+            local flag=self[2]
             set_current_parameter(flag,"textFont",value)
         end,
         get=function(self)
-            local flag=self[3]
+            local flag=self[2]
             return get_current_parameter(flag,"textFont")
         end,
     }
@@ -96,11 +96,11 @@ for k,v in ipairs(flag_frames) do
         order=26,
         values=positions,
         set=function(self,value)
-            local flag=self[3]
+            local flag=self[2]
             set_current_parameter(flag,"textPos",value)
         end,
         get=function(self)
-            local flag=self[3]
+            local flag=self[2]
             return get_current_parameter(flag,"textPos")
         end,
     }
@@ -114,11 +114,11 @@ for k,v in ipairs(flag_frames) do
         isPercent=false,
         step=1,
         set=function(self,value)
-            local flag=self[3]
+            local flag=self[2]
             set_current_parameter(flag,"textXOS",value)
         end,
         get=function(self)
-            local flag=self[3]
+            local flag=self[2]
             return get_current_parameter(flag,"textXOS")
         end,
     }
@@ -132,11 +132,11 @@ for k,v in ipairs(flag_frames) do
         isPercent=false,
         step=1,
         set=function(self,value)
-            local flag=self[3]
+            local flag=self[2]
             set_current_parameter(flag,"textYOS",value)
         end,
         get=function(self)
-            local flag=self[3]
+            local flag=self[2]
             return get_current_parameter(flag,"textYOS")
         end,
     }
@@ -148,7 +148,7 @@ for k,v in ipairs(flag_frames) do
         name="Text color",
         hasAlpha=true,
         set=function(self,R,G,B,A)
-            local flag=self[3]
+            local flag=self[2]
             local name=eF.optionsTable.currently_selected_layout or nil
             if not name then return end       
             eF.para.layouts[name].parameters.flagFrames[flag]["textR"]=R
@@ -158,7 +158,7 @@ for k,v in ipairs(flag_frames) do
         end,
         get=function(self)
             local name=eF.optionsTable.currently_selected_layout or nil
-            local flag=self[3]
+            local flag=self[2]
             if not name then return end
             R,G,B,A=get_current_parameter(flag,"textR"),get_current_parameter(flag,"textG"),get_current_parameter(flag,"textB"),get_current_parameter(flag,"textA")
             return R,G,B,A
