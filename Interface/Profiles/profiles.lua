@@ -14,6 +14,10 @@ do
         type="description",
         fontSize="small",
         order=0,
+        hidden=function()
+            eF.interface_tab_group:SetTitle("")
+            return false
+        end,
         name="|cFFFF0000Warning:|r Most settings in here will result in an immediate UI reload when altered.\nBut Greg, isn't that really lazy?. Yes. Yes it is.",
     }
 

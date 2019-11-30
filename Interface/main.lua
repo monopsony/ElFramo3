@@ -42,12 +42,12 @@ local pairs,ipairs=pairs,ipairs
 -- Callback function for OnGroupSelected
 local last_selected_tab="layouts"
 local function SelectGroup(container, event, group)
-	 container:ReleaseChildren()
-	 last_selected_tab=group
-	 if group=="elements" then 
+	container:ReleaseChildren()
+	last_selected_tab=group
+	if group=="elements" then 
 		AceConfigDialog:Open("elFramo_"..group,container) --I dont remember why but it's needed (except for the first time it's clicked)
-	 end
-	 AceConfigDialog:Open("elFramo_"..group,container)
+	end
+	AceConfigDialog:Open("elFramo_"..group,container)
 	container:SetTitle("")
 end
 
@@ -71,7 +71,9 @@ for k,v in pairs(eF.optionsTable.args) do
 	AceConfig:RegisterOptionsTable("elFramo_"..k,v)
 end
 tabs:SelectTab("layouts")
-
+function eF:interface_select_tab(s)
+	eF.interface_tab_group:SelectTab(s)
+end
 
 frame:SetCallback("OnShow",function(...) tabs:SelectTab(last_selected_tab or "layouts"); eF.interface_main_frame:onShow() end )
 frame:SetCallback("OnClose",function(...) eF.interface_main_frame:onClose() end )

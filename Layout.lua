@@ -256,6 +256,11 @@ function layout_methods:checkVisibility()
 end
 
 function layout_methods:reload_layout()
+
+    for i,v in ipairs(eF.list_all_active_unit_frames(self.para.displayName)) do
+        wipe(v.tasks)
+    end
+
     self:setVisible(not self.visible)
     self:setVisible(not self.visible)
 end

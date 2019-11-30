@@ -25,8 +25,10 @@ function eF:interface_create_new_element(typ,name,duplicate)
         if not typ then return end
         para[name]=deepcopy(eF.interface_element_defaults[typ])
     end
+
     --eF:update_element_meta(name)
     eF:refresh_element(name)
+    eF:interface_select_tab("elements")
     eF:interface_select_element_by_key(name)
 end
 
@@ -49,6 +51,7 @@ function eF:interface_remove_element_by_name(name)
     eF.workFuncs[name]=nil
     wipe(eF.para.elements[name])
     eF.para.elements[name]=nil
+
     eF:refresh_element()
 end
 
@@ -65,8 +68,9 @@ do
             if t>last_opened then
                 eF.interface_generate_element_groups()
                 last_opened=t
-                --eF:reload_elements_options_frame()
             end
+            eF.interface_tab_group:SetTitle("")
+                --eF:reload_elements_options_frame()
             return true
         end,
         --thanks to rivers for the suggestion

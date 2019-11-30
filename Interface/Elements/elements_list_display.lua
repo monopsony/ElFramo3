@@ -155,6 +155,7 @@ do
         style="dropdown",
         order=8,
         values=justify_choices,
+        hidden=true, --TOAD 
         set=function(self,value)
             set_current_parameter("justify",value)
         end,

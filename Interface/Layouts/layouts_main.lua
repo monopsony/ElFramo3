@@ -38,6 +38,10 @@ do
         type="description",
         fontSize="small",
         order=1,
+        hidden=function()
+            eF.interface_tab_group:SetTitle("")
+            return false
+        end,
         name="|cFFFFF569Note|r: Multiple layouts can be active at the same time. The visibility of layouts is individually controlled in the 'Show' options."
     }
     
