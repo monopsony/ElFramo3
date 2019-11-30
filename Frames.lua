@@ -6,18 +6,28 @@ local ipairs=ipairs
 local frameEvents={}
 eF.visible_unit_frames={}
 eF.full_name_to_unit_frame={}
+eF.unit_to_frame={}
 setmetatable(eF.full_name_to_unit_frame,{
-	__index=function(a,b,c) if not b then return nil end; a[b]={}; return a[b] end 
+	__index=function(a,b) if not b then return nil end; a[b]={}; return a[b] end 
+})
+setmetatable(eF.unit_to_frame,{
+	__index=function(a,b) if not b then return nil end; a[b]={}; return a[b] end 
 })
 
 function eF:update_visible_unit_frames()
 	eF.visible_unit_frames=eF.list_all_active_unit_frames()
-	local fntuf=eF.full_name_to_unit_frame
+	local fntuf,utf=eF.full_name_to_unit_frame,eF.unit_to_frame
 	wipe(fntuf)
+	wipe(utf)
 	for i,v in ipairs(eF.visible_unit_frames) do
-		local fn=v.full_name
-		if not fn then return end 
-		fntuf[fn][#fntuf[fn]+1]=v
+		local fn,id=v.full_name,v.id
+		if fn then 
+			fntuf[fn][#fntuf[fn]+1]=v
+		end
+		if id then 
+			utf[id][#utf[id]+1]=v 
+		end
+
 	end
 	
 
@@ -355,6 +365,11 @@ function frameFunctions:unit_event(event,arg1,arg2,arg3)
 			task[i](task[i+1],arg1,arg2)
 		end
 
+	elseif event=="READY_CHECK" then
+		local task,value=self.tasks.onRC,self.rcStatus
+		for i=1,#task,2 do 
+			task[i](task[i+1],value,arg1,arg2)
+		end
 
 	elseif event=="UNIT_CONNECTION" or event=="UNIT_FLAGS" or event=="INCOMING_RESURRECT_CHANGED" or event=="UNIT_PHASE" then
 		self:updateFlags()

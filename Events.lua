@@ -330,7 +330,49 @@ if not eF.rc_watcher_frame then eF.rc_watcher_frame=CreateFrame("Frame","ElFramo
 for i,v in ipairs(rc_events) do eF.rc_watcher_frame:RegisterEvent(v) end 
 function eF.rc_watcher_frame:handleEvent(event,...)
 
-	--print(event,...)
+	if event=="READY_CHECK" then
+
+
+		local frames=eF.visible_unit_frames
+		if #frames<1 then return end 
+
+		local name,time=...
+		name=eF.name_with_realm(name)
+		lead_frames=eF.full_name_to_unit_frame[name]
+
+		eF.info.rcExpirationTime=GetTime()+time
+		for i,v in ipairs(frames) do 
+			v.rcStatus=2 --0: no, 1: yes, 2: pending
+			v:unit_event("READY_CHECK",false,time)
+		end
+
+		for i,v in ipairs(lead_frames) do 
+			v.rcStatus=1 --0: no, 1: yes, 2: pending
+			v:unit_event("READY_CHECK",false,time)
+		end
+
+	elseif event=="READY_CHECK_CONFIRM" then
+		local unit,status=...
+		status=(status and 1) or 0
+
+		local frames=eF.unit_to_frame[unit]
+		if #frames<1 then return end 
+		for i,v in ipairs(frames) do 
+			v.rcStatus=status
+			v:unit_event("READY_CHECK",false)
+		end
+
+	else
+		local frames=eF.visible_unit_frames
+		if #frames<1 then return end 
+
+		for i,v in ipairs(frames) do 
+			local status=v.rcStatus
+			if (not v.rcStatus) or (v.rcStatus==2) then v.rcStatus=0 end 
+			v:unit_event("READY_CHECK",true)
+		end
+
+	end
 
 end
 eF.rc_watcher_frame:SetScript("OnEvent",eF.rc_watcher_frame.handleEvent)

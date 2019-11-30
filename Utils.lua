@@ -253,6 +253,11 @@ function eF.posInList(s,lst)
   return i
 end
 
+function eF.name_with_realm(s)
+  if string.find(s,'-') then return end
+  return s.."-"..eF.info.playerRealm 
+end
+
 function eF.posInFamilyButtonsList(j,k)
   if (not eF.familyButtonsList) or #eF.familyButtonsList==0 then return false end
   local lst=eF.familyButtonsList

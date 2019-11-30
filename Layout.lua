@@ -465,9 +465,7 @@ function eF:register_new_layout(key)
         eF:apply_layout_para_index(index)
         header:Show()  --toad streamlined showing
         
-    end
-    
-    
+    end 
 end
 
 function eF:apply_layout_para_index(index)

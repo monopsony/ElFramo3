@@ -53,6 +53,7 @@ do
 		["HELPFUL"]="Any Buffs",
 		["HARMFUL"]="Any Debuffs",
 		["CHAT_MSG"]="Chat message",
+		["READY_CHECK"]="Ready check",
 	}
 	args["trackType_prot"]={
 		name="Track",
@@ -267,6 +268,12 @@ local function is_not_chat_msg()
 	then return false else return true end 
 end
 
+local function is_not_ready_check()
+	local tt=get_current_parameter("trackType")
+	if (tt=="READY_CHECK")
+	then return false else return true end 
+end
+
 --chat msg options
 do
 	local chat_types={
@@ -356,6 +363,52 @@ do
 			return get_current_parameter("match_duration_in_message")
 		end,
 	}  
+
+end
+
+
+--chat msg options
+do
+	local rc_types={
+		[3]="Any",
+		[2]="Pending",
+		[1]="Ready",
+		[0]="Not Ready",
+	}
+
+	args["rc_types_prot"]={
+		name="Show when",
+		type="select",
+		style="dropdown",
+		hidden=is_not_ready_check,
+		order=2,
+		values=rc_types,
+		set=function(self,value)   
+			set_current_parameter("rcType",value)        
+		end,
+		get=function(self)
+			return get_current_parameter("rcType")
+		end, 
+	}	
+
+
+    args["rcLinger_prot"]={
+        order=3,
+        type="range",
+        name="Linger time",
+        min=0,
+        softMax=30,
+        isPercent=false,
+        hidden=is_not_ready_check,
+        step=1,
+        set=function(self,value)
+            set_current_parameter("rcLinger",value)
+        end,
+        get=function(self)
+            return get_current_parameter("rcLinger")
+        end,
+    }
+
 
 end
 

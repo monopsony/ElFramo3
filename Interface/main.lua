@@ -146,6 +146,24 @@ local function make_random_aura()
 	return aI
 end
 
+local function make_random_rc_aura_info()
+	local aI={}
+	aI.new_aura=true
+	local rand=math.random(3)-1
+	aI.name=""
+	aI.icon=eF.rc_status_to_icon[rand]
+	aI.count=rand
+	aI.debuffType=nil
+	aI.duration=10
+	aI.expirationTime=GetTime()+10
+	aI.unitCaster="player"
+	aI.canSteal=false
+	aI.spellID=0
+	aI.isBoss=true
+	aI.isPermanent=aI.expirationTime==0
+	return aI
+end
+
 function eF:test_element_by_ref(ele)
 	local para=ele.para 
 
@@ -169,6 +187,15 @@ function eF:test_element_by_ref(ele)
 			for i,v in ipairs(ele.tasks.onMsg) do if i>1 then v(ele,ele.id or "player") end end 
 
 		end --MSG
+
+		--RC
+		if (tt=="READY_CHECK")  then 
+			ele.auraInfo=make_random_rc_aura_info()
+			if not ele.filled then ele:enable() end
+			for i,v in ipairs(ele.tasks.onRC) do if i>1 then v(ele,ele.id or "player") end end 
+
+		end --RC
+
 	end
 
 	--border
@@ -248,6 +275,4 @@ function eF:interface_set_selected_group(tab,...)
     --if (not tbl) or not (type(tbl)=="table") then return end
     AceConfigDialog:SelectGroup('elFramo_'..tab,...)
 end
-
-
 

@@ -90,11 +90,53 @@ function taskFuncs:applyMsgAdopt(msg,event)
 
 end
 
+eF.rc_status_to_icon={
+	[0]="Interface\\RAIDFRAME\\ReadyCheck-NotReady.PNG",
+	[1]="Interface\\RAIDFRAME\\ReadyCheck-Ready.PNG",
+	[2]="Interface\\RAIDFRAME\\ReadyCheck-Waiting.PNG",
+}
+local rc_status_to_icon=eF.rc_status_to_icon
+function taskFuncs:applyReadyCheck(status,ended,time)
+
+
+	local status=status or 2
+	local bool=(self.para.rcType==3) or (self.para.rcType==status)
+
+	if bool then
+		local aI=self.auraInfo
+		local t=GetTime()
+		aI.name=""
+		aI.icon=rc_status_to_icon[status]
+		aI.count=status
+		if time then
+			aI.duration=time
+			aI.expirationTime=t+aI.duration
+			aI.new_aura=true
+		end
+
+		if ended then
+			aI.duration=0.01
+			aI.expirationTime=GetTime()
+			aI.new_aura=true
+		end
+
+		if not self.filled then self:enable() end    
+		return
+	end--end of if bool
+
+	if not bool and self.filled then self:disable() end
+
+end
+
 function taskFuncs:iconUpdateChatTimed()
 	local t,eT=GetTime(),self.auraInfo.expirationTime
 	if t>eT then self:disable() end 
 end
 
+function taskFuncs:rcOnUpdate()
+	local t,eT=GetTime(),self.auraInfo.expirationTime
+	if t>eT+(self.para.rcLinger or 0) then self:disable() end 
+end
 
 local str_find=string.find
 taskFuncs.msgAdopt={

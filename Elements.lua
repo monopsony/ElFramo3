@@ -534,6 +534,19 @@ function eF:update_element_meta(name)
 			end
 		end
 		
+		if tt=="READY_CHECK" then
+			tasks.onRC[#tasks.onRC+1]=taskFuncs.applyReadyCheck
+			if para.cdWheel then
+				tasks.onRC[#tasks.onRC+1]=taskFuncs.iconUpdateCDWheel
+			end
+
+			if para.hasTexture and para.smartIcon then
+				tasks.onRC[#tasks.onRC+1]=taskFuncs.iconApplySmartIcon
+			end
+			
+			tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.rcOnUpdate 
+		end
+
 		if para.hasText then
 			if para.textType=="Time left" then 
 				tasks.onUpdate[#tasks.onUpdate+1]=taskFuncs.iconUpdateTextTypeT 
