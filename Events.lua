@@ -346,11 +346,12 @@ function eF.rc_watcher_frame:handleEvent(event,...)
 			v:unit_event("READY_CHECK",false,time)
 		end
 
-		for i,v in ipairs(lead_frames) do 
-			v.rcStatus=1 --0: no, 1: yes, 2: pending
-			v:unit_event("READY_CHECK",false,time)
+		if lead_frames then
+			for i,v in ipairs(lead_frames) do 
+				v.rcStatus=1 --0: no, 1: yes, 2: pending
+				v:unit_event("READY_CHECK",false,time)
+			end
 		end
-
 	elseif event=="READY_CHECK_CONFIRM" then
 		local unit,status=...
 		status=(status and 1) or 0
