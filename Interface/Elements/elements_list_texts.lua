@@ -102,7 +102,7 @@ do
             local name=eF.optionsTable.currently_selected_element_key or nil
             if not name then return end
             local para=eF.para.elements[name]
-            R,G,B,A=para.textR,para.textG,para.textB,para.textA
+            local R,G,B,A=para.textR,para.textG,para.textB,para.textA
             return R,G,B,A
         end
     } 
@@ -297,7 +297,7 @@ do
             local name=eF.optionsTable.currently_selected_element_key or nil
             if not name then return end
             local para=eF.para.elements[name]
-            R,G,B,A=para.text2R,para.text2G,para.text2B,para.text2A
+            local R,G,B,A=para.text2R,para.text2G,para.text2B,para.text2A
             return R,G,B,A
         end
     } 

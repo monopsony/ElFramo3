@@ -119,13 +119,6 @@ eF.defaultColors={
 setmetatable(eF.defaultColors,{__index=function(t,k) t[k]={1,1,1} return t[k] end})
 local pairs=pairs
 
-function MakeMovable(frame)
-  frame:SetMovable(true)
-  frame:RegisterForDrag("LeftButton")
-  frame:SetScript("OnDragStart", frame.StartMoving)
-  frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
-end
-
 function eF.borderInfo(pos)
   local loc,p1,p2,w,f11,f12,f21,f22
   if pos=="RIGHT" then loc="borderRight"; p1="TOPRIGHT"; p2="BOTTOMRIGHT"; w=true; f11=1; f12=0; f21=1; f22=0;

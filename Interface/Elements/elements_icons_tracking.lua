@@ -149,7 +149,7 @@ end
 --aura extras
 do
 
-	function aura_extra_is_checked(key)
+	local function aura_extra_is_checked(key)
 		if is_not_aura_related() then return false end
 		if get_aura_extra(key)==true then return true end 
 		return false

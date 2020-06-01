@@ -19,7 +19,7 @@ local test_profile={
                     local header=self:GetParent();
                     self:SetFrameLevel(header:GetFrameLevel()+11)
                     header:CallMethod("initialConfigFunction",self:GetName())
-                    ]],
+                    ]], 
                     allowVehicleTarget=false,
                     toggleForVehicle=false,
                     unitsPerColumn=5,

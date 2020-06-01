@@ -71,7 +71,7 @@ function eF.layoutEventHandler:handleEvent(event,...)
 	local grouped=IsInGroup()
 	if eF.grouped~=grouped then 
 		eF.grouped=grouped; 
-		check_visibility_flag=true 
+		local check_visibility_flag=true 
 		if not grouped then eF.onUpdateFrame:SetScript("OnUpdate",nil) --when alone, you're not in range of yourself??
 		else eF.onUpdateFrame:SetScript("OnUpdate",eF.onUpdateFrame.onUpdateFunction) end     
 	end
@@ -332,13 +332,12 @@ function eF.rc_watcher_frame:handleEvent(event,...)
 
 	if event=="READY_CHECK" then
 
-
 		local frames=eF.visible_unit_frames
 		if #frames<1 then return end 
 
 		local name,time=...
 		name=eF.name_with_realm(name)
-		lead_frames=eF.full_name_to_unit_frame[name]
+		local lead_frames=eF.full_name_to_unit_frame[name]
 
 		eF.info.rcExpirationTime=GetTime()+time
 		for i,v in ipairs(frames) do 

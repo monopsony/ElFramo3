@@ -137,7 +137,7 @@ do
             local name=eF.optionsTable.currently_selected_element_key or nil
             if not name then return end
             local para=eF.para.elements[name]
-            R,G,B,A=para.borderR,para.borderG,para.borderB,para.borderA
+            local R,G,B,A=para.borderR,para.borderG,para.borderB,para.borderA
             return R,G,B,A
         end,
     } 

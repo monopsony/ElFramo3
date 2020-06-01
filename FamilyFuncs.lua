@@ -141,22 +141,22 @@ end
 local str_find=string.find
 taskFuncs.msgAdopt={
 	contains=function(self,msg)
-		arg=self.para.arg1  
+		local arg=self.para.arg1  
 		return str_find(msg,arg)
 	end,
 	
 	is=function(self,msg)
-		arg=self.para.arg1  
+		local arg=self.para.arg1  
 		return msg==arg
 	end,
 
 	starts=function(self,msg)
-		arg=self.para.arg1  
+		local arg=self.para.arg1  
 		return msg:sub(1,#arg)==arg
 	end,
 	
 	ends=function(self,msg)
-		arg=self.para.arg1  
+		local arg=self.para.arg1  
 		return (msg=="") or (msg:sub(-#arg)==arg)
 	end,
 }
@@ -174,7 +174,7 @@ function taskFuncs:applyAnyThreatAdopt(unit)
 end
 
 function taskFuncs:setVisibility(alpha)
-		alpha_visible=(self:GetAlpha()==1)
+		local alpha_visible=(self:GetAlpha()==1)
 		if alpha_visible and (alpha==0) or (alpha==false) then
 				self:SetAlpha(0)
 		elseif (not alpha_visible) and (alpha==1) or (alpha==true) then

@@ -83,8 +83,8 @@ frame.element_tests={}
 --AChat command /ef3
 local initialised=false
 function eF:open_options_frame()
-		--if not initialised then eF.interface_generate_element_groups(); initialised=true end
-		if frame:IsShown() then frame:Hide() else frame:Show() end
+	--if not initialised then eF.interface_generate_element_groups(); initialised=true end
+	if frame:IsShown() then frame:Hide() else frame:Show() end
 end
 eF:RegisterChatCommand("ef3",eF.open_options_frame)
 

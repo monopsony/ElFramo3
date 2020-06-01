@@ -48,7 +48,7 @@ for k,v in ipairs(flag_frames) do
             local name=eF.optionsTable.currently_selected_layout or nil
             local flag=self[2]
             if not name then return end
-            R,G,B,A=get_current_parameter(flag,"frameR"),get_current_parameter(flag,"frameG"),get_current_parameter(flag,"frameB"),get_current_parameter(flag,"frameA")
+            local R,G,B,A=get_current_parameter(flag,"frameR"),get_current_parameter(flag,"frameG"),get_current_parameter(flag,"frameB"),get_current_parameter(flag,"frameA")
             return R,G,B,A
         end
     }
