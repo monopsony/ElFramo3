@@ -551,7 +551,7 @@ eF.currentFamilyParaVersion=0
    
 eF.unitEvents={
 --"INCOMING_RESURRECT_CHANGED",
-"UNIT_HEALTH_FREQUENT",
+"UNIT_HEALTH",
 "UNIT_MAXHEALTH",
 "UNIT_FLAGS",
 "UNIT_AURA",

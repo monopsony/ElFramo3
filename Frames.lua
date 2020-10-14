@@ -51,7 +51,7 @@ end
 local frameFunctions=eF.frameFunctions or {}
 eF.frameFunctions=frameFunctions
 
-local refresh_events={"UNIT_FLAGS","UNIT_CAST","UNIT_HEALTH_FREQUENT","UNIT_AURA","UNIT_POWER_UPDATE","UNIT_HEAL_ABSORB_AMOUNT_CHANGED","UNIT_THREAT_SITUATION_UPDATE"}
+local refresh_events={"UNIT_FLAGS","UNIT_CAST","UNIT_HEALTH","UNIT_AURA","UNIT_POWER_UPDATE","UNIT_HEAL_ABSORB_AMOUNT_CHANGED","UNIT_THREAT_SITUATION_UPDATE"}
 eF.unit_refresh_events=refresh_events
 
 function eF:refresh_visible_unit_frames()
@@ -319,7 +319,7 @@ function frameFunctions:unit_event(event,arg1,arg2,arg3)
 	if not unit then return end
 	
 	
-	if event=="UNIT_MAXHEALTH" or event=="UNIT_HEALTH_FREQUENT" then
+	if event=="UNIT_MAXHEALTH" or event=="UNIT_HEALTH" then
 		self:updateHealth()
 		if (UnitIsDeadOrGhost(unit)~=self.dead) then self:updateFlags() end
 		
@@ -449,7 +449,8 @@ end
 local UnitHealth,UnitHealthMax=UnitHealth,UnitHealthMax
 function frameFunctions:updateHealth()
 	local unit=self.id
-	self.hp:SetValue(UnitHealth(unit)/UnitHealthMax(unit))
+	local max = UnitHealthMax(unit)
+	self.hp:SetValue(max and UnitHealth(unit)/max or 1)
 end
 
 local function metaFunction(t,k)

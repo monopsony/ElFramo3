@@ -246,7 +246,7 @@ function frameFunctions:apply_element_paras(name)
 				--position and visuals
 
 				--el:SetAllPoints()
-				el:SetBackdrop(nil)
+				--el:SetBackdrop(nil)
 				
 				local r,g,b,a=para.borderR or 1,para.borderG or 1,para.borderB or 1,para.borderA or 1
 				local size=para.borderSize or 2
