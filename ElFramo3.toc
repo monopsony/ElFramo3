@@ -1,4 +1,4 @@
-## Interface: 70100
+## Interface: 90001
 ## Title: ElFramo3
 ## DefaultState: disabled
 ## SavedVariables: elFramoDB
