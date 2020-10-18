@@ -675,11 +675,6 @@ function elFramo:RefreshConfig()
     ReloadUI()
 end
 
---self.db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
---function MyAddon:RefreshConfig()
-  -- do stuff
---end
-
 function elFramo:OnEnable()
     
 end
