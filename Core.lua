@@ -1,4 +1,3 @@
-
 local test_profile={
     profile={
         layouts={
@@ -562,7 +561,6 @@ eF.unitEvents={
 "UNIT_PHASE",
 "UNIT_NAME_UPDATE",
 "UNIT_THREAT_SITUATION_UPDATE",
---"UNIT_HEALTH",
 }
 
 eF.inRaid=false 
