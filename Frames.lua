@@ -7,20 +7,30 @@ local frameEvents = {}
 eF.visible_unit_frames = {}
 eF.full_name_to_unit_frame = {}
 eF.unit_to_frame = {}
-setmetatable(eF.full_name_to_unit_frame, {
-    __index = function(a, b)
-        if not b then return nil end
-        a[b] = {};
-        return a[b]
-    end
-})
-setmetatable(eF.unit_to_frame, {
-    __index = function(a, b)
-        if not b then return nil end
-        a[b] = {};
-        return a[b]
-    end
-})
+setmetatable(
+    eF.full_name_to_unit_frame,
+    {
+        __index = function(a, b)
+            if not b then
+                return nil
+            end
+            a[b] = {}
+            return a[b]
+        end
+    }
+)
+setmetatable(
+    eF.unit_to_frame,
+    {
+        __index = function(a, b)
+            if not b then
+                return nil
+            end
+            a[b] = {}
+            return a[b]
+        end
+    }
+)
 
 function eF:update_visible_unit_frames()
     eF.visible_unit_frames = eF.list_all_active_unit_frames()
@@ -28,46 +38,66 @@ function eF:update_visible_unit_frames()
     wipe(fntuf)
     wipe(utf)
     for i, v in ipairs(eF.visible_unit_frames) do
+        -- toad remove this if it doesnt actually fix the bug
+        local unit_name, unit_realm = UnitFullName(v.id)
+        v.name = unit_name
+        v.realm = unit_realm
+        v.full_name =
+            (unit_name or "") .. "-" .. (unit_realm or eF.info.playerRealm)
+
         local fn, id = v.full_name, v.id
-        if fn then fntuf[fn][#fntuf[fn] + 1] = v end
-        if id then utf[id][#utf[id] + 1] = v end
-
+        if fn then
+            fntuf[fn][#fntuf[fn] + 1] = v
+        end
+        if id then
+            utf[id][#utf[id] + 1] = v
+        end
     end
-
 end
 
-function frameEvents:OnShow() eF:update_visible_unit_frames() end
+function frameEvents:OnShow()
+    eF:update_visible_unit_frames()
+end
 
-function frameEvents:OnHide() eF:update_visible_unit_frames() end
+function frameEvents:OnHide()
+    eF:update_visible_unit_frames()
+end
 
 function frameEvents:OnAttributeChanged(name, value)
-
-    if name == "unit" then self:updateUnit() end
+    if name == "unit" then
+        self:updateUnit()
+    end
 end
 
 local frameFunctions = eF.frameFunctions or {}
 eF.frameFunctions = frameFunctions
 
 local refresh_events = {
-    "UNIT_FLAGS", "UNIT_CAST", "UNIT_HEALTH", "UNIT_AURA", "UNIT_POWER_UPDATE",
-    "UNIT_HEAL_ABSORB_AMOUNT_CHANGED", "UNIT_THREAT_SITUATION_UPDATE"
+    "UNIT_FLAGS",
+    "UNIT_CAST",
+    "UNIT_HEALTH",
+    "UNIT_AURA",
+    "UNIT_POWER_UPDATE",
+    "UNIT_HEAL_ABSORB_AMOUNT_CHANGED",
+    "UNIT_THREAT_SITUATION_UPDATE"
 }
 eF.unit_refresh_events = refresh_events
 
 function eF:refresh_visible_unit_frames()
     for i, v in ipairs(self.visible_unit_frames) do
         v:apply_and_reload_loads(true)
-        for j = 1, #refresh_events do v:unit_event(refresh_events[j]) end
+        for j = 1, #refresh_events do
+            v:unit_event(refresh_events[j])
+        end
     end
 end
 
 function frameFunctions:updateUnit(name_changed)
     local unit = SecureButton_GetModifiedUnit(self)
-    local unit_changed, flag1, flag2 = self.id ~= unit,
-                                       self.current_layout_version ~=
-                                           eF.current_layout_version,
-                                       eF.current_elements_version ~=
-                                           self.current_elements_version
+    local unit_changed, flag1, flag2 =
+        self.id ~= unit,
+        self.current_layout_version ~= eF.current_layout_version,
+        eF.current_elements_version ~= self.current_elements_version
     local previous_unit = true
 
     if unit_changed then
@@ -99,13 +129,12 @@ function frameFunctions:updateUnit(name_changed)
         end
 
         eF:update_visible_unit_frames()
-
     end
 
     -- paras
     if unit_changed or flag1 or flag2 or name_changed then
         if not unit then
-            self.id = nil;
+            self.id = nil
             return
         end
 
@@ -113,11 +142,11 @@ function frameFunctions:updateUnit(name_changed)
         local role = UnitGroupRolesAssigned(unit)
 
         if (class ~= self.class) then
-            self.class = class;
+            self.class = class
             self:update_load_tables(3)
         end
         if (role ~= self.role) then
-            self.role = role;
+            self.role = role
             self:update_load_tables(4)
         end
 
@@ -127,8 +156,8 @@ function frameFunctions:updateUnit(name_changed)
         local unit_name, unit_realm = UnitFullName(self.id)
         self.name = unit_name
         self.realm = unit_realm
-        self.full_name = (unit_name or "") .. "-" ..
-                             (unit_realm or eF.info.playerRealm)
+        self.full_name =
+            (unit_name or "") .. "-" .. (unit_realm or eF.info.playerRealm)
 
         if flag1 then
             self:updateSize()
@@ -145,7 +174,9 @@ function frameFunctions:updateUnit(name_changed)
             self:updateHPBarColor()
         end
 
-        if flag2 then self:apply_element_paras() end
+        if flag2 then
+            self:apply_element_paras()
+        end
 
         if unit_changed then
             if not previous_unit then
@@ -161,20 +192,27 @@ function frameFunctions:updateUnit(name_changed)
         self.current_layout_version = eF.current_layout_version
         self.current_elements_version = eF.current_elements_version
 
-        for i = 1, #refresh_events do self:unit_event(refresh_events[i]) end
-
+        for i = 1, #refresh_events do
+            self:unit_event(refresh_events[i])
+        end
     end
 end
 
 local unit_events = eF.unitEvents
 function frameFunctions:unregister_events()
-    for _, v in ipairs(unit_events) do self:UnregisterEvent(v) end
+    for _, v in ipairs(unit_events) do
+        self:UnregisterEvent(v)
+    end
 end
 
 function frameFunctions:register_events()
     local unit = self.id or nil
-    if not unit then return end
-    for _, v in ipairs(unit_events) do self:RegisterUnitEvent(v, unit) end
+    if not unit then
+        return
+    end
+    for _, v in ipairs(unit_events) do
+        self:RegisterUnitEvent(v, unit)
+    end
 end
 
 function frameFunctions:updateSize()
@@ -203,12 +241,18 @@ function frameFunctions:updateText()
         self.text = self.hp:CreateFontString(nil, "OVERLAY")
     end
     local text = self.text
-    local font = (LSM:IsValid("font", para.textFont) and
-                     LSM:Fetch("font", para.textFont)) or ""
+    local font =
+        (LSM:IsValid("font", para.textFont) and LSM:Fetch("font", para.textFont)) or
+        ""
     text:SetFont(font, para.textSize, para.textExtra)
     text:ClearAllPoints()
-    text:SetPoint(para.textPos, self.hp, para.textPos, para.textXOS,
-                  para.textYOS)
+    text:SetPoint(
+        para.textPos,
+        self.hp,
+        para.textPos,
+        para.textXOS,
+        para.textYOS
+    )
     text:SetTextColor(para.textR, para.textG, para.textB, para.textA or 1)
 end
 
@@ -218,8 +262,12 @@ function frameFunctions:updateName()
     local para = self.header.para
     local text = self.text
     local name = self.name or nil
-    if not name then name = "UNKNOWN" end
-    if para.textLim then name = strsub(name, 1, para.textLim) end
+    if not name then
+        name = "UNKNOWN"
+    end
+    if para.textLim then
+        name = strsub(name, 1, para.textLim)
+    end
     self.text:SetText(name)
     if para.textColorByClass and self.CLASS then
         local r, g, b = GetClassColor(self.CLASS)
@@ -232,34 +280,39 @@ function frameFunctions:updateHPBar()
     local unit = self.id
     local para = self.header.para
     if not self.hp then
-        self.hp = CreateFrame("StatusBar", self:GetName() .. "HP", self,
-                              "TextStatusBar")
+        self.hp =
+            CreateFrame(
+            "StatusBar",
+            self:GetName() .. "HP",
+            self,
+            "TextStatusBar"
+        )
     end
     local hp = self.hp
     hp:ClearAllPoints()
     if para.healthGrow == "up" then
-        hp:SetPoint("BOTTOMLEFT");
-        hp:SetPoint("BOTTOMRIGHT");
-        hp:SetHeight(para.height);
-        hp:SetOrientation("VERTICAL");
+        hp:SetPoint("BOTTOMLEFT")
+        hp:SetPoint("BOTTOMRIGHT")
+        hp:SetHeight(para.height)
+        hp:SetOrientation("VERTICAL")
         hp:SetReverseFill(false)
     elseif para.healthGrow == "right" then
-        hp:SetPoint("BOTTOMLEFT");
-        hp:SetPoint("TOPLEFT");
-        hp:SetWidth(para.width);
-        hp:SetOrientation("HORIZONTAL");
+        hp:SetPoint("BOTTOMLEFT")
+        hp:SetPoint("TOPLEFT")
+        hp:SetWidth(para.width)
+        hp:SetOrientation("HORIZONTAL")
         hp:SetReverseFill(false)
     elseif para.healthGrow == "down" then
-        hp:SetPoint("TOPRIGHT");
-        hp:SetPoint("TOPLEFT");
-        hp:SetHeight(para.height);
-        hp:SetOrientation("VERTICAL");
+        hp:SetPoint("TOPRIGHT")
+        hp:SetPoint("TOPLEFT")
+        hp:SetHeight(para.height)
+        hp:SetOrientation("VERTICAL")
         hp:SetReverseFill(true)
     elseif para.healthGrow == "left" then
-        hp:SetPoint("TOPRIGHT");
-        hp:SetPoint("BOTTOMRIGHT");
-        hp:SetWidth(para.width);
-        hp:SetOrientation("HORIZONTAL");
+        hp:SetPoint("TOPRIGHT")
+        hp:SetPoint("BOTTOMRIGHT")
+        hp:SetWidth(para.width)
+        hp:SetOrientation("HORIZONTAL")
         hp:SetReverseFill(true)
     end
     if para.hpTexture then
@@ -272,10 +325,17 @@ function frameFunctions:updateHPBar()
     hp:SetFrameLevel(self.baseLevel + 1)
     local tt = hp:GetStatusBarTexture()
     if para.hpGrad then
-        tt:SetGradientAlpha(para.hpGradOrientation, para.hpGrad1R,
-                            para.hpGrad1G, para.hpGrad1B, para.hpGrad1A,
-                            para.hpGrad2R, para.hpGrad2G, para.hpGrad2B,
-                            para.hpGrad2A)
+        tt:SetGradientAlpha(
+            para.hpGradOrientation,
+            para.hpGrad1R,
+            para.hpGrad1G,
+            para.hpGrad1B,
+            para.hpGrad1A,
+            para.hpGrad2R,
+            para.hpGrad2G,
+            para.hpGrad2B,
+            para.hpGrad2A
+        )
     else
         tt:SetGradientAlpha("VERTICAL", 1, 1, 1, 1, 1, 1, 1, 1)
     end
@@ -319,9 +379,12 @@ function frameFunctions:updateFlagFrames()
         f.texture:SetAllPoints(true)
         f.texture:SetColorTexture(p.frameR, p.frameG, p.frameB, p.frameA)
 
-        local font = (LSM:IsValid("font", p.textFont) and
-                         LSM:Fetch("font", p.textFont)) or ""
-        if not f.text then f.text = f:CreateFontString(nil, "OVERLAY") end
+        local font =
+            (LSM:IsValid("font", p.textFont) and LSM:Fetch("font", p.textFont)) or
+            ""
+        if not f.text then
+            f.text = f:CreateFontString(nil, "OVERLAY")
+        end
         f.text:ClearAllPoints()
         f.text:SetPoint(p.textPos, f, p.textPos, p.textXOS or 0, p.textYOS or 0)
         f.text:SetFont(font, p.textSize, p.textExtra)
@@ -333,19 +396,21 @@ function frameFunctions:updateFlagFrames()
 
     -- oor
     if not self.oorDarkenFrame then
-        self.oorDarkenFrame = CreateFrame("Frame",
-                                          frameName .. "oorDarkenFrame", self.hp)
+        self.oorDarkenFrame =
+            CreateFrame("Frame", frameName .. "oorDarkenFrame", self.hp)
         self.oorDarkenFrame:SetAllPoints()
         self.oorDarkenFrame:SetFrameLevel(self.hp:GetFrameLevel() + 11)
 
-        self.oorDarkenFrame.texture = self.oorDarkenFrame:CreateTexture(nil,
-                                                                        "OVERLAY")
+        self.oorDarkenFrame.texture =
+            self.oorDarkenFrame:CreateTexture(nil, "OVERLAY")
         local t = self.oorDarkenFrame.texture
         t:SetAllPoints()
         t:SetColorTexture(0, 0, 0)
     end
 
-    if unit then self:updateFlags() end
+    if unit then
+        self:updateFlags()
+    end
 end
 
 local GetClassColor = GetClassColor
@@ -367,7 +432,9 @@ end
 function frameFunctions:updateBackground()
     local unit = self.id
     local para = self.header.para
-    if not self.bg then self.bg = self.hp:CreateTexture(nil, "BACKGROUND") end
+    if not self.bg then
+        self.bg = self.hp:CreateTexture(nil, "BACKGROUND")
+    end
     local bg = self.bg
     bg:SetAllPoints()
     if para.bgR then
@@ -380,70 +447,87 @@ end
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 function frameFunctions:unit_event(event, arg1, arg2, arg3)
     local unit = self.id or nil
-    if not unit then return end
+    if not unit then
+        return
+    end
 
     if event == "UNIT_MAXHEALTH" or event == "UNIT_HEALTH" then
         self:updateHealth()
-        if (UnitIsDeadOrGhost(unit) ~= self.dead) then self:updateFlags() end
-
+        if (UnitIsDeadOrGhost(unit) ~= self.dead) then
+            self:updateFlags()
+        end
     elseif event == "UNIT_AURA" then
-
         -- onAura
         local task = self.tasks.onAura
-        for i = 1, #task, 2 do task[i](task[i + 1], unit) end
+        for i = 1, #task, 2 do
+            task[i](task[i + 1], unit)
+        end
 
         -- postAura
         local task = self.tasks.postAura
-        for i = 1, #task, 2 do task[i](task[i + 1], unit) end
-
+        for i = 1, #task, 2 do
+            task[i](task[i + 1], unit)
+        end
     elseif event == "UNIT_THREAT_SITUATION_UPDATE" then
-
         -- onThreat
         local task = self.tasks.onThreat
-        for i = 1, #task, 2 do task[i](task[i + 1], unit) end
-
+        for i = 1, #task, 2 do
+            task[i](task[i + 1], unit)
+        end
     elseif event == "UNIT_CAST" then
         -- onCast
         local task = self.tasks.onCast
-        for i = 1, #task, 2 do task[i](task[i + 1], unit) end
+        for i = 1, #task, 2 do
+            task[i](task[i + 1], unit)
+        end
 
         -- postCast
         local task = self.tasks.postCast
-        for i = 1, #task, 2 do task[i](task[i + 1], unit) end
-
+        for i = 1, #task, 2 do
+            task[i](task[i + 1], unit)
+        end
     elseif event == "CHAT_MSG" then
         -- onChatMsg
         local task = self.tasks.onMsg
-        for i = 1, #task, 2 do task[i](task[i + 1], arg1, arg2) end
-
+        for i = 1, #task, 2 do
+            task[i](task[i + 1], arg1, arg2)
+        end
     elseif event == "READY_CHECK" then
         local task, value = self.tasks.onRC, self.rcStatus
-        for i = 1, #task, 2 do task[i](task[i + 1], value, arg1, arg2) end
-
-    elseif event == "UNIT_CONNECTION" or event == "UNIT_FLAGS" or event ==
-        "INCOMING_RESURRECT_CHANGED" or event == "UNIT_PHASE" then
+        for i = 1, #task, 2 do
+            task[i](task[i + 1], value, arg1, arg2)
+        end
+    elseif
+        event == "UNIT_CONNECTION" or event == "UNIT_FLAGS" or
+            event == "INCOMING_RESURRECT_CHANGED" or
+            event == "UNIT_PHASE"
+     then
         self:updateFlags()
     elseif event == "UNIT_NAME_UPDATE" then
         self:updateUnit(true)
-
     elseif event == "UNIT_POWER_UPDATE" then
         local task = self.tasks.onPower
-        for i = 1, #task, 2 do task[i](task[i + 1], unit) end
+        for i = 1, #task, 2 do
+            task[i](task[i + 1], unit)
+        end
     elseif event == "UNIT_HEAL_ABSORB_AMOUNT_CHANGED" then
         local task = self.tasks.onHealAbsorb
-        for i = 1, #task, 2 do task[i](task[i + 1], unit) end
+        for i = 1, #task, 2 do
+            task[i](task[i + 1], unit)
+        end
     end
-
 end
 
 function frameFunctions:updateFlags()
     local id = self.id
-    local dead, connected, charmed = UnitIsDeadOrGhost(id), UnitIsConnected(id),
-                                     UnitIsCharmed(id)
+    local dead, connected, charmed =
+        UnitIsDeadOrGhost(id),
+        UnitIsConnected(id),
+        UnitIsCharmed(id)
 
     self.dead = dead
-    self.offlineFrame:Hide();
-    self.deadFrame:Hide();
+    self.offlineFrame:Hide()
+    self.deadFrame:Hide()
     self.mcFrame:Hide()
     if not connected then
         self.offlineFrame:Show()
@@ -457,7 +541,9 @@ end
 local UnitInRange = UnitInRange
 function frameFunctions:checkOOR()
     local unit = self.id
-    if not unit then return end
+    if not unit then
+        return
+    end
     local oor
     if self.playerFrame then
         oor = false
@@ -497,8 +583,12 @@ local borderInfo = eF.borderInfo
 function frameFunctions:updateBorders()
     local unit = self.id
     local para = self.header.para
-    local r, g, b, a, size = para.borderR, para.borderG, para.borderB,
-                             para.borderA, para.borderSize
+    local r, g, b, a, size =
+        para.borderR,
+        para.borderG,
+        para.borderB,
+        para.borderA,
+        para.borderSize
 
     for _, v in next, {"RIGHT", "TOP", "LEFT", "BOTTOM"} do
         local bn, p1, p2, w, f11, f12, f21, f22 = eF.borderInfo(v)
@@ -516,7 +606,6 @@ function frameFunctions:updateBorders()
             bo:SetHeight(size)
         end
     end
-
 end
 
 local UnitHealth, UnitHealthMax = UnitHealth, UnitHealthMax
@@ -536,7 +625,7 @@ function frameFunctions:reset_tasks()
     if self.tasks then
         wipe(self.tasks)
     else
-        self.tasks = {};
+        self.tasks = {}
         setmetatable(self.tasks, {__index = metaFunction})
     end
 end
@@ -551,32 +640,39 @@ end
 local info = eF.info
 local element_load_functions = {
     [1] = function(frame, para)
-        if para.loadAlways then return true end
+        if para.loadAlways then
+            return true
+        end
         return para[info.playerClass]
     end,
-
     [2] = function(frame, para)
-        if para.loadAlways then return true end
+        if para.loadAlways then
+            return true
+        end
         return para[info.playerRole]
     end,
-
     [3] = function(frame, para)
-        if para.loadAlways then return true end
+        if para.loadAlways then
+            return true
+        end
         return para[frame.class]
     end,
-
     [4] = function(frame, para)
-        if para.loadAlways then return true end
+        if para.loadAlways then
+            return true
+        end
         return para[frame.role]
     end,
-
     [5] = function(frame, para)
-        if para.loadAlways then return true end
+        if para.loadAlways then
+            return true
+        end
         return para[eF.info.instanceID] or para[eF.info.instanceName]
     end,
-
     [6] = function(frame, para)
-        if para.loadAlways then return true end
+        if para.loadAlways then
+            return true
+        end
         return para[info.encounterID]
     end
 }
@@ -585,17 +681,17 @@ local function element_update_load_table(frame, self, index)
     local index = index or nil
     local para = self.para.load
     if not para then
-        self.load_table.loadAlways = false;
-        self.load_table.loadNever = true;
+        self.load_table.loadAlways = false
+        self.load_table.loadNever = true
         return
     end -- this will trigger when an element gets deleted
     if index then
-        self.load_table[index] = element_load_functions[index](frame,
-                                                               para[index])
+        self.load_table[index] =
+            element_load_functions[index](frame, para[index])
     else
         for index = 1, 6 do
-            self.load_table[index] = element_load_functions[index](frame,
-                                                                   para[index])
+            self.load_table[index] =
+                element_load_functions[index](frame, para[index])
         end
     end
     self.load_table.loadAlways = para.loadAlways
@@ -605,7 +701,9 @@ end
 function frameFunctions:update_load_tables(index)
     local index = index or nil
     local el = self.elements
-    for k, v in pairs(el) do element_update_load_table(self, v, index) end
+    for k, v in pairs(el) do
+        element_update_load_table(self, v, index)
+    end
 end
 
 function frameFunctions:apply_load_conditions()
@@ -628,7 +726,9 @@ function frameFunctions:reload_loaded_elements()
     self:reset_tasks()
     for k, v in pairs(el) do
         if v.loaded then
-            if v.static then v:enable() end
+            if v.static then
+                v:enable()
+            end
             for event, tbl in pairs(tasks[k]) do
                 for i = 1, #tbl do
                     local n = #self.tasks[event]
@@ -644,7 +744,9 @@ end
 
 function frameFunctions:apply_and_reload_loads(force)
     local bool = self:apply_load_conditions() or force
-    if bool then self:reload_loaded_elements() end
+    if bool then
+        self:reload_loaded_elements()
+    end
 end
 
 function frameFunctions:check_element_load(k)
@@ -664,8 +766,12 @@ function eF:unit_added(event, name)
     frame.header = frame:GetParent()
 
     -- populate script events and functions
-    for k, v in pairs(frameEvents) do frame:SetScript(k, v) end
-    for k, v in pairs(frameFunctions) do frame[k] = v end
+    for k, v in pairs(frameEvents) do
+        frame:SetScript(k, v)
+    end
+    for k, v in pairs(frameFunctions) do
+        frame[k] = v
+    end
 
     -- table variables
     frame.header = frame:GetParent()
@@ -706,10 +812,11 @@ function eF:fully_reload_element(key)
         frame:update_load_tables()
         frame:apply_and_reload_loads(true)
 
-        for i = 1, #refresh_events do frame:unit_event(refresh_events[i]) end
+        for i = 1, #refresh_events do
+            frame:unit_event(refresh_events[i])
+        end
     end
 
     eF.interface_onUpdate_frame.time_since =
         eF.interface_onUpdate_frame.throttle - 0.2
 end
-

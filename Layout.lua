@@ -3,7 +3,7 @@ local eF = elFramo
 -- TOAD: layout para collapsing function at startup!! (for gaps in indices)
 
 local default_class_order =
-    "WARRIOR,DEATHKNIGHT,ROGUE,MONK,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER,DEMONHUNTER";
+    "WARRIOR,DEATHKNIGHT,ROGUE,MONK,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER,DEMONHUNTER"
 local default_group_order = "1,2,3,4,5,6,7,8"
 local default_role_order = "TANK,HEALER,DAMAGER"
 local pairs = pairs
@@ -216,58 +216,70 @@ local function ForceFramesCreation(header)
 end
 
 function eF:applyLayoutParas()
-    for i = 1, #eF.registered_layouts do eF:apply_layout_para_index(i) end
+    for i = 1, #eF.registered_layouts do
+        eF:apply_layout_para_index(i)
+    end
 end
 
 -- on their own they just really dont do what I want them to so..
 local setVisible_keys = {"showRaid", "showParty", "showSolo"}
 function layout_methods:setVisible(bool)
-
     local bool, keys = bool, setVisible_keys
-    if not bool then bool = false end
-    if bool == self.visible then return end
+    if not bool then
+        bool = false
+    end
+    if bool == self.visible then
+        return
+    end
     self.visible = bool
-    for i = 1, #keys do self:SetAttribute(keys[i], bool) end
+    for i = 1, #keys do
+        self:SetAttribute(keys[i], bool)
+    end
     self:updateFilters()
     -- end
-
 end
 
 function layout_methods:checkVisibility()
-
     if InCombatLockdown() then
         eF.post_combat["layoutVisibility"] = true
         return
     end
 
     local bool = false
-    local showRaid, showParty, showSolo, classes, roles = self.para.showRaid,
-                                                          self.para.showParty,
-                                                          self.para.showSolo,
-                                                          self.para.show_classes,
-                                                          self.para.show_roles
+    local showRaid, showParty, showSolo, classes, roles =
+        self.para.showRaid,
+        self.para.showParty,
+        self.para.showSolo,
+        self.para.show_classes,
+        self.para.show_roles
     local inRaid, inGroup = eF.raid, eF.grouped
 
     -- checks rad/party/solo
     if inRaid then
-        if showRaid then bool = true end
+        if showRaid then
+            bool = true
+        end
     elseif inGroup then
-        if showParty then bool = true end
+        if showParty then
+            bool = true
+        end
     elseif showSolo then
         bool = true
     end
 
     if not bool then
-        self:setVisible(bool);
+        self:setVisible(bool)
         return
     end
 
     -- roles
     if bool then
-        if not (roles.Any or roles[eF.info.playerRole]) then bool = false end
+        if not (roles.Any or roles[eF.info.playerRole]) then
+            bool = false
+        end
     end
     if not bool then
-        self:setVisible(bool);
+        self:setVisible(bool)
         return
     end
 
@@ -278,7 +290,7 @@ function layout_methods:checkVisibility()
         end
     end
     if not bool then
-        self:setVisible(bool);
+        self:setVisible(bool)
         return
     end
 
@@ -286,7 +298,6 @@ function layout_methods:checkVisibility()
 end
 
 function layout_methods:reload_layout()
-
     for i, v in ipairs(eF.list_all_active_unit_frames(self.para.displayName)) do
         wipe(v.tasks)
     end
@@ -298,37 +309,66 @@ end
 function layout_methods:set_position()
     local xPos, yPos = self.para.xPos, self.para.yPos
     self:ClearAllPoints()
-    self:SetPoint(self.header_anchor or "BOTTOMLEFT", UIParent, "BOTTOMLEFT",
-                  xPos, yPos)
+    self:SetPoint(
+        self.header_anchor or "BOTTOMLEFT",
+        UIParent,
+        "BOTTOMLEFT",
+        xPos,
+        yPos
+    )
 end
 
 local strf = string.format
 local function generate_nameList(list)
     local s = ""
-    if not list or #list == 0 then return s end
+    if not list or #list == 0 then
+        return s
+    end
 
-    for i = 1, #list - 1 do s = strf("%s%s,", s, list[i]) end
+    for i = 1, #list - 1 do
+        s = strf("%s%s,", s, list[i])
+    end
     s = strf("%s%s", s, list[#list])
     return s
 end
 
 local by_group_methods = {}
 function by_group_methods:SetAttribute(k, v)
-    if not self.by_group then return end
-    if k == "maxColumns" or k == "groupFilter" then return end
-    for i = 1, #self do self[i]:SetAttribute(k, v) end
+    if not self.by_group then
+        return
+    end
+    if k == "maxColumns" or k == "groupFilter" then
+        return
+    end
+    for i = 1, #self do
+        self[i]:SetAttribute(k, v)
+    end
 end
 
-function by_group_methods:SetPoint(...) self[1]:SetPoint(...) end
+function by_group_methods:SetPoint(...)
+    self[1]:SetPoint(...)
+end
 
-function by_group_methods:ClearAllPoints() self[1]:ClearAllPoints() end
+function by_group_methods:ClearAllPoints()
+    self[1]:ClearAllPoints()
+end
 
-function by_group_methods:Show(...) for i = 1, #self do self[i]:Show() end end
+function by_group_methods:Show(...)
+    for i = 1, #self do
+        self[i]:Show()
+    end
+end
 
-function by_group_methods:Hide(...) for i = 1, #self do self[i]:Hide() end end
+function by_group_methods:Hide(...)
+    for i = 1, #self do
+        self[i]:Hide()
+    end
+end
 
 function by_group_methods:by_group_layout()
-    if not self.by_group then return end
+    if not self.by_group then
+        return
+    end
 
     local para = self.para
     local g1, g2 = para.grow1, para.grow2
@@ -342,16 +382,16 @@ function by_group_methods:by_group_layout()
 
         local x, y
         if g2 == "up" then
-            x = 0;
+            x = 0
             y = para.spacing or 0
         elseif g2 == "down" then
-            x = 0;
+            x = 0
             y = -para.spacing or 0
         elseif g2 == "left" then
-            x = -para.spacing or 0;
+            x = -para.spacing or 0
             y = 0
         elseif g2 == "right" then
-            x = para.spacing or 0;
+            x = para.spacing or 0
             y = 0
         end
         local anchor1, anchor2 = unpack(orient_to_anchors[para.grow])
@@ -361,9 +401,11 @@ function by_group_methods:by_group_layout()
 end
 
 function layout_methods:updateFilters()
-    if not self.visible then return end
+    if not self.visible then
+        return
+    end
     if InCombatLockdown() then
-        eF.post_combat.updateFilters = true;
+        eF.post_combat.updateFilters = true
         return
     end
 
@@ -372,31 +414,45 @@ function layout_methods:updateFilters()
         return
     end
 
-    local player, classes, roles = self.para.filter_player,
-                                   self.para.filter_classes,
-                                   self.para.filter_roles
+    local player, classes, roles =
+        self.para.filter_player,
+        self.para.filter_classes,
+        self.para.filter_roles
     local namelist = {}
     if not eF.grouped then
         -- GetRaidRosterInfo doesnt work if youre alone
-        local name, class, role = eF.info.playerName, eF.info.playerClass,
-                                  eF.info.playerRole
+        local name, class, role =
+            eF.info.playerName,
+            eF.info.playerClass,
+            eF.info.playerRole
         local bool = true
 
         if bool then
-            if not (roles.Any or roles[role]) then bool = false end
+            if not (roles.Any or roles[role]) then
+                bool = false
+            end
         end
         if bool then
-            if not (classes.Any or classes[class]) then bool = false end
+            if not (classes.Any or classes[class]) then
+                bool = false
+            end
         end
-        if bool then if not player then bool = false end end
+        if bool then
+            if not player then
+                bool = false
+            end
+        end
 
-        if bool then namelist[#namelist + 1] = name end
-
+        if bool then
+            namelist[#namelist + 1] = name
+        end
     else
         for i = 1, 40 do
             local name, _, _, _, class, _, _, _, _, _, _, role =
                 GetRaidRosterInfo(i)
-            if not name then break end
+            if not name then
+                break
+            end
             local playerName = eF.info.playerName
             local bool = true
 
@@ -411,16 +467,18 @@ function layout_methods:updateFilters()
                 end
             end
             if bool and name == playerName then
-                if not player then bool = false end
+                if not player then
+                    bool = false
+                end
             end
 
-            if bool then namelist[#namelist + 1] = name end
-
+            if bool then
+                namelist[#namelist + 1] = name
+            end
         end
     end
 
     self:SetAttribute("nameList", generate_nameList(namelist))
-
 end
 
 local function generate_header_anchor(g1, g2)
@@ -440,7 +498,9 @@ local function generate_header_anchor(g1, g2)
 end
 
 function eF:check_registered_layouts_visibility()
-    for k, v in pairs(self.registered_layouts) do v:checkVisibility() end
+    for k, v in pairs(self.registered_layouts) do
+        v:checkVisibility()
+    end
 end
 
 function eF:register_new_layout(key)
@@ -453,11 +513,14 @@ function eF:register_new_layout(key)
         eF.para.layouts[index]["attributes"] =
             eF.table_deep_copy(header_default_attributes)
     end
-    local att, para = eF.para.layouts[index]["attributes"],
-                      eF.para.layouts[index]["parameters"]
+    local att, para =
+        eF.para.layouts[index]["attributes"],
+        eF.para.layouts[index]["parameters"]
     para.displayName = key
 
-    if not att or not para then print("NO ATT/PARA in register_new_layout") end
+    if not att or not para then
+        print("NO ATT/PARA in register_new_layout")
+    end
     local by_group = para.by_group
 
     if by_group then
@@ -467,15 +530,24 @@ function eF:register_new_layout(key)
         header.para = eF.para.layouts[index].parameters
         header.att = eF.para.layouts[index].attributes
         header.by_group = true
-        for k, v in pairs(layout_methods) do header[k] = v end
-        for k, v in pairs(by_group_methods) do header[k] = v end
+        for k, v in pairs(layout_methods) do
+            header[k] = v
+        end
+        for k, v in pairs(by_group_methods) do
+            header[k] = v
+        end
 
         for i = 1, 8 do
-            local header_name = "ElFramoHeader" .. tostring(index) ..
-                                    tostring(i)
-            header[i] = _G[header_name] or
-                            CreateFrame("Frame", header_name, UIParent,
-                                        "SecureGroupHeaderTemplate")
+            local header_name =
+                "ElFramoHeader" .. tostring(index) .. tostring(i)
+            header[i] =
+                _G[header_name] or
+                CreateFrame(
+                    "Frame",
+                    header_name,
+                    UIParent,
+                    "SecureGroupHeaderTemplate"
+                )
             header[i]:SetAttribute("groupFilter", tostring(i))
             header[i].initialConfigFunction = initialConfigFunction
             header[i].para = header.para
@@ -492,19 +564,25 @@ function eF:register_new_layout(key)
         -- apply layout para
         eF:apply_layout_para_index(index)
         header:Show() -- toad streamlined showing
-
     else
         local header_name = "ElFramoHeader" .. tostring(index)
-        local header = _G[header_name] or
-                           CreateFrame("Frame", header_name, UIParent,
-                                       "SecureGroupHeaderTemplate")
+        local header =
+            _G[header_name] or
+            CreateFrame(
+                "Frame",
+                header_name,
+                UIParent,
+                "SecureGroupHeaderTemplate"
+            )
         header.index = index
         header:SetSize(36, 36)
         header.visible = false
         header.para = eF.para.layouts[index].parameters
         header.att = eF.para.layouts[index].attributes
         header.by_group = false
-        for k, v in pairs(layout_methods) do header[k] = v end
+        for k, v in pairs(layout_methods) do
+            header[k] = v
+        end
 
         -- save the header for easy access
         eF.registered_layouts[index] = header
@@ -517,16 +595,15 @@ function eF:register_new_layout(key)
         -- apply layout para
         eF:apply_layout_para_index(index)
         header:Show() -- toad streamlined showing
-
     end
 end
 
 function eF:apply_layout_para_index(index)
-
     -- helping variables
     local header = eF.registered_layouts[index]
-    local para, att = eF.para.layouts[index]["parameters"],
-                      eF.para.layouts[index]["attributes"]
+    local para, att =
+        eF.para.layouts[index]["parameters"],
+        eF.para.layouts[index]["attributes"]
     local anchor, anchor2 = growToAnchor[para.grow1], growToAnchor[para.grow2]
     header.att.point = anchor
     header.att.columnAnchorPoint = anchor2
@@ -544,28 +621,32 @@ function eF:apply_layout_para_index(index)
 
     -- how does shit grow and shit
     if para.grow1 == "up" then
-        att.xOffset = 0;
+        att.xOffset = 0
         att.yOffset = para.spacing or 0
     elseif para.grow1 == "down" then
-        att.xOffset = 0;
+        att.xOffset = 0
         att.yOffset = -para.spacing or 0
     elseif para.grow1 == "right" then
-        att.xOffset = para.spacing or 0;
+        att.xOffset = para.spacing or 0
         att.yOffset = 0
     elseif para.grow1 == "left" then
-        att.xOffset = -para.spacing or 0;
+        att.xOffset = -para.spacing or 0
         att.yOffset = 0
     end
     att.columnSpacing = para.spacing
 
     -- apply attributes
-    for k, v in pairs(att) do header:SetAttribute(k, v) end
+    for k, v in pairs(att) do
+        header:SetAttribute(k, v)
+    end
 
     -- set header position
     header.header_anchor = generate_header_anchor(para.grow1, para.grow2)
     header:set_position()
 
-    if header.by_group then header:by_group_layout() end
+    if header.by_group then
+        header:by_group_layout()
+    end
 
     -- reload and shit
     header:reload_layout()
@@ -573,12 +654,15 @@ function eF:apply_layout_para_index(index)
 end
 
 function eF:register_all_headers_inits()
-    for k, v in pairs(eF.para.layouts) do eF:register_new_layout(k) end
+    for k, v in pairs(eF.para.layouts) do
+        eF:register_new_layout(k)
+    end
 end
 
 function eF:reload_all_layouts()
-    for _, layout in pairs(eF.registered_layouts) do layout:reload_layout() end
+    for _, layout in pairs(eF.registered_layouts) do
+        layout:reload_layout()
+    end
 end
 
 -- toad: GridLayout line 256
-

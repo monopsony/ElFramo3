@@ -46,20 +46,30 @@ function frameFunctions:apply_element_paras(name)
     end
     local para = eF.para.elements[name]
 
-    if para.type == "group" then return end
+    if para.type == "group" then
+        return
+    end
 
     local frame = self
     local taskFuncs = eF.taskFuncs
 
     if para.type == "icon" then
         if not frame.elements[name] then
-            frame.elements[name] = CreateFrame("Frame", ("%sElement%s"):format(
-                                                   frame:GetName(), name), frame)
+            frame.elements[name] =
+                CreateFrame(
+                "Frame",
+                ("%sElement%s"):format(frame:GetName(), name),
+                frame
+            )
         end -- check whether element even exists already
         local el = frame.elements[name]
-        el:SetFrameLevel(frame.hp:GetFrameLevel() + 1 + (para.displayLevel or 0))
+        el:SetFrameLevel(
+            frame.hp:GetFrameLevel() + 1 + (para.displayLevel or 0)
+        )
         el.para = para
-        if not el.para.auraExtras then el.para.auraExtras = {} end
+        if not el.para.auraExtras then
+            el.para.auraExtras = {}
+        end
         el.enable = taskFuncs.frameEnable
         el.disable = taskFuncs.frameDisable
         el.setVisibility = taskFuncs.setVisibility
@@ -82,15 +92,18 @@ function frameFunctions:apply_element_paras(name)
         else
             el.static = false
             el:disable()
-        end -- end of if para.trackType=="Static" 
+        end -- end of if para.trackType=="Static"
 
         -- texture handling
         if not el.texture then
             el.texture = el:CreateTexture(nil, "BACKGROUND")
         end
         if para.hasTexture then
-            local r, g, b, a = para.textureR or 1, para.textureG or 1,
-                               para.textureB or 1, para.textureA or 1
+            local r, g, b, a =
+                para.textureR or 1,
+                para.textureG or 1,
+                para.textureB or 1,
+                para.textureA or 1
             el.texture:Show()
             el.texture:ClearAllPoints()
             el.texture:SetAllPoints()
@@ -107,7 +120,6 @@ function frameFunctions:apply_element_paras(name)
                 el.texture:SetVertexColor(r, g, b)
                 el.texture:SetAlpha(a)
             end
-
         else -- end of if para.hasTexture
             el.texture:Hide()
         end
@@ -127,9 +139,13 @@ function frameFunctions:apply_element_paras(name)
 
         -- cdWheel handling
         if not el.cdFrame then
-            el.cdFrame = CreateFrame("Cooldown",
-                                     el:GetName() .. "CooldownFrame", el,
-                                     "CooldownFrameTemplate")
+            el.cdFrame =
+                CreateFrame(
+                "Cooldown",
+                el:GetName() .. "CooldownFrame",
+                el,
+                "CooldownFrameTemplate"
+            )
             el.cdFrame:SetAllPoints()
             el.cdFrame:SetFrameLevel(el:GetFrameLevel())
         end
@@ -145,16 +161,25 @@ function frameFunctions:apply_element_paras(name)
         end
 
         -- text1 handling
-        if not el.text then el.text = el:CreateFontString(nil, "OVERLAY") end
+        if not el.text then
+            el.text = el:CreateFontString(nil, "OVERLAY")
+        end
         if para.hasText then
             el.text:Show()
-            local font, extra = (LSM:IsValid("font", para.textFont) and
-                                    LSM:Fetch("font", para.textFont)) or "",
-                                para.textExtra or "OUTLINE"
-            local size, xOS, yOS = para.textSize or 20, para.textXOS or 0,
-                                   para.textYOS or 0
-            local r, g, b, a = para.textR or 1, para.textG or 1,
-                               para.textB or 1, para.textA or 1
+            local font, extra =
+                (LSM:IsValid("font", para.textFont) and
+                    LSM:Fetch("font", para.textFont)) or
+                    "",
+                para.textExtra or "OUTLINE"
+            local size, xOS, yOS =
+                para.textSize or 20,
+                para.textXOS or 0,
+                para.textYOS or 0
+            local r, g, b, a =
+                para.textR or 1,
+                para.textG or 1,
+                para.textB or 1,
+                para.textA or 1
             el.text:SetFont(font, size, extra)
             el.text:ClearAllPoints()
             el.text:SetPoint(para.textAnchor, el, para.textAnchorTo, xOS, yOS)
@@ -169,16 +194,29 @@ function frameFunctions:apply_element_paras(name)
         end
         if para.hasText2 then
             el.text2:Show()
-            local font, extra = (LSM:IsValid("font", para.text2Font) and
-                                    LSM:Fetch("font", para.text2Font)) or "",
-                                para.text2extra or "OUTLINE"
-            local size, xOS, yOS = para.text2Size or 20, para.text2XOS or 0,
-                                   para.text2YOS or 0
-            local r, g, b, a = para.text2R or 1, para.text2G or 1,
-                               para.text2B or 1, para.text2A or 1
+            local font, extra =
+                (LSM:IsValid("font", para.text2Font) and
+                    LSM:Fetch("font", para.text2Font)) or
+                    "",
+                para.text2extra or "OUTLINE"
+            local size, xOS, yOS =
+                para.text2Size or 20,
+                para.text2XOS or 0,
+                para.text2YOS or 0
+            local r, g, b, a =
+                para.text2R or 1,
+                para.text2G or 1,
+                para.text2B or 1,
+                para.text2A or 1
             el.text2:SetFont(font, size, extra)
             el.text2:ClearAllPoints()
-            el.text2:SetPoint(para.text2Anchor, el, para.text2AnchorTo, xOS, yOS)
+            el.text2:SetPoint(
+                para.text2Anchor,
+                el,
+                para.text2AnchorTo,
+                xOS,
+                yOS
+            )
             el.text2:SetTextColor(r, g, b, a)
         else
             el.text2:Hide()
@@ -187,29 +225,39 @@ function frameFunctions:apply_element_paras(name)
         if #el.tasks.onUpdate > 0 then
             local throttle =
                 ((para.throttleValue ~= -1) and para.throttleValue) or
-                    math.min((0.1 ^
-                                 math.floor(
-                                     math.max(para.textDecimals or 0,
-                                              para.text2Decimals or 0) or 1)) *
-                                 0.2, 0.2)
+                math.min(
+                    (0.1 ^
+                        math.floor(
+                            math.max(
+                                para.textDecimals or 0,
+                                para.text2Decimals or 0
+                            ) or 1
+                        )) *
+                        0.2,
+                    0.2
+                )
             el.throttle = throttle
             el.elapsed = throttle + 1
             el:SetScript("OnUpdate", taskFuncs.frameOnUpdateFunction)
         else
             el:SetScript("OnUpdate", nil)
         end
-
     end -- end of if para.type=="icon" then
 
     if para.type == "bar" then
         if not frame.elements[name] then
-            frame.elements[name] = CreateFrame("StatusBar",
-                                               ("%sElement%s"):format(
-                                                   frame:GetName(), name),
-                                               frame, "TextStatusBar")
+            frame.elements[name] =
+                CreateFrame(
+                "StatusBar",
+                ("%sElement%s"):format(frame:GetName(), name),
+                frame,
+                "TextStatusBar"
+            )
         end -- check whether element even exists already
         local el = frame.elements[name]
-        el:SetFrameLevel(frame.hp:GetFrameLevel() + 1 + (para.displayLevel or 0))
+        el:SetFrameLevel(
+            frame.hp:GetFrameLevel() + 1 + (para.displayLevel or 0)
+        )
         el.para = para
         el.enable = taskFuncs.frameEnable
         el.disable = taskFuncs.frameDisable
@@ -248,11 +296,13 @@ function frameFunctions:apply_element_paras(name)
 
         -- color/display
         if para.flatTexture then
-            local r, g, b, a = para.textureR or 1, para.textureG or 1,
-                               para.textureB or 1, para.textureA or 1
+            local r, g, b, a =
+                para.textureR or 1,
+                para.textureG or 1,
+                para.textureB or 1,
+                para.textureA or 1
             el:SetStatusBarTexture(r, g, b, a)
         else
-
         end
         el:SetMinMaxValues(0, 1)
 
@@ -267,16 +317,21 @@ function frameFunctions:apply_element_paras(name)
             el.static = false
             el:disable()
         end
-
     end
 
     if para.type == "border" then
         if not frame.elements[name] then
-            frame.elements[name] = CreateFrame("Frame", ("%sElement%s"):format(
-                                                   frame:GetName(), name), frame)
+            frame.elements[name] =
+                CreateFrame(
+                "Frame",
+                ("%sElement%s"):format(frame:GetName(), name),
+                frame
+            )
         end -- check whether element even exists already
         local el = frame.elements[name]
-        el:SetFrameLevel(frame.hp:GetFrameLevel() + 1 + (para.displayLevel or 0))
+        el:SetFrameLevel(
+            frame.hp:GetFrameLevel() + 1 + (para.displayLevel or 0)
+        )
         el.para = para
         el.enable = taskFuncs.frameEnable
         el.disable = taskFuncs.frameDisable
@@ -284,12 +339,19 @@ function frameFunctions:apply_element_paras(name)
         el.onUpdateFunction = taskFuncs.frameOnUpdateFunction
         el.tasks = eF.tasks[name]
         el.auraInfo = el.auraInfo or {}
-        if not el.para.auraExtras then el.para.auraExtras = {} end
+        if not el.para.auraExtras then
+            el.para.auraExtras = {}
+        end
 
         el:ClearAllPoints()
         el:SetPoint("TOPRIGHT", frame, "TOPRIGHT", para.xOS or 0, para.yOS or 0)
-        el:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", -(para.xOS or 0),
-                    -(para.yOS or 0))
+        el:SetPoint(
+            "BOTTOMLEFT",
+            frame,
+            "BOTTOMLEFT",
+            -(para.xOS or 0),
+            -(para.yOS or 0)
+        )
 
         if para.flatBorder or (not para.edgeFile) then
             -- position and visuals
@@ -297,8 +359,11 @@ function frameFunctions:apply_element_paras(name)
             -- el:SetAllPoints()
             -- el:SetBackdrop(nil)
 
-            local r, g, b, a = para.borderR or 1, para.borderG or 1,
-                               para.borderB or 1, para.borderA or 1
+            local r, g, b, a =
+                para.borderR or 1,
+                para.borderG or 1,
+                para.borderB or 1,
+                para.borderA or 1
             local size = para.borderSize or 2
             for k, v in next, {"RIGHT", "TOP", "LEFT", "BOTTOM"} do
                 local loc, p1, p2, w, f11, f12, f21, f22 = eF.borderInfo(v)
@@ -310,17 +375,21 @@ function frameFunctions:apply_element_paras(name)
                 el[loc]:SetPoint(p1, el, p1, f11 * (size), f12 * (size))
                 el[loc]:SetPoint(p2, el, p2, f21 * (size), f22 * (size))
                 if w then
-                    el[loc]:SetWidth(size);
+                    el[loc]:SetWidth(size)
                 else
-                    el[loc]:SetHeight(size);
+                    el[loc]:SetHeight(size)
                 end
             end
-
         else
-            local r, g, b, a = para.borderR or 1, para.borderG or 1,
-                               para.borderB or 1, para.borderA or 1
-            local edgeFile = (LSM:IsValid("border", para.edgeFile) and
-                                 LSM:Fetch("border", para.edgeFile)) or ""
+            local r, g, b, a =
+                para.borderR or 1,
+                para.borderG or 1,
+                para.borderB or 1,
+                para.borderA or 1
+            local edgeFile =
+                (LSM:IsValid("border", para.edgeFile) and
+                LSM:Fetch("border", para.edgeFile)) or
+                ""
             el:SetBackdrop({edgeFile = edgeFile, edgeSize = para.borderSize})
             el:SetBackdropBorderColor(r, g, b, a)
 
@@ -341,29 +410,38 @@ function frameFunctions:apply_element_paras(name)
         else
             el.static = false
             el:disable()
-        end -- end of if para.trackType=="Static" 
+        end -- end of if para.trackType=="Static"
 
         if #el.tasks.onUpdate > 0 then
             local throttle =
                 ((para.throttleValue ~= -1) and para.throttleValue) or
-                    math.min((0.1 ^
-                                 math.floor(
-                                     math.max(para.textDecimals or 0,
-                                              para.text2Decimals or 0) or 1)) *
-                                 0.2, 0.2)
+                math.min(
+                    (0.1 ^
+                        math.floor(
+                            math.max(
+                                para.textDecimals or 0,
+                                para.text2Decimals or 0
+                            ) or 1
+                        )) *
+                        0.2,
+                    0.2
+                )
             el.throttle = throttle
             el.elapsed = throttle + 1
             el:SetScript("OnUpdate", taskFuncs.frameOnUpdateFunction)
         else
             el:SetScript("OnUpdate", nil)
         end
-
     end
 
     if para.type == "list" then
         if not frame.elements[name] then
-            frame.elements[name] = CreateFrame("Frame", ("%sElement%s"):format(
-                                                   frame:GetName(), name), frame)
+            frame.elements[name] =
+                CreateFrame(
+                "Frame",
+                ("%sElement%s"):format(frame:GetName(), name),
+                frame
+            )
         end
         local list = frame.elements[name]
         list:SetAllPoints()
@@ -380,14 +458,22 @@ function frameFunctions:apply_element_paras(name)
         -- list elements creation
         for i = 1, N do
             if not list[i] then
-                list[i] = CreateFrame("Frame", ("%sList%sElement%s"):format(
-                                          frame:GetName(), name, tostring(i)),
-                                      list)
+                list[i] =
+                    CreateFrame(
+                    "Frame",
+                    ("%sList%sElement%s"):format(
+                        frame:GetName(),
+                        name,
+                        tostring(i)
+                    ),
+                    list
+                )
             end
             local el = list[i]
 
-            el:SetFrameLevel(frame.hp:GetFrameLevel() + 1 +
-                                 (para.displayLevel or 0))
+            el:SetFrameLevel(
+                frame.hp:GetFrameLevel() + 1 + (para.displayLevel or 0)
+            )
             el.para = para
             el.enable = taskFuncs.frameEnable
             el.disable = taskFuncs.frameDisable
@@ -400,14 +486,23 @@ function frameFunctions:apply_element_paras(name)
             el:SetHeight(para.height)
             el:ClearAllPoints()
             if i == 1 then
-                el:SetPoint(para.anchor, frame, para.anchorTo, para.xPos,
-                            para.yPos)
+                el:SetPoint(
+                    para.anchor,
+                    frame,
+                    para.anchorTo,
+                    para.xPos,
+                    para.yPos
+                )
             else
                 local a1, a2 = growToAnchor[para.grow], growAnchorTo[para.grow]
-                local xOS = (para.grow == "right" and para.spacing) or
-                                (para.grow == "left" and -para.spacing) or 0
-                local yOS = (para.grow == "up" and para.spacing) or
-                                (para.grow == "down" and -para.spacing) or 0
+                local xOS =
+                    (para.grow == "right" and para.spacing) or
+                    (para.grow == "left" and -para.spacing) or
+                    0
+                local yOS =
+                    (para.grow == "up" and para.spacing) or
+                    (para.grow == "down" and -para.spacing) or
+                    0
                 if (para.grow == "right") or (para.grow == "left") then
                     el:SetPoint(just .. a1, list[i - 1], just .. a2, xOS, yOS)
                 else
@@ -420,8 +515,11 @@ function frameFunctions:apply_element_paras(name)
                 el.texture = el:CreateTexture(nil, "BACKGROUND")
             end
             if para.hasTexture then
-                local r, g, b, a = para.textureR or 1, para.textureG or 1,
-                                   para.textureB or 1, para.textureA or 1
+                local r, g, b, a =
+                    para.textureR or 1,
+                    para.textureG or 1,
+                    para.textureB or 1,
+                    para.textureA or 1
                 el.texture:Show()
                 el.texture:ClearAllPoints()
                 el.texture:SetAllPoints()
@@ -438,7 +536,6 @@ function frameFunctions:apply_element_paras(name)
                     el.texture:SetVertexColor(r, g, b)
                     el.texture:SetAlpha(a)
                 end
-
             else -- end of if para.hasTexture
                 el.texture:Hide()
             end
@@ -458,9 +555,13 @@ function frameFunctions:apply_element_paras(name)
 
             -- cdWheel handling
             if not el.cdFrame then
-                el.cdFrame = CreateFrame("Cooldown",
-                                         el:GetName() .. "CooldownFrame", el,
-                                         "CooldownFrameTemplate")
+                el.cdFrame =
+                    CreateFrame(
+                    "Cooldown",
+                    el:GetName() .. "CooldownFrame",
+                    el,
+                    "CooldownFrameTemplate"
+                )
                 el.cdFrame:SetAllPoints()
                 el.cdFrame:SetFrameLevel(el:GetFrameLevel())
             end
@@ -481,17 +582,29 @@ function frameFunctions:apply_element_paras(name)
             end
             if para.hasText then
                 el.text:Show()
-                local font, extra = (LSM:IsValid("font", para.textFont) and
-                                        LSM:Fetch("font", para.textFont)) or "",
-                                    para.textExtra or "OUTLINE"
-                local size, xOS, yOS = para.textSize or 20, para.textXOS or 0,
-                                       para.textYOS or 0
-                local r, g, b, a = para.textR or 1, para.textG or 1,
-                                   para.textB or 1, para.textA or 1
+                local font, extra =
+                    (LSM:IsValid("font", para.textFont) and
+                        LSM:Fetch("font", para.textFont)) or
+                        "",
+                    para.textExtra or "OUTLINE"
+                local size, xOS, yOS =
+                    para.textSize or 20,
+                    para.textXOS or 0,
+                    para.textYOS or 0
+                local r, g, b, a =
+                    para.textR or 1,
+                    para.textG or 1,
+                    para.textB or 1,
+                    para.textA or 1
                 el.text:SetFont(font, size, extra)
                 el.text:ClearAllPoints()
-                el.text:SetPoint(para.textAnchor, el, para.textAnchorTo, xOS,
-                                 yOS)
+                el.text:SetPoint(
+                    para.textAnchor,
+                    el,
+                    para.textAnchorTo,
+                    xOS,
+                    yOS
+                )
                 el.text:SetTextColor(r, g, b, a)
             else
                 el.text:Hide()
@@ -503,17 +616,29 @@ function frameFunctions:apply_element_paras(name)
             end
             if para.hasText2 then
                 el.text2:Show()
-                local font, extra = (LSM:IsValid("font", para.text2Font) and
-                                        LSM:Fetch("font", para.text2Font)) or "",
-                                    para.text2extra or "OUTLINE"
-                local size, xOS, yOS = para.text2Size or 20, para.text2XOS or 0,
-                                       para.text2YOS or 0
-                local r, g, b, a = para.text2R or 1, para.text2G or 1,
-                                   para.text2B or 1, para.text2A or 1
+                local font, extra =
+                    (LSM:IsValid("font", para.text2Font) and
+                        LSM:Fetch("font", para.text2Font)) or
+                        "",
+                    para.text2extra or "OUTLINE"
+                local size, xOS, yOS =
+                    para.text2Size or 20,
+                    para.text2XOS or 0,
+                    para.text2YOS or 0
+                local r, g, b, a =
+                    para.text2R or 1,
+                    para.text2G or 1,
+                    para.text2B or 1,
+                    para.text2A or 1
                 el.text2:SetFont(font, size, extra)
                 el.text2:ClearAllPoints()
-                el.text2:SetPoint(para.text2Anchor, el, para.text2AnchorTo, xOS,
-                                  yOS)
+                el.text2:SetPoint(
+                    para.text2Anchor,
+                    el,
+                    para.text2AnchorTo,
+                    xOS,
+                    yOS
+                )
                 el.text2:SetTextColor(r, g, b, a)
             else
                 el.text2:Hide()
@@ -521,16 +646,24 @@ function frameFunctions:apply_element_paras(name)
         end
 
         -- hide elements if perhaps coutn was lowered
-        for i = N + 1, #list do list[i]:disable() end
+        for i = N + 1, #list do
+            list[i]:disable()
+        end
 
         if #list.tasks.onUpdate > 0 then
             local throttle =
                 ((para.throttleValue ~= -1) and para.throttleValue) or
-                    math.min((0.1 ^
-                                 math.floor(
-                                     math.max(para.textDecimals or 0,
-                                              para.text2Decimals or 0) or 1)) *
-                                 0.2, 0.2)
+                math.min(
+                    (0.1 ^
+                        math.floor(
+                            math.max(
+                                para.textDecimals or 0,
+                                para.text2Decimals or 0
+                            ) or 1
+                        )) *
+                        0.2,
+                    0.2
+                )
             list.throttle = throttle
             list.elapsed = throttle + 1
             list:SetScript("OnUpdate", taskFuncs.frameOnUpdateFunction)
@@ -542,11 +675,15 @@ function frameFunctions:apply_element_paras(name)
 
     -- apply work funcs
     local el = frame.elements[name]
-    if not el.load_table then el.load_table = {} end
+    if not el.load_table then
+        el.load_table = {}
+    end
     if el.isListElement then
         for funcName, func in pairs(eF.workFuncs[name]) do
             el[funcName] = func
-            for i = 1, el.count do el[i][funcName] = func end
+            for i = 1, el.count do
+                el[i][funcName] = func
+            end
         end
     else
         for funcName, func in pairs(eF.workFuncs[name]) do
@@ -556,7 +693,9 @@ function frameFunctions:apply_element_paras(name)
 end
 
 local function resetTaskList(name)
-    if not name then return end
+    if not name then
+        return
+    end
 
     if eF.tasks[name] then
         wipe(eF.tasks[name])
@@ -568,7 +707,9 @@ end
 fu.resetTaskList = resetTaskList
 
 local function resetWorkFuncs(name)
-    if not name then return end
+    if not name then
+        return
+    end
 
     if eF.workFuncs[name] then
         wipe(eF.workFuncs[name])
@@ -581,7 +722,9 @@ fu.resetWorkFuncs = resetWorkFuncs
 
 function eF:refresh_element(name)
     eF.current_elements_version = eF.current_elements_version + 1
-    if name then eF:update_element_meta(name) end
+    if name then
+        eF:update_element_meta(name)
+    end
     eF:reload_all_layouts()
 end
 
@@ -597,7 +740,9 @@ function eF:update_element_meta(name)
     end
     local para = self.para.elements[name]
 
-    if para.type == "group" then return end
+    if para.type == "group" then
+        return
+    end
 
     resetTaskList(name)
     resetWorkFuncs(name)
@@ -610,8 +755,10 @@ function eF:update_element_meta(name)
         -- tasks.onAura[#tasks.onAura+1]=taskFuncs.frameDisable
         local tt = para.trackType
 
-        if tt == "HELPFUL" or tt == "HARMFUL" or tt == "PLAYER HELPFUL" or tt ==
-            "PLAYER HARMFUL" then
+        if
+            tt == "HELPFUL" or tt == "HARMFUL" or tt == "PLAYER HELPFUL" or
+                tt == "PLAYER HARMFUL"
+         then
             tasks.onAura[#tasks.onAura + 1] = taskFuncs.applyAuraAdopt
             work.auraExtras = taskFuncs.auraExtras
             if para.adoptFunc == "Name" then
@@ -630,7 +777,9 @@ function eF:update_element_meta(name)
                     taskFuncs.iconUpdateCDWheel
             end
 
-            if not para.auraExtras then para.auraExtras = {} end
+            if not para.auraExtras then
+                para.auraExtras = {}
+            end
             if para.auraExtras.trem_check then
                 tasks.onUpdate[#tasks.onUpdate + 1] =
                     taskFuncs.iconUpdateVisibilityTrem
@@ -639,10 +788,13 @@ function eF:update_element_meta(name)
 
         if tt == "CHAT_MSG" then
             tasks.onMsg[#tasks.onMsg + 1] = taskFuncs.applyMsgAdopt
-            work.msgAdopt = taskFuncs.msgAdopt[para.chatMatch] or
-                                function(...) return false end
+            work.msgAdopt = taskFuncs.msgAdopt[para.chatMatch] or function(...)
+                    return false
+                end
 
-            if not para.chatTimed then para.chatTimed = 1 end
+            if not para.chatTimed then
+                para.chatTimed = 1
+            end
             tasks.onUpdate[#tasks.onUpdate + 1] = taskFuncs.iconUpdateChatTimed
 
             if para.cdWheel then
@@ -670,8 +822,10 @@ function eF:update_element_meta(name)
                 work.textDecimalFunc = eF.toDecimal[para.textDecimals]
             end
             if para.textType == "Stacks" then
-                if tt == "HELPFUL" or tt == "HARMFUL" or tt == "PLAYER HELPFUL" or
-                    tt == "PLAYER HARMFUL" then
+                if
+                    tt == "HELPFUL" or tt == "HARMFUL" or tt == "PLAYER HELPFUL" or
+                        tt == "PLAYER HARMFUL"
+                 then
                     tasks.postAura[#tasks.postAura + 1] =
                         taskFuncs.iconUpdateTextTypeS
                 elseif tt == "CHAT_MSG" then
@@ -687,8 +841,10 @@ function eF:update_element_meta(name)
                     taskFuncs.iconUpdateText2TypeT
                 work.text2DecimalFunc = eF.toDecimal[para.text2Decimals]
             end
-            if tt == "HELPFUL" or tt == "HARMFUL" or tt == "PLAYER HELPFUL" or
-                tt == "PLAYER HARMFUL" then
+            if
+                tt == "HELPFUL" or tt == "HARMFUL" or tt == "PLAYER HELPFUL" or
+                    tt == "PLAYER HARMFUL"
+             then
                 tasks.postAura[#tasks.postAura + 1] =
                     taskFuncs.iconUpdateText2TypeS
             elseif tt == "CHAT_MSG" then
@@ -696,12 +852,13 @@ function eF:update_element_meta(name)
             end
         end
 
-        if not para.auraExtras then para.auraExtras = {} end
+        if not para.auraExtras then
+            para.auraExtras = {}
+        end
         if para.auraExtras.trem_check then
             tasks.onUpdate[#tasks.onUpdate + 1] =
                 taskFuncs.iconUpdateVisibilityTrem
         end
-
     end -- end of if para.type=="icon" then
 
     if para.type == "bar" then
@@ -713,13 +870,14 @@ function eF:update_element_meta(name)
                 taskFuncs.statusBarHAbsorbUpdate
             tasks.onLoad[#tasks.onLoad + 1] = taskFuncs.statusBarHAbsorbUpdate
         end
-
     end
 
     if para.type == "border" then
         local tt = para.trackType
-        if tt == "HELPFUL" or tt == "HARMFUL" or tt == "PLAYER HELPFUL" or tt ==
-            "PLAYER HARMFUL" then
+        if
+            tt == "HELPFUL" or tt == "HARMFUL" or tt == "PLAYER HELPFUL" or
+                tt == "PLAYER HARMFUL"
+         then
             tasks.onAura[#tasks.onAura + 1] = taskFuncs.applyAuraAdopt
             work.auraExtras = taskFuncs.auraExtras
             if para.adoptFunc == "Name" then
@@ -731,10 +889,13 @@ function eF:update_element_meta(name)
 
         if tt == "CHAT_MSG" then
             tasks.onMsg[#tasks.onMsg + 1] = taskFuncs.applyMsgAdopt
-            work.msgAdopt = taskFuncs.msgAdopt[para.chatMatch] or
-                                function(...) return false end
+            work.msgAdopt = taskFuncs.msgAdopt[para.chatMatch] or function(...)
+                    return false
+                end
 
-            if not para.chatTimed then para.chatTimed = 1 end
+            if not para.chatTimed then
+                para.chatTimed = 1
+            end
             tasks.onUpdate[#tasks.onUpdate + 1] = taskFuncs.iconUpdateChatTimed
         end
 
@@ -744,7 +905,6 @@ function eF:update_element_meta(name)
                 work.threatAdopt = taskFuncs.adoptThreatByStatus
             end
         end -- end of if para.trackType threat
-
     end
 
     if para.type == "list" then
@@ -752,8 +912,10 @@ function eF:update_element_meta(name)
         local tt = para.trackType
 
         -- auras
-        if tt == "HELPFUL" or tt == "HARMFUL" or tt == "PLAYER HELPFUL" or tt ==
-            "PLAYER HARMFUL" then
+        if
+            tt == "HELPFUL" or tt == "HARMFUL" or tt == "PLAYER HELPFUL" or
+                tt == "PLAYER HARMFUL"
+         then
             tasks.onAura[#tasks.onAura + 1] = taskFuncs.applyListAuraAdopt
 
             if para.adoptFunc == "Name Whitelist" then
@@ -823,7 +985,7 @@ function eF:update_element_meta(name)
                         taskFuncs.iconUpdateTextTypeT
                     work.textDecimalFunc = eF.toDecimal[para.textDecimals]
                 end
-                -- if para.textType=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateTextTypeS end 
+            -- if para.textType=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateTextTypeS end
             end
 
             if para.hasText2 then
@@ -832,11 +994,9 @@ function eF:update_element_meta(name)
                         taskFuncs.iconUpdateText2TypeT
                     work.text2DecimalFunc = eF.toDecimal[para.text2Decimals]
                 end
-                -- if para.text2Type=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateText2TypeS end
+            -- if para.text2Type=="Stacks" then tasks.postAura[#tasks.postAura+1]=taskFuncs.iconUpdateText2TypeS end
             end
-
-        end -- end of if para.trackType casts 
-
+        end -- end of if para.trackType casts
     end -- end of if para.type=="list" then
 
     if para.extras then
@@ -850,9 +1010,6 @@ function eF:update_element_meta(name)
                     t[#t + 1] = taskFuncs[v[2]]
                 end
             end
-
         end
-
     end
 end
-
