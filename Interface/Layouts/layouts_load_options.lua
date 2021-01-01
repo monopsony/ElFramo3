@@ -6,11 +6,13 @@ local highlight_colour = "|cFFFFF569"
 
 -- when to show
 do
-
     local function update_selected_layout_attribute(key, value)
-        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters[key] =
-            value
-        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:checkVisibility()
+        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters[
+                key
+            ] = value
+        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:checkVisibility(
+
+        )
     end
 
     args["show_options"] = {name = "When to show", type = "header", order = 1}
@@ -22,10 +24,8 @@ do
         set = function(self, key)
             update_selected_layout_attribute("showRaid", key)
         end,
-
         get = function(self)
-            return eF.para.layouts[eF.optionsTable.currently_selected_layout]
-                       .parameters.showRaid
+            return eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.showRaid
         end
     }
 
@@ -36,10 +36,8 @@ do
         set = function(self, key)
             update_selected_layout_attribute("showParty", key)
         end,
-
         get = function(self)
-            return eF.para.layouts[eF.optionsTable.currently_selected_layout]
-                       .parameters.showParty
+            return eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.showParty
         end
     }
 
@@ -50,22 +48,35 @@ do
         set = function(self, key)
             update_selected_layout_attribute("showSolo", key)
         end,
-
         get = function(self)
-            return eF.para.layouts[eF.optionsTable.currently_selected_layout]
-                       .parameters.showSolo
+            return eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.showSolo
         end
     }
 
     local function update_selected_layout_show_classes(key, value)
-        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters
-            .show_classes[key] = value
-        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:checkVisibility()
+        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.show_classes[
+                key
+            ] = value
+        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:checkVisibility(
+
+        )
     end
     local function update_selected_layout_show_roles(key, value)
-        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters
-            .show_roles[key] = value
-        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:checkVisibility()
+        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.show_roles[
+                key
+            ] = value
+        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:checkVisibility(
+
+        )
+    end
+
+    local function update_selected_layout_show_PvP(key, value)
+        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.showPvP[
+                key
+            ] = value
+        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:checkVisibility(
+
+        )
     end
 
     args["showRoles"] = {
@@ -81,10 +92,10 @@ do
         set = function(self, key, value)
             update_selected_layout_show_roles(key, value)
         end,
-
         get = function(self, key)
-            return eF.para.layouts[eF.optionsTable.currently_selected_layout]
-                       .parameters.show_roles[key]
+            return eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.show_roles[
+                key
+            ]
         end
     }
 
@@ -110,22 +121,45 @@ do
         set = function(self, key, value)
             update_selected_layout_show_classes(key, value)
         end,
-
         get = function(self, key)
-            local bool = eF.para.layouts[eF.optionsTable
-                             .currently_selected_layout].parameters.show_classes[key]
+            local bool =
+                eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.show_classes[
+                key
+            ]
             return bool
         end
     }
 
+    args["showPvP"] = {
+        name = "Show when player PvP status is",
+        type = "multiselect",
+        order = 7,
+        values = {
+            Any = highlight_colour .. "Any|r",
+            ["BG"] = "In Battlegrounds",
+            ["Arena"] = "In Arena"
+        },
+        set = function(self, key, value)
+            update_selected_layout_show_PvP(key, value)
+        end,
+        get = function(self, key)
+            local bool =
+                eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.showPvP[
+                key
+            ]
+            return bool
+        end
+    }
 end
 
 -- filters
 local function filter_hidden_func()
-    if not eF.optionsTable.currently_selected_layout then return true end
+    if not eF.optionsTable.currently_selected_layout then
+        return true
+    end
 
-    local para = eF.para.layouts[eF.optionsTable.currently_selected_layout]
-                     .parameters
+    local para =
+        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters
     if para.hasNamelist then
         return false
     else
@@ -136,22 +170,28 @@ end
 do
     local function set_current_layout_attribute(key, value)
         local name = eF.optionsTable.currently_selected_layout or nil
-        if not name then return end
+        if not name then
+            return
+        end
         eF.para.layouts[name].attributes[key] = value
         eF:apply_layout_para_index(name)
     end
 
     local function get_current_attribute(key)
         local name = eF.optionsTable.currently_selected_layout or nil
-        if not name then return end
+        if not name then
+            return
+        end
         return eF.para.layouts[name].attributes[key]
     end
 
     local function update_selected_layout_parameter(key, value)
-        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters[key] =
-            value
-        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:updateFilters()
+        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters[
+                key
+            ] = value
+        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:updateFilters(
 
+        )
     end
 
     args["filter_options"] = {
@@ -168,22 +208,26 @@ do
         set = function(self, key)
             update_selected_layout_parameter("filter_player", key)
         end,
-
         get = function(self)
-            return eF.para.layouts[eF.optionsTable.currently_selected_layout]
-                       .parameters.filter_player
+            return eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.filter_player
         end
     }
 
     local function update_selected_layout_filter_classes(key, value)
-        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters
-            .filter_classes[key] = value
-        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:updateFilters()
+        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.filter_classes[
+                key
+            ] = value
+        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:updateFilters(
+
+        )
     end
     local function update_selected_layout_filter_roles(key, value)
-        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters
-            .filter_roles[key] = value
-        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:updateFilters()
+        eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.filter_roles[
+                key
+            ] = value
+        eF.registered_layouts[eF.optionsTable.currently_selected_layout]:updateFilters(
+
+        )
     end
 
     args["filter_roles"] = {
@@ -191,7 +235,6 @@ do
         type = "multiselect",
         order = 23,
         disabled = filter_hidden_func,
-
         values = {
             Any = highlight_colour .. "Any|r",
             DAMAGER = "DPS",
@@ -201,10 +244,10 @@ do
         set = function(self, key, value)
             update_selected_layout_filter_roles(key, value)
         end,
-
         get = function(self, key)
-            return eF.para.layouts[eF.optionsTable.currently_selected_layout]
-                       .parameters.filter_roles[key]
+            return eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.filter_roles[
+                key
+            ]
         end
     }
 
@@ -231,15 +274,14 @@ do
         set = function(self, key, value)
             update_selected_layout_filter_classes(key, value)
         end,
-
         get = function(self, key)
-            local bool = eF.para.layouts[eF.optionsTable
-                             .currently_selected_layout].parameters
-                             .filter_classes[key]
+            local bool =
+                eF.para.layouts[eF.optionsTable.currently_selected_layout].parameters.filter_classes[
+                key
+            ]
             return bool
         end
     }
 
     -- mess with this
 end
-

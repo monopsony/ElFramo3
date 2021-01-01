@@ -81,6 +81,8 @@ function eF.layoutEventHandler:handleEvent(event, ...)
         end
     end
 
+    local check_visibility_flag = false
+
     -- check raid or not
     local raid = IsInRaid()
     if eF.raid ~= raid then
@@ -92,7 +94,7 @@ function eF.layoutEventHandler:handleEvent(event, ...)
     local grouped = IsInGroup()
     if eF.grouped ~= grouped then
         eF.grouped = grouped
-        local check_visibility_flag = true
+        check_visibility_flag = true
         if not grouped then
             eF.onUpdateFrame:SetScript("OnUpdate", nil) -- when alone, you're not in range of yourself??
         else
@@ -101,6 +103,18 @@ function eF.layoutEventHandler:handleEvent(event, ...)
                 eF.onUpdateFrame.onUpdateFunction
             )
         end
+    end
+
+    local arena = C_PvP.IsArena()
+    if eF.arena ~= arena then
+        check_visibility_flag = true
+        eF.arena = arena
+    end
+
+    local inBG = C_PvP.IsBattleground()
+    if eF.inBG ~= inBG then
+        check_visibility_flag = true
+        eF.inBG = inBG
     end
 
     if check_visibility_flag then

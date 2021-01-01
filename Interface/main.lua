@@ -8,9 +8,7 @@ elFramo.optionsTable = {
     type = "group",
     childGroups = "tab",
     args = {
-
         layouts = {name = "Layouts", type = "group", args = {}},
-
         profiles = {name = "Profiles", type = "group", args = {}},
         elements = {name = "Elements", type = "group", args = {}}
     }
@@ -43,11 +41,13 @@ frame:Hide()
 eF.interface_tab_group = AceGUI:Create("TabGroup")
 local tabs = eF.interface_tab_group
 tabs:SetLayout("Flow")
-tabs:SetTabs({
-    {text = "Layouts", value = "layouts"},
-    {text = "Elements", value = "elements"},
-    {text = "Profiles", value = "profiles"}
-})
+tabs:SetTabs(
+    {
+        {text = "Layouts", value = "layouts"},
+        {text = "Elements", value = "elements"},
+        {text = "Profiles", value = "profiles"}
+    }
+)
 tabs:SetCallback("OnGroupSelected", SelectGroup)
 frame:AddChild(tabs)
 
@@ -55,13 +55,23 @@ for k, v in pairs(eF.optionsTable.args) do
     AceConfig:RegisterOptionsTable("elFramo_" .. k, v)
 end
 tabs:SelectTab("layouts")
-function eF:interface_select_tab(s) eF.interface_tab_group:SelectTab(s) end
+function eF:interface_select_tab(s)
+    eF.interface_tab_group:SelectTab(s)
+end
 
-frame:SetCallback("OnShow", function(...)
-    tabs:SelectTab(last_selected_tab or "layouts");
-    eF.interface_main_frame:onShow()
-end)
-frame:SetCallback("OnClose", function(...) eF.interface_main_frame:onClose() end)
+frame:SetCallback(
+    "OnShow",
+    function(...)
+        tabs:SelectTab(last_selected_tab or "layouts")
+        eF.interface_main_frame:onShow()
+    end
+)
+frame:SetCallback(
+    "OnClose",
+    function(...)
+        eF.interface_main_frame:onClose()
+    end
+)
 
 frame.element_tests = {}
 
@@ -77,9 +87,8 @@ function eF:open_options_frame()
 end
 eF:RegisterChatCommand("ef3", eF.open_options_frame)
 
-eF.interface_onUpdate_frame = CreateFrame("Frame",
-                                          "ElFramoInterfaceOnUpdateFrame",
-                                          UIParent)
+eF.interface_onUpdate_frame =
+    CreateFrame("Frame", "ElFramoInterfaceOnUpdateFrame", UIParent)
 local ouf = eF.interface_onUpdate_frame
 ouf.throttle = 3
 ouf.time_since = 10
@@ -100,13 +109,16 @@ end
 function ouf:onUpdate(elapsed)
     local t = GetTime()
     self.time_since = self.time_since + elapsed
-    if self.time_since < self.throttle then return end
+    if self.time_since < self.throttle then
+        return
+    end
     self.time_since = 0
 
     for k, v in pairs(eF.interface_main_frame.element_tests) do
-        if v then eF:test_element_by_key(k) end
+        if v then
+            eF:test_element_by_key(k)
+        end
     end
-
 end
 
 function eF:test_element_by_key(key)
@@ -117,7 +129,11 @@ end
 
 -- RANDOM AURAS
 local random_aura_names = {
-    "Rejuvenation", "Atonement", "Big dumb", "Shadow Word: Pain", "Riptide"
+    "Rejuvenation",
+    "Atonement",
+    "Big dumb",
+    "Shadow Word: Pain",
+    "Riptide"
 }
 local random_aura_spellID = {1123, 34536, 47567}
 local random_aura_icons = {458720, 134206, 136081, 135940, 252995, 136207}
@@ -163,81 +179,103 @@ function eF:test_element_by_ref(ele)
 
     -- icon
     if para.type == "icon" then
-
         -- aura
         local tt = para.trackType
-        if (tt == "PLAYER HELPFUL") or (tt == "PLAYER HARMFUL") or
-            (tt == "HELPFUL") or (tt == "HARMFUL") then
+        if
+            (tt == "PLAYER HELPFUL") or (tt == "PLAYER HARMFUL") or
+                (tt == "HELPFUL") or
+                (tt == "HARMFUL")
+         then
             ele.auraInfo = make_random_aura()
-            if not ele.filled then ele:enable() end
+            if not ele.filled then
+                ele:enable()
+            end
             for i, v in ipairs(ele.tasks.onAura) do
-                if i > 1 then v(ele, ele.id or "player") end
+                if i > 1 then
+                    v(ele, ele.id or "player")
+                end
             end -- i>1 to avoid searching for auras again
             for i, v in ipairs(ele.tasks.postAura) do
                 v(ele, ele.id or "player")
             end
-
         end -- end of aura
 
         -- MSG
         if (tt == "CHAT_MSG") then
             ele.auraInfo = make_random_aura()
-            if not ele.filled then ele:enable() end
-            for i, v in ipairs(ele.tasks.onMsg) do
-                if i > 1 then v(ele, ele.id or "player") end
+            if not ele.filled then
+                ele:enable()
             end
-
+            for i, v in ipairs(ele.tasks.onMsg) do
+                if i > 1 then
+                    v(ele, ele.id or "player")
+                end
+            end
         end -- MSG
 
         -- RC
         if (tt == "READY_CHECK") then
             ele.auraInfo = make_random_rc_aura_info()
-            if not ele.filled then ele:enable() end
-            for i, v in ipairs(ele.tasks.onRC) do
-                if i > 1 then v(ele, ele.id or "player") end
+            if not ele.filled then
+                ele:enable()
             end
-
+            for i, v in ipairs(ele.tasks.onRC) do
+                if i > 1 then
+                    v(ele, ele.id or "player")
+                end
+            end
         end -- RC
-
     end
 
     -- border
     if para.type == "border" then
-
         -- aura
         local tt = para.trackType
-        if (tt == "PLAYER HELPFUL") or (tt == "PLAYER HARMFUL") or
-            (tt == "HELPFUL") or (tt == "HARMFUL") then
+        if
+            (tt == "PLAYER HELPFUL") or (tt == "PLAYER HARMFUL") or
+                (tt == "HELPFUL") or
+                (tt == "HARMFUL")
+         then
             ele.auraInfo = make_random_aura()
-            if not ele.filled then ele:enable() end
+            if not ele.filled then
+                ele:enable()
+            end
             for i, v in ipairs(ele.tasks.onAura) do
-                if i > 1 then v(ele, ele.id or "player") end
+                if i > 1 then
+                    v(ele, ele.id or "player")
+                end
             end -- i>1 to avoid searching for auras again
             for i, v in ipairs(ele.tasks.postAura) do
                 v(ele, ele.id or "player")
             end
-
         end -- end of aura
 
         -- MSG
         if (tt == "CHAT_MSG") then
             ele.auraInfo = make_random_aura()
-            if not ele.filled then ele:enable() end
-            for i, v in ipairs(ele.tasks.onMsg) do
-                if i > 1 then v(ele, ele.id or "player") end
+            if not ele.filled then
+                ele:enable()
             end
-
+            for i, v in ipairs(ele.tasks.onMsg) do
+                if i > 1 then
+                    v(ele, ele.id or "player")
+                end
+            end
         end -- MSG
 
         if (tt == "Threat_any") then
             ele:enable()
             for i, v in ipairs(ele.tasks.onThreat) do
-                if i > 1 then v(ele, ele.id or "player") end
+                if i > 1 then
+                    v(ele, ele.id or "player")
+                end
             end
         end
 
         -- Static
-        if (tt == "Static") then ele:enable() end
+        if (tt == "Static") then
+            ele:enable()
+        end
     end
 
     -- bar
@@ -248,25 +286,32 @@ function eF:test_element_by_ref(ele)
 
     -- list
     if para.type == "list" then
-
         -- aura
         local tt = para.trackType
-        if (tt == "PLAYER HELPFUL") or (tt == "PLAYER HARMFUL") or
-            (tt == "HELPFUL") or (tt == "HARMFUL") then
+        if
+            (tt == "PLAYER HELPFUL") or (tt == "PLAYER HARMFUL") or
+                (tt == "HELPFUL") or
+                (tt == "HARMFUL")
+         then
             local n = ele.para.count
             for i = 1, n do
                 ele[i].auraInfo = make_random_aura()
-                if not ele[i].filled then ele[i]:enable() end
+                if not ele[i].filled then
+                    ele[i]:enable()
+                end
             end
-            if not ele.filled then ele:enable() end
+            if not ele.filled then
+                ele:enable()
+            end
             ele.active = n
             for i, v in ipairs(ele.tasks.onAura) do
-                if i > 1 then v(ele, ele.id or "player") end
+                if i > 1 then
+                    v(ele, ele.id or "player")
+                end
             end -- i>1 to avoid searching for auras again
             for i, v in ipairs(ele.tasks.postAura) do
                 v(ele, ele.id or "player")
             end
-
         end -- end of aura
 
         -- MSG
@@ -274,24 +319,27 @@ function eF:test_element_by_ref(ele)
             local n = ele.para.count
             for i = 1, n do
                 ele[i].auraInfo = make_random_aura()
-                if not ele[i].filled then ele[i]:enable() end
+                if not ele[i].filled then
+                    ele[i]:enable()
+                end
             end
-            if not ele.filled then ele:enable() end
+            if not ele.filled then
+                ele:enable()
+            end
             ele.active = n
             for i, v in ipairs(ele.tasks.onCast) do
-                if i > 1 then v(ele, ele.id or "player") end
+                if i > 1 then
+                    v(ele, ele.id or "player")
+                end
             end -- i>1 to avoid searching for Casts again
             for i, v in ipairs(ele.tasks.postCast) do
                 v(ele, ele.id or "player")
             end
-
         end -- MSG
     end
-
 end
 
 function eF:interface_set_selected_group(tab, ...)
     -- if (not tbl) or not (type(tbl)=="table") then return end
-    AceConfigDialog:SelectGroup('elFramo_' .. tab, ...)
+    AceConfigDialog:SelectGroup("elFramo_" .. tab, ...)
 end
-

@@ -78,8 +78,8 @@ function frameFunctions:apply_element_paras(name)
         el.auraInfo = el.auraInfo or {}
 
         -- dimensions and position
-        el:SetWidth(para.width)
-        el:SetHeight(para.height)
+        el:SetWidth(para.fitWidth and frame:GetWidth() or para.width)
+        el:SetHeight(para.fitHeight and frame:GetHeight() or para.height)
         el:ClearAllPoints()
         el:SetPoint(para.anchor, frame, para.anchorTo, para.xPos, para.yPos)
 
@@ -268,28 +268,29 @@ function frameFunctions:apply_element_paras(name)
 
         -- positional
         el:ClearAllPoints()
+        local lFix, lMax = para.lFix, para.lMax
         if para.grow == "up" or not para.grow then
             el:SetPoint("BOTTOM", frame, para.anchorTo, para.xPos, para.yPos)
-            el:SetWidth(para.lFix)
-            el:SetHeight(para.lMax)
+            el:SetWidth(para.fitFixedLength and frame:GetWidth() or lFix)
+            el:SetHeight(para.fitMaxLength and frame:GetHeight() or lMax)
             el:SetOrientation("VERTICAL")
             el:SetReverseFill(false)
         elseif para.grow == "down" then
             el:SetPoint("TOP", frame, para.anchorTo, para.xPos, para.yPos)
-            el:SetWidth(para.lFix)
-            el:SetHeight(para.lMax)
+            el:SetWidth(para.fitFixedLength and frame:GetWidth() or lFix)
+            el:SetHeight(para.fitMaxLength and frame:GetHeight() or lMax)
             el:SetOrientation("VERTICAL")
             el:SetReverseFill(true)
         elseif para.grow == "right" then
             el:SetPoint("LEFT", frame, para.anchorTo, para.xPos, para.yPos)
-            el:SetWidth(para.lMax)
-            el:SetHeight(para.lFix)
+            el:SetWidth(para.fitMaxLength and frame:GetWidth() or lMax)
+            el:SetHeight(para.fitFixedLength and frame:GetHeight() or lFix)
             el:SetOrientation("HORIZONTAL")
             el:SetReverseFill(false)
         else
             el:SetPoint("RIGHT", frame, para.anchorTo, para.xPos, para.yPos)
-            el:SetWidth(para.lMax)
-            el:SetHeight(para.lFix)
+            el:SetWidth(para.fitMaxLength and frame:GetWidth() or lMax)
+            el:SetHeight(para.fitFixedLength and frame:GetHeight() or lFix)
             el:SetOrientation("HORIZONTAL")
             el:SetReverseFill(true)
         end

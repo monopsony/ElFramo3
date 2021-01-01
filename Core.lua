@@ -47,9 +47,18 @@ local function version_update(tbl, version)
         end
         version = 2
     end
+
+    if version < 3 then
+        for k, v in pairs(tbl.layouts or {}) do
+            v.parameters.showPvP = {Any = true}
+        end
+        for k, v in pairs(tbl.elements or {}) do
+            v.load[7] = {loadAlways = true}
+        end
+    end
 end
 
-local current_version = 2
+local current_version = 3
 local function update_WTF()
     local para = elFramoDB or nil
 

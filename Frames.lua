@@ -637,6 +637,7 @@ end
 -- 4: unit role
 -- 5: instance
 -- 6: encounter(try)
+-- 7: layout
 local info = eF.info
 local element_load_functions = {
     [1] = function(frame, para)
@@ -674,6 +675,13 @@ local element_load_functions = {
             return true
         end
         return para[info.encounterID]
+    end,
+    [7] = function(frame, para)
+        if para.loadAlways then
+            return true
+        end
+        -- toad
+        return para[frame.header.para.displayName]
     end
 }
 
@@ -689,7 +697,7 @@ local function element_update_load_table(frame, self, index)
         self.load_table[index] =
             element_load_functions[index](frame, para[index])
     else
-        for index = 1, 6 do
+        for index = 1, 7 do
             self.load_table[index] =
                 element_load_functions[index](frame, para[index])
         end
@@ -756,7 +764,7 @@ function frameFunctions:check_element_load(k)
     elseif l.loadNever then
         return false
     end
-    return l[1] and l[2] and l[3] and l[4] and l[5] and l[6]
+    return l[1] and l[2] and l[3] and l[4] and l[5] and l[6] and l[7]
 end
 
 local fu = eF.familyUtils

@@ -110,6 +110,7 @@ local header_default_parameters = {
     showSolo = true,
     showRaid = true,
     showParty = true,
+    showPvP = {Any = true}, -- BG,
     show_classes = {Any = true},
     show_roles = {Any = true},
     filter_classes = {Any = true},
@@ -246,13 +247,18 @@ function layout_methods:checkVisibility()
     end
 
     local bool = false
-    local showRaid, showParty, showSolo, classes, roles =
+    local showRaid, showParty, showSolo, classes, roles, showPvP =
         self.para.showRaid,
         self.para.showParty,
         self.para.showSolo,
         self.para.show_classes,
-        self.para.show_roles
-    local inRaid, inGroup = eF.raid, eF.grouped
+        self.para.show_roles,
+        self.para.showPvP
+    local inRaid, inGroup, inArena, inBG =
+        eF.raid,
+        eF.grouped,
+        eF.arena,
+        eF.inBG
 
     -- checks rad/party/solo
     if inRaid then
@@ -275,6 +281,20 @@ function layout_methods:checkVisibility()
     -- roles
     if bool then
         if not (roles.Any or roles[eF.info.playerRole]) then
+            bool = false
+        end
+    end
+    if not bool then
+        self:setVisible(bool)
+        return
+    end
+
+    -- pvp
+    if bool then
+        if
+            not (showPvP.Any or (showPvP.Arena and inArena) or
+                (showPvP.BG) and inBG)
+         then
             bool = false
         end
     end
