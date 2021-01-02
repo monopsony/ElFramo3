@@ -72,6 +72,9 @@ eF.interface_element_defaults.icon = {
 		},
 		[6] = {
 			loadAlways = true
+		},
+		[7] = {
+			loadAlways = true
 		}
 	}
 }
