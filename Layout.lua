@@ -291,11 +291,13 @@ function layout_methods:checkVisibility()
 
     -- pvp
     if bool then
-        if
-            not (showPvP.Any or (showPvP.Arena and inArena) or
-                (showPvP.BG) and inBG)
-         then
-            bool = false
+        if not showPvP.Any then
+            if
+                (showPvP.Arena and (not inArena)) or (showPvP.BG and (not inBG)) or
+                    (showPvP.dontShow and (inBG or inArena))
+             then
+                bool = false
+            end
         end
     end
     if not bool then

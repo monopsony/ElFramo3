@@ -137,7 +137,8 @@ do
         values = {
             Any = highlight_colour .. "Any|r",
             ["BG"] = "In Battlegrounds",
-            ["Arena"] = "In Arena"
+            ["Arena"] = "In Arena",
+            ["dontShow"] = "Don't show in PvP"
         },
         set = function(self, key, value)
             update_selected_layout_show_PvP(key, value)
