@@ -315,29 +315,23 @@ function frameFunctions:updateHPBar()
         hp:SetOrientation("HORIZONTAL")
         hp:SetReverseFill(true)
     end
+    hp:SetMinMaxValues(0, 1)
+    hp:SetFrameLevel(self.baseLevel + 1)
     if para.hpTexture then
         hp:SetStatusBarTexture(para.hpTexture)
         hp:SetStatusBarColor(para.hpR, para.hpG, para.hpB, para.hpA or 1)
     else
-        hp:SetStatusBarTexture(para.hpR, para.hpG, para.hpB, para.hpA or 1)
+        hp:SetStatusBarTexture("Interface\\BUTTONS\\WHITE8X8")
+        hp:SetStatusBarColor(para.hpR, para.hpG, para.hpB, para.hpA or 1)
     end
-    hp:SetMinMaxValues(0, 1)
-    hp:SetFrameLevel(self.baseLevel + 1)
+    
     local tt = hp:GetStatusBarTexture()
     if para.hpGrad then
-        tt:SetGradientAlpha(
-            para.hpGradOrientation,
-            para.hpGrad1R,
-            para.hpGrad1G,
-            para.hpGrad1B,
-            para.hpGrad1A,
-            para.hpGrad2R,
-            para.hpGrad2G,
-            para.hpGrad2B,
-            para.hpGrad2A
-        )
+        local c1 = CreateColor(para.hpGrad1R, para.hpGrad1G, para.hpGrad1B, para.hpGrad1A or 1)
+        local c2 = CreateColor(para.hpGrad2R, para.hpGrad2G, para.hpGrad2B, para.hpGrad2A or 1)
+        tt:SetGradient(para.hpGradOrientation, c1, c2)
     else
-        tt:SetGradientAlpha("VERTICAL", 1, 1, 1, 1, 1, 1, 1, 1)
+        tt:SetGradient(para.hpGradOrientation, CreateColor(1, 1, 1, 1), CreateColor(1, 1, 1, 1))
     end
 end
 
@@ -422,10 +416,10 @@ function frameFunctions:updateHPBarColor()
     if para.byClassColor and self.CLASS then
         local r, g, b = GetClassColor(self.CLASS)
         local alpha = para.hpA or 1
-        hp:SetStatusBarTexture(r, g, b, alpha)
+        hp:SetStatusBarColor(r, g, b, alpha)
     else
         local r, g, b, alpha = para.hpR, para.hpG, para.hpB, para.hpA
-        hp:SetStatusBarTexture(r, g, b, alpha)
+        hp:SetStatusBarColor(r, g, b, alpha)
     end
 end
 
