@@ -606,6 +606,7 @@ local UnitHealth, UnitHealthMax = UnitHealth, UnitHealthMax
 function frameFunctions:updateHealth()
     local unit = self.id
     local max = UnitHealthMax(unit)
+    if max == 0 then return end 
     self.hp:SetValue(max and UnitHealth(unit) / max or 1)
 end
 
