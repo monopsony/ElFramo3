@@ -599,7 +599,7 @@ function taskFuncs:iconUpdateTextTypeS()
 		return
 	end
 	local s = self.auraInfo.count or ""
-	if (s == 0) or (s == 1) then
+	if (s == 0) then
 		s = ""
 	end
 	self.text:SetText(s)
