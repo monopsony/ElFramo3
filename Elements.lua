@@ -302,7 +302,8 @@ function frameFunctions:apply_element_paras(name)
                 para.textureG or 1,
                 para.textureB or 1,
                 para.textureA or 1
-            el:SetStatusBarTexture(r, g, b, a)
+                el:SetStatusBarTexture("Interface\\BUTTONS\\WHITE8X8")
+                el:SetStatusBarColor(r,g,b,a)
         else
         end
         el:SetMinMaxValues(0, 1)

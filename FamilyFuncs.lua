@@ -648,7 +648,11 @@ end
 updateBorderColorDebuffType = taskFuncs.updateBorderColorDebuffType
 
 function taskFuncs:statusBarPowerUpdate(unit)
-	self:SetValue(UnitPower(unit) / UnitPowerMax(unit))
+	if UnitPower(unit) == 0 or UnitPowerMax(unit) == 0 then
+		self:SetValue(1)
+	else
+		self:SetValue(UnitPower(unit) / UnitPowerMax(unit))
+	end
 end
 
 function taskFuncs:statusBarHAbsorbUpdate(unit)
