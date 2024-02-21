@@ -17,8 +17,3 @@ ElFramo is a simple but powerful unit frame addon able to provide a clean unit f
 ## Usage
 
 Open the options window by typing `/ef3` in your chat and then enter
-
-
-## Documentation
-
-Hopefully coming soon. 
