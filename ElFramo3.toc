@@ -1,8 +1,8 @@
-## Interface: 10002
+## Interface: 100207, 110000, 110002
 ## Title: ElFramo3
 ## DefaultState: disabled
 ## SavedVariables: elFramoDB
-## Version: v1.4
+## Version: v1.5
 
 libs.xml
 Core.lua

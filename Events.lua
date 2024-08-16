@@ -220,8 +220,7 @@ function eF.loadingFrame:handleEvent(event, ID)
         if eF.info.specName ~= specName then
             eF.info.specName = specName
             eF.info.specID = specID
-            eF.isDispellable =
-                eF.isDispellableTable[eF.info.playerClass][specName]
+            eF.isDispellable = specName and eF.info.playerClass and eF.isDispellableTable[eF.info.playerClass][specName]
         end
         if role ~= eF.info.playerRole then
             eF.info.playerRole = role

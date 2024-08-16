@@ -55,7 +55,12 @@ function taskFuncs:auraExtras(
 	return true
 end
 
-local UnitAura = UnitAura
+local function UnitAura(...) 
+	local aura = C_UnitAuras.GetAuraDataByIndex(...)
+	if not aura then return nil end
+	return aura.name, aura.icon, aura.charges, aura.dispelName, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable,aura.spellId, aura.isBossAura
+end
+
 function taskFuncs:applyAuraAdopt(unit)
 	local filter = self.para.trackType or nil
 	for i = 1, 40 do

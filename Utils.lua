@@ -99,6 +99,10 @@ eF.isDispellableTable = {
         ["Demonology"] = {Magic = true},
         ["Affliction"] = {Magic = true},
         ["Destruction"] = {Magic = true}
+    },
+    ["Evoker"] = {
+        ["Preservation"] = {Magic = true, Poison = true},
+        ["Devastation"] = {Poison = true},
     }
 }
 
