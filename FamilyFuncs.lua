@@ -48,7 +48,7 @@ function taskFuncs:auraExtras(
 	isBoss)
 	local ex = self.para.auraExtras
 	if ex.stacks_check then
-		if count < (ex.stacks_min or -1) or count > (ex.stacks_max or 10000) then
+		if (not count) or count < (ex.stacks_min or -1) or count > (ex.stacks_max or 10000) then
 			return false
 		end
 	end
