@@ -2,7 +2,7 @@
 ## Title: ElFramo3
 ## DefaultState: disabled
 ## SavedVariables: elFramoDB
-## Version: v1.5.1
+## Version: v1.5.2
 
 libs.xml
 Core.lua

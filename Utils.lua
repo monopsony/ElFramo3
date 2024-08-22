@@ -439,3 +439,75 @@ function eF.isWhiteSpaces(text)
     local s = string.gsub(text, " ", "")
     return s == ""
 end
+
+
+-- TAKEN FROM GRID2: https://github.com/michaelnpsp/Grid2
+local hiddenFrame
+local function rehide(self)
+    if not InCombatLockdown() then self:Hide() end
+end
+local function unregister(f)
+    if f then f:UnregisterAllEvents() end
+end
+local function hideFrame(frame,dontsave)
+    if frame then
+        UnregisterUnitWatch(frame)
+        frame:Hide()
+        frame:UnregisterAllEvents()
+        frame:SetParent(hiddenFrame)
+        frame:HookScript("OnShow", rehide)
+        unregister(frame.healthbar)
+        unregister(frame.manabar)
+        unregister(frame.powerBarAlt)
+        unregister(frame.spellbar)
+        if dontsave then
+            frame:SetDontSavePosition(true)
+        end
+    end
+end
+
+-- TAKEN FROM GRID2: https://github.com/michaelnpsp/Grid2
+-- party frames, only for retail
+local function HidePartyFrames()
+    if not PartyFrame then return end
+    hiddenFrame = hiddenFrame or CreateFrame('Frame')
+    hiddenFrame:Hide()
+    hideFrame(PartyFrame)
+    for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
+        hideFrame(frame)
+        hideFrame(frame.HealthBar)
+        hideFrame(frame.ManaBar)
+    end
+    PartyFrame.PartyMemberFramePool:ReleaseAll()
+    hideFrame(CompactPartyFrame)
+    UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE") -- used by compact party frame
+end
+
+-- TAKEN FROM GRID2: https://github.com/michaelnpsp/Grid2
+-- raid frames
+local function HideRaidFrames()
+    if not CompactRaidFrameManager then return end
+    local function HideFrames()
+        CompactRaidFrameManager:SetAlpha(0)
+        CompactRaidFrameManager:UnregisterAllEvents()
+        CompactRaidFrameContainer:UnregisterAllEvents()
+        if not InCombatLockdown() then
+            CompactRaidFrameManager:Hide()
+            local shown = CompactRaidFrameManager_GetSetting('IsShown')
+            if shown and shown ~= '0' then
+                CompactRaidFrameManager_SetSetting('IsShown', '0')
+            end
+        end
+    end
+    hiddenFrame = hiddenFrame or CreateFrame('Frame')
+    hiddenFrame:Hide()
+    hooksecurefunc('CompactRaidFrameManager_UpdateShown', HideFrames)
+    CompactRaidFrameManager:HookScript('OnShow', HideFrames)
+    CompactRaidFrameContainer:HookScript('OnShow', HideFrames)
+    HideFrames()
+end
+
+function eF.hideBlizzardFrames()
+    HidePartyFrames()
+    HideRaidFrames()
+end

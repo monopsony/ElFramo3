@@ -122,6 +122,9 @@ function elFramo:OnInitialize()
     eF:register_all_headers_inits()
     eF:applyLayoutParas()
 
+    -- hide bliz frames
+    eF:hideBlizzardFrames()
+
     eF.elFramo_initialised = true
     eF.loadingFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
