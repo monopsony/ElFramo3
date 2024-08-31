@@ -480,7 +480,7 @@ local function HidePartyFrames()
     end
     PartyFrame.PartyMemberFramePool:ReleaseAll()
     hideFrame(CompactPartyFrame)
-    UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE") -- used by compact party frame
+    -- UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE") -- used by compact party frame
 end
 
 -- TAKEN FROM GRID2: https://github.com/michaelnpsp/Grid2

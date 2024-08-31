@@ -52,6 +52,11 @@ function taskFuncs:auraExtras(
 			return false
 		end
 	end
+	if ex.icon_check then
+		if (not ex.icon_id) or (ex.icon_id ~= icon) then
+			return false
+		end
+	end
 	return true
 end
 

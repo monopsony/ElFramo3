@@ -786,6 +786,11 @@ function eF:update_element_meta(name)
                 tasks.onUpdate[#tasks.onUpdate + 1] =
                     taskFuncs.iconUpdateVisibilityTrem
             end
+            if para.auraExtras.trem_check then
+                tasks.onUpdate[#tasks.onUpdate + 1] =
+                    taskFuncs.iconUpdateVisibilityTrem
+            end
+
         end -- end of if para.trackType Aura type then
 
         if tt == "CHAT_MSG" then

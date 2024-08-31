@@ -21,6 +21,30 @@ local function set_current_parameter(key,value)
 end
 
 
+
+local function set_aura_extra(key,value)
+	local name=eF.optionsTable.currently_selected_element_key or nil
+	if not name then return end
+	if not eF.para.elements[name].auraExtras then eF.para.elements[name].auraExtras={} end 
+	eF.para.elements[name].auraExtras[key]=value
+	eF.current_elements_version=eF.current_elements_version+1
+	eF:fully_reload_element(name)
+end
+
+local function get_aura_extra(key)
+	if not key then return end 
+	local name=eF.optionsTable.currently_selected_element_key or nil
+	if not name then return end
+	if not eF.para.elements[name].auraExtras then return nil end 
+	return eF.para.elements[name].auraExtras[key]
+end
+
+local function is_not_aura_related()
+	local tt=get_current_parameter("trackType")
+	if (tt=="PLAYER HARMFUL") or (tt=="PLAYER HELPFUL") or (tt=="HELPFUL") or (tt=="HARMFUL") 
+	then return false else return true end 
+end
+
 do
     local trackTypes={
         ["PLAYER HELPFUL"]="Player Buffs",
@@ -161,6 +185,46 @@ do
             return get_current_parameter("arg1")
         end,
     }
+
+	args["aura_extra_icon_check_prot"]={
+		name="Watch icon ID",
+		type="toggle",
+		order=31,
+		hidden=is_not_aura_related,
+		set=function(self,key) 
+			set_aura_extra("icon_check",key)
+		end,
+		
+		get=function(self) 
+			return get_aura_extra("icon_check")
+		end,
+	}  
+
+	local function aura_extra_is_checked(key)
+		if is_not_aura_related() then return false end
+		if get_aura_extra(key)==true then return true end 
+		return false
+	end
+
+	args["aura_extra_icon_min_prot"]={
+		order=32,
+		type="input",
+		name="Icon ID",
+		softMin=0,
+		softMax=60,
+		isPercent=false,
+		hidden=function()
+			return not aura_extra_is_checked("icon_check")
+		end,
+		step=1,
+		set=function(self,value)
+			set_aura_extra("icon_id",tonumber(value))
+		end,
+		get=function(self)
+			return tostring(get_aura_extra("icon_id"))
+		end,
+	}
+
 
 end
 
