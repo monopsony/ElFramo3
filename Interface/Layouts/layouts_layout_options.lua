@@ -174,7 +174,7 @@ do
         eF.registered_layouts[name]:set_position()
     end
     
-    local screen_width,screen_height=math.floor(GetScreenWidth()+1),math.floor(GetScreenHeight()+1)
+    local screen_width,screen_height=GetPhysicalScreenSize()
     
     args["xPos"]={
         name="X",
